@@ -7,7 +7,6 @@ import {
   useState,
 } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import {
   PRESETS,
@@ -16,6 +15,7 @@ import {
   type PhysicsState,
 } from "@/lib/physics-presets";
 import { loadPhotoList, surroundingPhotos } from "@/lib/photos";
+import { gpuBudget, isCoarsePointer, useManagedTexture } from "@/lib/texture-memory";
 import { ORDER } from "@/lib/links";
 import PhotoZoom from "@/components/k95/PhotoZoom";
 import SumanHero from "@/components/k95/SumanHero";
@@ -24,7 +24,6 @@ const CENTER = "/photos/suman-face.jpg";
 const PAPER = "#eeece9";
 const PAPER_FOG = "#e4e0db";
 const INK = "#1a1816";
-const MAX_3D_PLANES = 48;
 
 function ringLayout(count: number) {
   const positions: [number, number, number][] = [];
@@ -111,18 +110,10 @@ function PhotoPlane({
   dimmed?: boolean;
   onSelect?: (url: string) => void;
 }) {
-  const texture = useTexture(url);
+  const texture = useManagedTexture(url);
   const group = useRef<THREE.Group>(null);
   const scale = useRef(1);
   const down = useRef({ x: 0, y: 0, t: 0 });
-
-  useMemo(() => {
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.anisotropy = 8;
-    texture.needsUpdate = true;
-  }, [texture]);
 
   useFrame((state) => {
     if (!group.current) return;
@@ -137,6 +128,8 @@ function PhotoPlane({
 
   const w = isCenter ? 2.35 : 1.52;
   const h = isCenter ? 2.98 : 1.92;
+
+  if (!texture) return null;
 
   return (
     <group
@@ -580,7 +573,7 @@ export default function K95Scene() {
       const rest = pool.filter((u) => !u.includes("/proof/"));
       const shuffledProofs = [...proofs].sort(() => Math.random() - 0.5);
       const shuffledRest = [...rest].sort(() => Math.random() - 0.5);
-      setImages([...shuffledProofs, ...shuffledRest].slice(0, MAX_3D_PLANES));
+      setImages([...shuffledProofs, ...shuffledRest].slice(0, gpuBudget().maxPlanes));
     });
   }, []);
 
@@ -597,8 +590,12 @@ export default function K95Scene() {
     >
       <Canvas
         camera={{ position: [0, 1.7, 13.2], fov: 40, near: 0.1, far: 200 }}
-        dpr={[1, 1.6]}
-        gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+        dpr={isCoarsePointer() ? [1, 1.25] : [1, 1.6]}
+        gl={{
+          antialias: !isCoarsePointer(),
+          alpha: false,
+          powerPreference: isCoarsePointer() ? "low-power" : "high-performance",
+        }}
         style={{ cursor: "grab", touchAction: "pan-y" }}
         onCreated={({ gl }) => {
           gl.domElement.style.touchAction = "pan-y";

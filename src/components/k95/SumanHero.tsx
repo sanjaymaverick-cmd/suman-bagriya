@@ -1,7 +1,8 @@
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { ContactShadows, useTexture } from "@react-three/drei";
+import { ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
+import { isCoarsePointer, useManagedTexture } from "@/lib/texture-memory";
 
 const COLOR = "/photos/suman-face.jpg";
 
@@ -121,16 +122,8 @@ function Portrait({
   active: boolean;
   onSelect?: (url: string) => void;
 }) {
-  const colorMap = useTexture(COLOR);
+  const colorMap = useManagedTexture(COLOR);
   const down = useRef({ x: 0, y: 0, t: 0 });
-
-  useMemo(() => {
-    colorMap.colorSpace = THREE.SRGBColorSpace;
-    colorMap.minFilter = THREE.LinearFilter;
-    colorMap.magFilter = THREE.LinearFilter;
-    colorMap.anisotropy = 8;
-    colorMap.needsUpdate = true;
-  }, [colorMap]);
 
   const tap = {
     onPointerOver: () => {
@@ -153,6 +146,8 @@ function Portrait({
       }
     },
   };
+
+  if (!colorMap) return null;
 
   return (
     <group>
@@ -271,7 +266,9 @@ export default function SumanHero({
     <group ref={group} position={[0, 0.92, 0]}>
       <GlassVitrine />
       <Portrait active={active} onSelect={onSelect} />
-      <ContactShadows position={[0, -H / 2 - 0.28, 0]} opacity={0.28} scale={6.5} blur={2.4} far={4} color="#2a211b" />
+      {!isCoarsePointer() && (
+        <ContactShadows position={[0, -H / 2 - 0.28, 0]} opacity={0.28} scale={6.5} blur={2.4} far={4} color="#2a211b" />
+      )}
     </group>
   );
 }
