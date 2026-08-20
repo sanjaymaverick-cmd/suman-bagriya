@@ -9,7 +9,6 @@ const W = 2.28;
 const H = 2.9;
 
 function Portrait({
-  active,
   onSelect,
 }: {
   active: boolean;
@@ -26,32 +25,43 @@ function Portrait({
     colorMap.needsUpdate = true;
   }, [colorMap]);
 
+  const tap = {
+    onPointerOver: () => {
+      document.body.style.cursor = "zoom-in";
+    },
+    onPointerOut: () => {
+      document.body.style.cursor = "";
+    },
+    onPointerDown: (e: { nativeEvent: PointerEvent }) => {
+      const n = e.nativeEvent;
+      down.current = { x: n.clientX, y: n.clientY, t: performance.now() };
+    },
+    onPointerUp: (e: { nativeEvent: PointerEvent; stopPropagation: () => void }) => {
+      const n = e.nativeEvent;
+      const dx = n.clientX - down.current.x;
+      const dy = n.clientY - down.current.y;
+      if (dx * dx + dy * dy < 64 && performance.now() - down.current.t < 420) {
+        e.stopPropagation();
+        onSelect?.(COLOR);
+      }
+    },
+  };
+
   return (
-    <mesh
-      renderOrder={1}
-      onPointerOver={() => {
-        document.body.style.cursor = "zoom-in";
-      }}
-      onPointerOut={() => {
-        document.body.style.cursor = "";
-      }}
-      onPointerDown={(e) => {
-        const n = e.nativeEvent;
-        down.current = { x: n.clientX, y: n.clientY, t: performance.now() };
-      }}
-      onPointerUp={(e) => {
-        const n = e.nativeEvent;
-        const dx = n.clientX - down.current.x;
-        const dy = n.clientY - down.current.y;
-        if (dx * dx + dy * dy < 64 && performance.now() - down.current.t < 420) {
-          e.stopPropagation();
-          onSelect?.(COLOR);
-        }
-      }}
-    >
-      <planeGeometry args={[W, H]} />
-      <meshBasicMaterial map={colorMap} toneMapped={false} />
-    </mesh>
+    <group>
+      <mesh position={[0, 0, 0.012]} renderOrder={1} {...tap}>
+        <planeGeometry args={[W, H]} />
+        <meshBasicMaterial map={colorMap} toneMapped={false} side={THREE.FrontSide} />
+      </mesh>
+      <mesh position={[0, 0, -0.012]} rotation={[0, Math.PI, 0]} renderOrder={1} {...tap}>
+        <planeGeometry args={[W, H]} />
+        <meshBasicMaterial map={colorMap} toneMapped={false} side={THREE.FrontSide} />
+      </mesh>
+      <mesh renderOrder={0}>
+        <boxGeometry args={[W - 0.02, H - 0.02, 0.02]} />
+        <meshBasicMaterial color="#f0ebe3" toneMapped={false} />
+      </mesh>
+    </group>
   );
 }
 
