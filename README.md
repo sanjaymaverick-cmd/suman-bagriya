@@ -63,3 +63,10 @@ npm install
 node scripts/generate-photo-list.mjs
 npm run dev
 ```
+
+## Center portrait (3D)
+
+The hero is a depth-mapped 2.5D of Suman: glass vitrine, warm holographic rim, volumetric points.
+
+To drop in a real Gaussian splat later, export a SuperSplat `.ply` and save it as `public/photos/suman.ply` (iPhone orbit of her, 20–60s). Until then the depth volume is the 3D her.
+

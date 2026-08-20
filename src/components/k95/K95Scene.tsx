@@ -18,6 +18,7 @@ import {
 import { loadPhotoList, surroundingPhotos } from "@/lib/photos";
 import { ORDER } from "@/lib/links";
 import PhotoZoom from "@/components/k95/PhotoZoom";
+import SumanHero from "@/components/k95/SumanHero";
 
 const CENTER = "/photos/suman-face.jpg";
 const PAPER = "#eeece9";
@@ -458,15 +459,7 @@ function SceneContent({
   return (
     <group ref={group}>
       <Suspense fallback={null}>
-        <PhotoPlane
-          url={CENTER}
-          position={[0, 0.75, 0]}
-          rotation={[0, 0, 0]}
-          isCenter
-          active={selected === CENTER}
-          dimmed={!!selected && selected !== CENTER}
-          onSelect={onSelect}
-        />
+        <SumanHero active={selected === CENTER} dimmed={!!selected && selected !== CENTER} onSelect={onSelect} />
       </Suspense>
       {images.map((url, i) => {
         if (i >= positions.length) return null;
