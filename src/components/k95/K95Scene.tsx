@@ -252,9 +252,13 @@ function SceneContent({
 
   useEffect(() => {
     const canvas = gl.domElement;
+    const hero = (canvas.closest("[data-hero]") as HTMLElement | null) ?? canvas.parentElement ?? canvas;
     canvas.style.touchAction = "pan-y";
+    hero.style.touchAction = "pan-y";
+
     const EDGE = 80;
     const clampMove = (v: number) => Math.max(-90, Math.min(90, v));
+    const passive: AddEventListenerOptions = { passive: true };
     const isChrome = (e: Event) => {
       const t = e.target as HTMLElement | null;
       return !!t?.closest("button, a, input, label, nav");
@@ -312,45 +316,15 @@ function SceneContent({
       }
     };
 
-    const onMove = (e: PointerEvent) => {
-      if (e.pointerType === "touch") {
-        if (!touch.active) return;
-        const dx = e.clientX - touch.lastX;
-        const dy = e.clientY - touch.lastY;
-        touch.lastX = e.clientX;
-        touch.lastY = e.clientY;
-
-        if (!touch.axis) {
-          if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
-          touch.axis = Math.abs(dy) >= Math.abs(dx) * 0.85 ? "y" : "x";
-        }
-        if (touch.axis === "y") return;
-
-        const p = physics.current;
-        const prm = paramsRef.current;
-        p.edgeX = 0;
-        p.edgeY = 0;
-        p.velY += clampMove(dx) * prm.dragImpulse * 1.15;
-        p.lastMoveAt = performance.now();
-        p.dragging = true;
-        return;
-      }
+    const onPointerMove = (e: PointerEvent) => {
+      if (e.pointerType === "touch") return;
       applyMouse(e);
     };
 
-    const onDown = (e: PointerEvent) => {
+    const onPointerDown = (e: PointerEvent) => {
+      if (e.pointerType === "touch") return;
       if (e.button !== 0) return;
       if (isChrome(e)) return;
-
-      if (e.pointerType === "touch") {
-        touch.active = true;
-        touch.axis = null;
-        touch.lastX = e.clientX;
-        touch.lastY = e.clientY;
-        physics.current.dragging = false;
-        return;
-      }
-
       if (e.target !== canvas && !canvas.contains(e.target as Node)) {
         const overlay = (e.target as HTMLElement)?.closest?.("[data-hero]");
         if (!overlay) return;
@@ -364,17 +338,57 @@ function SceneContent({
       canvas.style.cursor = "grabbing";
     };
 
-    const onUp = (e: PointerEvent) => {
-      touch.active = false;
-      touch.axis = null;
-      physics.current.dragging = false;
+    const onPointerUp = (e: PointerEvent) => {
       if (e.pointerType === "touch") return;
+      physics.current.dragging = false;
       try {
         canvas.releasePointerCapture(e.pointerId);
       } catch {
         /* already released */
       }
       canvas.style.cursor = "grab";
+    };
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (isChrome(e)) return;
+      if (e.touches.length !== 1) {
+        touch.active = false;
+        return;
+      }
+      const t = e.touches[0];
+      touch.active = true;
+      touch.axis = null;
+      touch.lastX = t.clientX;
+      touch.lastY = t.clientY;
+      physics.current.dragging = false;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (!touch.active || e.touches.length !== 1) return;
+      const t = e.touches[0];
+      const dx = t.clientX - touch.lastX;
+      const dy = t.clientY - touch.lastY;
+      touch.lastX = t.clientX;
+      touch.lastY = t.clientY;
+
+      if (!touch.axis) {
+        if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+        touch.axis = Math.abs(dy) >= Math.abs(dx) * 0.85 ? "y" : "x";
+      }
+      if (touch.axis === "y") return;
+
+      const p = physics.current;
+      p.edgeX = 0;
+      p.edgeY = 0;
+      p.velY += clampMove(dx) * paramsRef.current.dragImpulse * 1.15;
+      p.lastMoveAt = performance.now();
+      p.dragging = true;
+    };
+
+    const onTouchEnd = () => {
+      touch.active = false;
+      touch.axis = null;
+      physics.current.dragging = false;
     };
 
     const onWindowOut = (e: MouseEvent) => {
@@ -393,18 +407,35 @@ function SceneContent({
       physics.current.smoothDy = 0;
     };
 
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerdown", onDown, { passive: true });
-    window.addEventListener("pointerup", onUp, { passive: true });
-    window.addEventListener("pointercancel", onUp, { passive: true });
+    hero.addEventListener("touchstart", onTouchStart, passive);
+    hero.addEventListener("touchmove", onTouchMove, passive);
+    hero.addEventListener("touchend", onTouchEnd, passive);
+    hero.addEventListener("touchcancel", onTouchEnd, passive);
+    canvas.addEventListener("touchstart", onTouchStart, passive);
+    canvas.addEventListener("touchmove", onTouchMove, passive);
+    canvas.addEventListener("touchend", onTouchEnd, passive);
+    canvas.addEventListener("touchcancel", onTouchEnd, passive);
+
+    window.addEventListener("pointermove", onPointerMove, passive);
+    window.addEventListener("pointerdown", onPointerDown, passive);
+    window.addEventListener("pointerup", onPointerUp, passive);
+    window.addEventListener("pointercancel", onPointerUp, passive);
     window.addEventListener("mouseout", onWindowOut);
     window.addEventListener("pointerenter", onEnter);
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerdown", onDown);
-      window.removeEventListener("pointerup", onUp);
-      window.removeEventListener("pointercancel", onUp);
+      hero.removeEventListener("touchstart", onTouchStart);
+      hero.removeEventListener("touchmove", onTouchMove);
+      hero.removeEventListener("touchend", onTouchEnd);
+      hero.removeEventListener("touchcancel", onTouchEnd);
+      canvas.removeEventListener("touchstart", onTouchStart);
+      canvas.removeEventListener("touchmove", onTouchMove);
+      canvas.removeEventListener("touchend", onTouchEnd);
+      canvas.removeEventListener("touchcancel", onTouchEnd);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
       window.removeEventListener("mouseout", onWindowOut);
       window.removeEventListener("pointerenter", onEnter);
     };
@@ -552,7 +583,11 @@ export default function K95Scene() {
   }, []);
 
   return (
-    <div className="relative h-[88dvh] w-full overflow-hidden bg-paper md:h-screen" style={{ touchAction: "pan-y" }}>
+    <div
+      data-hero
+      className="relative h-[88dvh] w-full overflow-hidden bg-paper md:h-screen"
+      style={{ touchAction: "pan-y" }}
+    >
       <Canvas
         camera={{ position: [0, 1.7, 13.2], fov: 40, near: 0.1, far: 200 }}
         dpr={[1, 1.6]}
