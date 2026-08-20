@@ -13,9 +13,12 @@ const H = 2.9;
 const paraVert = /* glsl */ `
   precision highp float;
   varying vec2 vUv;
+  varying vec3 vView;
   void main() {
     vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    vView = -mv.xyz;
+    gl_Position = projectionMatrix * mv;
   }
 `;
 
@@ -25,11 +28,19 @@ const paraFrag = /* glsl */ `
   uniform sampler2D uDepth;
   uniform vec2 uPointer;
   varying vec2 vUv;
+  varying vec3 vView;
   void main() {
     float d = texture2D(uDepth, vUv).r;
     vec2 uv = vUv + uPointer * (1.0 - d) * 0.038;
     uv = clamp(uv, 0.02, 0.98);
-    gl_FragColor = texture2D(uMap, uv);
+    vec3 col = texture2D(uMap, uv).rgb;
+    float fres = pow(1.0 - abs(normalize(vView).z), 2.55);
+    vec3 brick = vec3(0.77, 0.36, 0.20);
+    vec3 gold = vec3(0.90, 0.74, 0.48);
+    vec3 pearl = vec3(0.94, 0.91, 0.86);
+    vec3 rim = mix(brick, mix(gold, pearl, fres), fres);
+    col += rim * fres * 0.42;
+    gl_FragColor = vec4(col, 1.0);
   }
 `;
 
