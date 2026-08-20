@@ -252,6 +252,7 @@ function SceneContent({
 
   useEffect(() => {
     const canvas = gl.domElement;
+    canvas.style.touchAction = "pan-y";
     const EDGE = 80;
     const clampMove = (v: number) => Math.max(-90, Math.min(90, v));
     const isChrome = (e: Event) => {
@@ -259,7 +260,14 @@ function SceneContent({
       return !!t?.closest("button, a, input, label, nav");
     };
 
-    const applyPointer = (e: PointerEvent) => {
+    const touch = {
+      axis: null as null | "x" | "y",
+      lastX: 0,
+      lastY: 0,
+      active: false,
+    };
+
+    const applyMouse = (e: PointerEvent) => {
       const p = physics.current;
       const prm = paramsRef.current;
       const overUi = isChrome(e);
@@ -304,13 +312,46 @@ function SceneContent({
       }
     };
 
-    const onMove = (e: PointerEvent) => applyPointer(e);
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType === "touch") {
+        if (!touch.active) return;
+        const dx = e.clientX - touch.lastX;
+        const dy = e.clientY - touch.lastY;
+        touch.lastX = e.clientX;
+        touch.lastY = e.clientY;
+
+        if (!touch.axis) {
+          if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+          touch.axis = Math.abs(dy) >= Math.abs(dx) * 0.85 ? "y" : "x";
+        }
+        if (touch.axis === "y") return;
+
+        const p = physics.current;
+        const prm = paramsRef.current;
+        p.edgeX = 0;
+        p.edgeY = 0;
+        p.velY += clampMove(dx) * prm.dragImpulse * 1.15;
+        p.lastMoveAt = performance.now();
+        p.dragging = true;
+        return;
+      }
+      applyMouse(e);
+    };
 
     const onDown = (e: PointerEvent) => {
       if (e.button !== 0) return;
       if (isChrome(e)) return;
+
+      if (e.pointerType === "touch") {
+        touch.active = true;
+        touch.axis = null;
+        touch.lastX = e.clientX;
+        touch.lastY = e.clientY;
+        physics.current.dragging = false;
+        return;
+      }
+
       if (e.target !== canvas && !canvas.contains(e.target as Node)) {
-        // still allow drag on the hero overlay empty space
         const overlay = (e.target as HTMLElement)?.closest?.("[data-hero]");
         if (!overlay) return;
       }
@@ -324,7 +365,10 @@ function SceneContent({
     };
 
     const onUp = (e: PointerEvent) => {
+      touch.active = false;
+      touch.axis = null;
       physics.current.dragging = false;
+      if (e.pointerType === "touch") return;
       try {
         canvas.releasePointerCapture(e.pointerId);
       } catch {
@@ -350,9 +394,9 @@ function SceneContent({
     };
 
     window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerdown", onDown);
-    window.addEventListener("pointerup", onUp);
-    window.addEventListener("pointercancel", onUp);
+    window.addEventListener("pointerdown", onDown, { passive: true });
+    window.addEventListener("pointerup", onUp, { passive: true });
+    window.addEventListener("pointercancel", onUp, { passive: true });
     window.addEventListener("mouseout", onWindowOut);
     window.addEventListener("pointerenter", onEnter);
 
@@ -508,12 +552,15 @@ export default function K95Scene() {
   }, []);
 
   return (
-    <div className="relative h-screen w-full overflow-hidden bg-paper" style={{ touchAction: "none" }}>
+    <div className="relative h-[88dvh] w-full overflow-hidden bg-paper md:h-screen" style={{ touchAction: "pan-y" }}>
       <Canvas
         camera={{ position: [0, 1.7, 13.2], fov: 40, near: 0.1, far: 200 }}
         dpr={[1, 1.6]}
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-        style={{ cursor: "grab" }}
+        style={{ cursor: "grab", touchAction: "pan-y" }}
+        onCreated={({ gl }) => {
+          gl.domElement.style.touchAction = "pan-y";
+        }}
       >
         <color attach="background" args={[PAPER]} />
         <fog attach="fog" args={[PAPER_FOG, 14, 48]} />
