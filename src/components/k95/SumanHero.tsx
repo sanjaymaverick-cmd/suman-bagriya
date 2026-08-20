@@ -1,6 +1,6 @@
 import { useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { ContactShadows, Environment, MeshTransmissionMaterial, useTexture } from "@react-three/drei";
+import { ContactShadows, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
 const COLOR = "/photos/suman-face.jpg";
@@ -83,7 +83,7 @@ const pointsFrag = /* glsl */ `
     vec2 p = gl_PointCoord - 0.5;
     if (dot(p, p) > 0.25) discard;
     vec3 col = texture2D(uMap, vUv).rgb;
-    gl_FragColor = vec4(col, 0.42 * vDepth);
+    gl_FragColor = vec4(col, 0.22 * vDepth);
   }
 `;
 
@@ -209,18 +209,64 @@ function HoloPoints() {
   );
 }
 
+const glassVert = /* glsl */ `
+  varying vec3 vN;
+  varying vec3 vV;
+  void main() {
+    vec4 w = modelMatrix * vec4(position, 1.0);
+    vN = normalize(mat3(modelMatrix) * normal);
+    vV = cameraPosition - w.xyz;
+    gl_Position = projectionMatrix * viewMatrix * w;
+  }
+`;
+
+const glassFrag = /* glsl */ `
+  varying vec3 vN;
+  varying vec3 vV;
+  void main() {
+    float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 2.4);
+    vec3 tint = vec3(0.96, 0.93, 0.89);
+    vec3 edge = vec3(0.82, 0.55, 0.40);
+    gl_FragColor = vec4(mix(tint, edge, f), 0.06 + f * 0.42);
+  }
+`;
+
+function GlassPane({
+  position,
+  rotation,
+  args,
+}: {
+  position: [number, number, number];
+  rotation?: [number, number, number];
+  args: [number, number];
+}) {
+  return (
+    <mesh position={position} rotation={rotation} renderOrder={2}>
+      <planeGeometry args={args} />
+      <shaderMaterial
+        vertexShader={glassVert}
+        fragmentShader={glassFrag}
+        transparent
+        depthWrite={false}
+        side={THREE.DoubleSide}
+        toneMapped={false}
+      />
+    </mesh>
+  );
+}
+
 function GlassVitrine() {
   const cw = W + 0.28;
   const ch = H + 0.28;
-  const cd = 0.64;
-  const bar = 0.032;
+  const cd = 0.58;
+  const bar = 0.028;
   const hw = cw / 2;
   const hh = ch / 2;
   const hd = cd / 2;
   const metal = {
     color: "#6a3f2c",
-    metalness: 0.84,
-    roughness: 0.26,
+    metalness: 0.72,
+    roughness: 0.32,
   } as const;
   const bars: { p: [number, number, number]; s: [number, number, number] }[] = [
     { p: [0, hh, hd], s: [cw, bar, bar] },
@@ -239,49 +285,28 @@ function GlassVitrine() {
 
   return (
     <group>
-      <mesh position={[0, -hh - 0.2, 0]} castShadow>
+      <mesh position={[0, -hh - 0.2, 0]}>
         <boxGeometry args={[cw + 0.22, 0.16, cd + 0.28]} />
         <meshStandardMaterial color="#1f1915" roughness={0.55} metalness={0.18} />
       </mesh>
       <mesh position={[0, -hh - 0.1, 0]}>
         <boxGeometry args={[cw + 0.04, 0.05, cd + 0.08]} />
-        <meshStandardMaterial color="#c45c32" roughness={0.32} metalness={0.62} />
+        <meshStandardMaterial color="#c45c32" roughness={0.32} metalness={0.55} />
       </mesh>
-      <mesh>
-        <boxGeometry args={[cw, ch, cd]} />
-        <MeshTransmissionMaterial
-          samples={4}
-          resolution={256}
-          thickness={0.35}
-          chromaticAberration={0.018}
-          anisotropy={0.08}
-          distortion={0.04}
-          distortionScale={0.12}
-          temporalDistortion={0}
-          roughness={0.06}
-          transmission={1}
-          ior={1.46}
-          color="#f4efe8"
-          toneMapped={false}
-        />
-      </mesh>
+      <GlassPane position={[0, 0, hd]} args={[cw, ch]} />
+      <GlassPane position={[0, 0, -hd]} args={[cw, ch]} />
+      <GlassPane position={[hw, 0, 0]} rotation={[0, Math.PI / 2, 0]} args={[cd, ch]} />
+      <GlassPane position={[-hw, 0, 0]} rotation={[0, Math.PI / 2, 0]} args={[cd, ch]} />
+      <GlassPane position={[0, hh, 0]} rotation={[Math.PI / 2, 0, 0]} args={[cw, cd]} />
+      <GlassPane position={[0, -hh, 0]} rotation={[Math.PI / 2, 0, 0]} args={[cw, cd]} />
       {bars.map((b, i) => (
         <mesh key={i} position={b.p}>
           <boxGeometry args={b.s} />
           <meshStandardMaterial {...metal} />
         </mesh>
       ))}
-      <pointLight position={[0.4, 1.2, 1.8]} intensity={1.35} color="#fff3e4" distance={8} />
-      <pointLight position={[-0.9, 0.4, 1.2]} intensity={0.45} color="#c45c32" distance={6} />
-      <spotLight
-        position={[0, 2.4, 1.6]}
-        angle={0.38}
-        penumbra={0.7}
-        intensity={1.1}
-        color="#fff7ee"
-        distance={10}
-        castShadow={false}
-      />
+      <pointLight position={[0.4, 1.2, 1.8]} intensity={1.2} color="#fff3e4" distance={8} />
+      <pointLight position={[-0.9, 0.4, 1.2]} intensity={0.4} color="#c45c32" distance={6} />
     </group>
   );
 }
@@ -315,13 +340,12 @@ export default function SumanHero({
 
   return (
     <group ref={group} position={[0, 0.92, 0]}>
-      <Environment preset="studio" environmentIntensity={0.55} />
       <GlassVitrine />
-      <group position={[0, 0.02, -0.06]}>
+      <group position={[0, 0.02, 0]}>
         <PortraitVolume active={active} onSelect={onSelect} />
         <HoloPoints />
       </group>
-      <ContactShadows position={[0, -H / 2 - 0.3, 0]} opacity={0.38} scale={7} blur={2.6} far={4} color="#2a211b" />
+      <ContactShadows position={[0, -H / 2 - 0.3, 0]} opacity={0.32} scale={7} blur={2.6} far={4} color="#2a211b" />
     </group>
   );
 }
