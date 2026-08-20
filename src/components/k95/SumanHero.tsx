@@ -1,6 +1,6 @@
 import { useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
-import { ContactShadows, Environment, useTexture } from "@react-three/drei";
+import { ContactShadows, Environment, MeshTransmissionMaterial, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
 const COLOR = "/photos/suman-face.jpg";
@@ -210,52 +210,79 @@ function HoloPoints() {
 }
 
 function GlassVitrine() {
+  const cw = W + 0.28;
+  const ch = H + 0.28;
+  const cd = 0.64;
+  const bar = 0.032;
+  const hw = cw / 2;
+  const hh = ch / 2;
+  const hd = cd / 2;
+  const metal = {
+    color: "#6a3f2c",
+    metalness: 0.84,
+    roughness: 0.26,
+  } as const;
+  const bars: { p: [number, number, number]; s: [number, number, number] }[] = [
+    { p: [0, hh, hd], s: [cw, bar, bar] },
+    { p: [0, -hh, hd], s: [cw, bar, bar] },
+    { p: [hw, 0, hd], s: [bar, ch, bar] },
+    { p: [-hw, 0, hd], s: [bar, ch, bar] },
+    { p: [0, hh, -hd], s: [cw, bar, bar] },
+    { p: [0, -hh, -hd], s: [cw, bar, bar] },
+    { p: [hw, 0, -hd], s: [bar, ch, bar] },
+    { p: [-hw, 0, -hd], s: [bar, ch, bar] },
+    { p: [hw, hh, 0], s: [bar, bar, cd] },
+    { p: [-hw, hh, 0], s: [bar, bar, cd] },
+    { p: [hw, -hh, 0], s: [bar, bar, cd] },
+    { p: [-hw, -hh, 0], s: [bar, bar, cd] },
+  ];
+
   return (
     <group>
-      <mesh position={[0, 0, -0.11]}>
-        <planeGeometry args={[W + 0.08, H + 0.08]} />
-        <meshPhysicalMaterial
-          color="#f2ece4"
-          roughness={0.35}
-          metalness={0.04}
-          transparent
-          opacity={0.38}
-        />
+      <mesh position={[0, -hh - 0.2, 0]} castShadow>
+        <boxGeometry args={[cw + 0.22, 0.16, cd + 0.28]} />
+        <meshStandardMaterial color="#1f1915" roughness={0.55} metalness={0.18} />
+      </mesh>
+      <mesh position={[0, -hh - 0.1, 0]}>
+        <boxGeometry args={[cw + 0.04, 0.05, cd + 0.08]} />
+        <meshStandardMaterial color="#c45c32" roughness={0.32} metalness={0.62} />
       </mesh>
       <mesh>
-        <boxGeometry args={[W + 0.1, H + 0.1, 0.16]} />
-        <meshPhysicalMaterial
-          color="#f7f1ea"
-          transmission={0.72}
-          thickness={0.55}
-          roughness={0.12}
-          metalness={0.02}
-          transparent
-          opacity={0.22}
-          side={THREE.DoubleSide}
-          ior={1.4}
+        <boxGeometry args={[cw, ch, cd]} />
+        <MeshTransmissionMaterial
+          samples={4}
+          resolution={256}
+          thickness={0.35}
+          chromaticAberration={0.018}
+          anisotropy={0.08}
+          distortion={0.04}
+          distortionScale={0.12}
+          temporalDistortion={0}
+          roughness={0.06}
+          transmission={1}
+          ior={1.46}
+          color="#f4efe8"
+          toneMapped={false}
         />
       </mesh>
-      <mesh position={[0, 0, 0.085]}>
-        <planeGeometry args={[W + 0.14, H + 0.14]} />
-        <meshBasicMaterial color="#c45c32" transparent opacity={0.07} />
-      </mesh>
-      <pointLight position={[0.35, 1.1, 2.1]} intensity={1.15} color="#fff3e4" distance={7} />
-      <pointLight position={[-0.8, 0.2, 1.4]} intensity={0.35} color="#c45c32" distance={5} />
+      {bars.map((b, i) => (
+        <mesh key={i} position={b.p}>
+          <boxGeometry args={b.s} />
+          <meshStandardMaterial {...metal} />
+        </mesh>
+      ))}
+      <pointLight position={[0.4, 1.2, 1.8]} intensity={1.35} color="#fff3e4" distance={8} />
+      <pointLight position={[-0.9, 0.4, 1.2]} intensity={0.45} color="#c45c32" distance={6} />
+      <spotLight
+        position={[0, 2.4, 1.6]}
+        angle={0.38}
+        penumbra={0.7}
+        intensity={1.1}
+        color="#fff7ee"
+        distance={10}
+        castShadow={false}
+      />
     </group>
-  );
-}
-
-function FloorGhost() {
-  const map = useTexture(COLOR);
-  useMemo(() => {
-    map.colorSpace = THREE.SRGBColorSpace;
-  }, [map]);
-  return (
-    <mesh rotation={[-Math.PI / 2.08, 0, 0]} position={[0, -H / 2 - 0.04, 0.02]} scale={[1, 0.42, 1]}>
-      <planeGeometry args={[W, H]} />
-      <meshBasicMaterial map={map} transparent opacity={0.16} toneMapped={false} />
-    </mesh>
   );
 }
 
@@ -274,7 +301,7 @@ export default function SumanHero({
   useFrame((state) => {
     if (!group.current) return;
     const t = state.clock.elapsedTime;
-    group.current.position.y = 0.75 + Math.sin(t * 0.32) * 0.05;
+    group.current.position.y = 0.92 + Math.sin(t * 0.32) * 0.04;
     const target = active ? 1.12 : dimmed ? 0.92 : 1;
     scale.current += (target - scale.current) * 0.1;
     group.current.scale.setScalar(scale.current);
@@ -287,13 +314,14 @@ export default function SumanHero({
   });
 
   return (
-    <group ref={group} position={[0, 0.75, 0]}>
-      <Environment preset="studio" environmentIntensity={0.28} />
+    <group ref={group} position={[0, 0.92, 0]}>
+      <Environment preset="studio" environmentIntensity={0.55} />
       <GlassVitrine />
-      <PortraitVolume active={active} onSelect={onSelect} />
-      <HoloPoints />
-      <FloorGhost />
-      <ContactShadows position={[0, -H / 2 - 0.06, 0]} opacity={0.28} scale={6} blur={2.4} far={3} color="#2a211b" />
+      <group position={[0, 0.02, -0.06]}>
+        <PortraitVolume active={active} onSelect={onSelect} />
+        <HoloPoints />
+      </group>
+      <ContactShadows position={[0, -H / 2 - 0.3, 0]} opacity={0.38} scale={7} blur={2.6} far={4} color="#2a211b" />
     </group>
   );
 }
