@@ -123,7 +123,7 @@ function Portrait({
       </mesh>
       <mesh renderOrder={0}>
         <boxGeometry args={[W - 0.02, H - 0.02, 0.02]} />
-        <meshBasicMaterial color="#f0ebe3" toneMapped={false} />
+        <meshBasicMaterial color="#0c0b0a" toneMapped={false} />
       </mesh>
     </group>
   );
@@ -138,14 +138,14 @@ function GlassVitrine() {
   const hh = ch / 2;
   const hd = cd / 2;
   const glass = {
-    color: "#f4efe8",
+    color: "#1a1816",
     transparent: true,
-    opacity: 0.09,
+    opacity: 0.045,
     depthWrite: false,
     side: THREE.DoubleSide,
     toneMapped: false,
   } as const;
-  const metal = { color: "#6a3f2c", toneMapped: false } as const;
+  const metal = { color: "#111110", toneMapped: false } as const;
   const bars: { p: [number, number, number]; s: [number, number, number] }[] = [
     { p: [0, hh, hd], s: [cw, bar, bar] },
     { p: [0, -hh, hd], s: [cw, bar, bar] },
@@ -165,11 +165,11 @@ function GlassVitrine() {
     <group>
       <mesh position={[0, -hh - 0.18, 0]}>
         <boxGeometry args={[cw + 0.2, 0.14, cd + 0.24]} />
-        <meshBasicMaterial color="#1f1915" toneMapped={false} />
+        <meshBasicMaterial color="#0a0908" toneMapped={false} />
       </mesh>
       <mesh position={[0, -hh - 0.09, 0]}>
         <boxGeometry args={[cw + 0.02, 0.045, cd + 0.06]} />
-        <meshBasicMaterial color="#c45c32" toneMapped={false} />
+        <meshBasicMaterial color="#161412" toneMapped={false} />
       </mesh>
       <mesh position={[0, 0, hd]} renderOrder={2}>
         <planeGeometry args={[cw, ch]} />
