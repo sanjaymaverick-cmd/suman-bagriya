@@ -8,6 +8,92 @@ const COLOR = "/photos/suman-face.jpg";
 const W = 2.28;
 const H = 2.9;
 
+const holoVert = /* glsl */ `
+  precision highp float;
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const holoFrag = /* glsl */ `
+  precision highp float;
+  varying vec2 vUv;
+  uniform float uTime;
+  void main() {
+    float lines = 0.5 + 0.5 * sin(vUv.y * 88.0 + uTime * 3.2);
+    float sweep = abs(vUv.y - fract(uTime * 0.14));
+    float band = 1.0 - smoothstep(0.0, 0.07, sweep);
+    float flicker = 0.88 + 0.12 * sin(uTime * 9.0);
+    vec3 brick = vec3(0.77, 0.36, 0.20);
+    vec3 gold = vec3(0.90, 0.74, 0.48);
+    vec3 pearl = vec3(0.94, 0.91, 0.86);
+    vec3 col = mix(brick, gold, lines);
+    col = mix(col, pearl, band);
+    float alpha = (0.06 + lines * 0.09 + band * 0.32) * flicker;
+    gl_FragColor = vec4(col, alpha);
+  }
+`;
+
+function HoloFilm({
+  position,
+  rotation,
+}: {
+  position: [number, number, number];
+  rotation?: [number, number, number];
+}) {
+  const uniforms = useRef({ uTime: { value: 0 } });
+  useFrame(({ clock }) => {
+    uniforms.current.uTime.value = clock.elapsedTime;
+  });
+  return (
+    <mesh position={position} rotation={rotation} renderOrder={3}>
+      <planeGeometry args={[W, H]} />
+      <shaderMaterial
+        uniforms={uniforms.current}
+        vertexShader={holoVert}
+        fragmentShader={holoFrag}
+        transparent
+        depthWrite={false}
+        toneMapped={false}
+      />
+    </mesh>
+  );
+}
+
+function ScanBar({ z, rotY = 0 }: { z: number; rotY?: number }) {
+  const ref = useRef<THREE.Mesh>(null);
+  useFrame(({ clock }) => {
+    if (!ref.current) return;
+    const t = (clock.elapsedTime * 0.2) % 1;
+    ref.current.position.y = -H / 2 + t * H;
+  });
+  return (
+    <mesh ref={ref} position={[0, 0, z]} rotation={[0, rotY, 0]} renderOrder={4}>
+      <planeGeometry args={[W * 0.98, 0.05]} />
+      <meshBasicMaterial color="#e8c9a0" transparent opacity={0.4} depthWrite={false} toneMapped={false} />
+    </mesh>
+  );
+}
+
+function GhostPrint({ map, sign }: { map: THREE.Texture; sign: 1 | -1 }) {
+  const ref = useRef<THREE.Mesh>(null);
+  useFrame(({ clock }) => {
+    if (!ref.current) return;
+    const t = clock.elapsedTime;
+    ref.current.position.z = sign * (0.05 + Math.sin(t * 1.15) * 0.025);
+    const mat = ref.current.material as THREE.MeshBasicMaterial;
+    mat.opacity = 0.11 + Math.sin(t * 1.15) * 0.05;
+  });
+  return (
+    <mesh ref={ref} rotation={[0, sign < 0 ? Math.PI : 0, 0]} renderOrder={2}>
+      <planeGeometry args={[W, H]} />
+      <meshBasicMaterial map={map} transparent opacity={0.12} depthWrite={false} toneMapped={false} />
+    </mesh>
+  );
+}
+
 function Portrait({
   onSelect,
 }: {
@@ -61,6 +147,12 @@ function Portrait({
         <boxGeometry args={[W - 0.02, H - 0.02, 0.02]} />
         <meshBasicMaterial color="#f0ebe3" toneMapped={false} />
       </mesh>
+      <GhostPrint map={colorMap} sign={1} />
+      <GhostPrint map={colorMap} sign={-1} />
+      <HoloFilm position={[0, 0, 0.03]} />
+      <HoloFilm position={[0, 0, -0.03]} rotation={[0, Math.PI, 0]} />
+      <ScanBar z={0.04} />
+      <ScanBar z={-0.04} rotY={Math.PI} />
     </group>
   );
 }
