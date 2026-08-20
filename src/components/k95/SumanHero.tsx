@@ -5,9 +5,33 @@ import * as THREE from "three";
 import { isCoarsePointer, useManagedTexture } from "@/lib/texture-memory";
 
 const COLOR = "/photos/suman-center.png";
+const DEPTH = "/photos/suman-center-depth.jpg";
 
 const W = 2.28;
 const H = 2.9;
+
+const paraVert = /* glsl */ `
+  precision highp float;
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const paraFrag = /* glsl */ `
+  precision highp float;
+  uniform sampler2D uMap;
+  uniform sampler2D uDepth;
+  uniform vec2 uPointer;
+  varying vec2 vUv;
+  void main() {
+    float d = texture2D(uDepth, vUv).r;
+    vec2 uv = vUv + uPointer * (1.0 - d) * 0.038;
+    uv = clamp(uv, 0.02, 0.98);
+    gl_FragColor = texture2D(uMap, uv);
+  }
+`;
 
 function Portrait({
   onSelect,
@@ -16,7 +40,19 @@ function Portrait({
   onSelect?: (url: string) => void;
 }) {
   const colorMap = useManagedTexture(COLOR, { hero: true });
+  const depthMap = useManagedTexture(DEPTH, { hero: true });
   const down = useRef({ x: 0, y: 0, t: 0 });
+  const uniforms = useRef({
+    uMap: { value: null as THREE.Texture | null },
+    uDepth: { value: null as THREE.Texture | null },
+    uPointer: { value: new THREE.Vector2() },
+  });
+
+  useFrame((state) => {
+    uniforms.current.uPointer.value.lerp(state.pointer, 0.1);
+    if (colorMap) uniforms.current.uMap.value = colorMap;
+    if (depthMap) uniforms.current.uDepth.value = depthMap;
+  });
 
   const tap = {
     onPointerOver: () => {
@@ -42,15 +78,37 @@ function Portrait({
 
   if (!colorMap) return null;
 
+  const mat = depthMap ? (
+    <shaderMaterial
+      uniforms={uniforms.current}
+      vertexShader={paraVert}
+      fragmentShader={paraFrag}
+      toneMapped={false}
+      side={THREE.FrontSide}
+    />
+  ) : (
+    <meshBasicMaterial map={colorMap} toneMapped={false} side={THREE.FrontSide} />
+  );
+
   return (
     <group>
       <mesh position={[0, 0, 0.012]} renderOrder={1} {...tap}>
         <planeGeometry args={[W, H]} />
-        <meshBasicMaterial map={colorMap} toneMapped={false} side={THREE.FrontSide} />
+        {mat}
       </mesh>
       <mesh position={[0, 0, -0.012]} rotation={[0, Math.PI, 0]} renderOrder={1} {...tap}>
         <planeGeometry args={[W, H]} />
-        <meshBasicMaterial map={colorMap} toneMapped={false} side={THREE.FrontSide} />
+        {depthMap ? (
+          <shaderMaterial
+            uniforms={uniforms.current}
+            vertexShader={paraVert}
+            fragmentShader={paraFrag}
+            toneMapped={false}
+            side={THREE.FrontSide}
+          />
+        ) : (
+          <meshBasicMaterial map={colorMap} toneMapped={false} side={THREE.FrontSide} />
+        )}
       </mesh>
       <mesh renderOrder={0}>
         <boxGeometry args={[W - 0.02, H - 0.02, 0.02]} />
