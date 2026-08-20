@@ -264,11 +264,22 @@ function SceneContent({
       return !!t?.closest("button, a, input, label, nav");
     };
 
+    // One finger, one decision. First real move locks the gesture:
+    //   vertical  → "scroll"  (page moves, spiral ignored)
+    //   horizontal → "spin"   (spiral orbits, page ignored)
+    // Vertical wins near-diagonals. Listeners stay passive — no preventDefault.
+    const AXIS_SLACK_PX = 6;
+    const VERTICAL_WINS_AT = 0.85;
     const touch = {
-      axis: null as null | "x" | "y",
+      axis: null as null | "scroll" | "spin",
       lastX: 0,
       lastY: 0,
       active: false,
+    };
+
+    const lockAxis = (dx: number, dy: number): "scroll" | "spin" | null => {
+      if (Math.abs(dx) < AXIS_SLACK_PX && Math.abs(dy) < AXIS_SLACK_PX) return null;
+      return Math.abs(dy) >= Math.abs(dx) * VERTICAL_WINS_AT ? "scroll" : "spin";
     };
 
     const applyMouse = (e: PointerEvent) => {
@@ -372,11 +383,14 @@ function SceneContent({
       touch.lastY = t.clientY;
 
       if (!touch.axis) {
-        if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
-        touch.axis = Math.abs(dy) >= Math.abs(dx) * 0.85 ? "y" : "x";
+        touch.axis = lockAxis(dx, dy);
+        if (!touch.axis) return;
       }
-      if (touch.axis === "y") return;
 
+      // Scroll gesture: do nothing. Browser owns the page via touch-action: pan-y.
+      if (touch.axis === "scroll") return;
+
+      // Spin gesture: impulse on orbit only. Never tilt from a finger.
       const p = physics.current;
       p.edgeX = 0;
       p.edgeY = 0;
