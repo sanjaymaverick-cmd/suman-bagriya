@@ -670,7 +670,7 @@ export default function K95Scene() {
               rel="noopener noreferrer"
               className="rounded-[5px] bg-brick px-4 py-[10px] text-[11px] tracking-[0.14em] text-white hover:bg-brick-dark"
             >
-              RESET
+              START
             </a>
           </nav>
 
@@ -704,28 +704,37 @@ export default function K95Scene() {
           </div>
         )}
 
-        <div className="absolute right-0 bottom-0 left-0 flex flex-col gap-3 px-5 py-4 font-mono text-[11px] tracking-[0.14em] text-ink/50 sm:px-10 sm:py-5">
-          <div className="hidden font-medium tracking-[0.12em] sm:block">
-            UNICITY SENIOR DIRECTOR · INDIA
-          </div>
-          <div className="pointer-events-auto flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-[10px] tracking-[0.14em] text-ink/55 sm:hidden">UNICITY SENIOR DIRECTOR · INDIA</p>
-            <div className="flex w-full gap-2 sm:w-auto">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-paper via-paper/85 to-transparent pt-28">
+          <div className="flex flex-col gap-5 px-5 pb-5 sm:flex-row sm:items-end sm:justify-between sm:px-10 sm:pb-8">
+            <div className="max-w-[34rem]">
+              <p className="font-mono text-[10px] tracking-[0.18em] text-ink/50 sm:text-[11px]">
+                UNICITY SENIOR DIRECTOR · INDIA
+              </p>
+              <p className="font-display mt-2 text-[clamp(34px,6vw,64px)] leading-[0.92] text-ink">
+                No diet.
+                <br />
+                A metabolic reset.
+              </p>
+              <p className="font-neue mt-3 max-w-[32ch] text-[14px] leading-[1.35] text-ink/70 sm:text-[16px]">
+                Unimate in the morning. Balance before meals. Ninety days with Suman.
+              </p>
+            </div>
+            <div className="pointer-events-auto flex w-full gap-2 sm:w-auto sm:shrink-0">
               <a
                 href={waReset}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 rounded-[5px] bg-brick px-4 py-[14px] text-center text-[11px] tracking-[0.12em] text-white hover:bg-brick-dark sm:flex-none sm:px-5"
+                className="flex-1 rounded-[5px] bg-brick px-4 py-[14px] text-center font-mono text-[11px] tracking-[0.12em] text-white hover:bg-brick-dark sm:flex-none sm:px-5"
               >
-                90-DAY RESET
+                START THE RESET
               </a>
               <a
                 href={waEarn}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 rounded-[5px] border border-black/15 bg-paper px-4 py-[14px] text-center text-[11px] tracking-[0.12em] text-ink hover:border-brick hover:text-brick sm:flex-none sm:px-5"
+                className="flex-1 rounded-[5px] border border-black/15 bg-paper/90 px-4 py-[14px] text-center font-mono text-[11px] tracking-[0.12em] text-ink hover:border-brick hover:text-brick sm:flex-none sm:px-5"
               >
-                EARN WITH ME
+                BUILD WITH ME
               </a>
             </div>
           </div>
