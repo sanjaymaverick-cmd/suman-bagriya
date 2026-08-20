@@ -11,41 +11,62 @@ const H = 2.9;
 const holoVert = /* glsl */ `
   precision highp float;
   varying vec2 vUv;
+  varying vec3 vView;
   void main() {
     vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vec4 mv = modelViewMatrix * vec4(position, 1.0);
+    vView = -mv.xyz;
+    gl_Position = projectionMatrix * mv;
   }
 `;
 
 const holoFrag = /* glsl */ `
   precision highp float;
   varying vec2 vUv;
+  varying vec3 vView;
+  uniform sampler2D uMap;
+  uniform vec2 uPointer;
   uniform float uTime;
   void main() {
-    float lines = 0.5 + 0.5 * sin(vUv.y * 88.0 + uTime * 3.2);
-    float sweep = abs(vUv.y - fract(uTime * 0.14));
-    float band = 1.0 - smoothstep(0.0, 0.07, sweep);
-    float flicker = 0.88 + 0.12 * sin(uTime * 9.0);
+    float pulse = 0.005 + 0.004 * sin(uTime * 1.35);
+    vec2 off = uPointer * 0.014 + vec2(pulse, -pulse * 0.65);
+    vec3 base = texture2D(uMap, vUv).rgb;
+    float r = texture2D(uMap, clamp(vUv + off, 0.0, 1.0)).r;
+    float g = texture2D(uMap, vUv).g;
+    float b = texture2D(uMap, clamp(vUv - off, 0.0, 1.0)).b;
+    vec3 peel = vec3(r, g, b);
+    vec3 fringe = abs(peel - base) * 2.4;
+    float fres = pow(1.0 - abs(normalize(vView).z), 2.15);
     vec3 brick = vec3(0.77, 0.36, 0.20);
     vec3 gold = vec3(0.90, 0.74, 0.48);
     vec3 pearl = vec3(0.94, 0.91, 0.86);
-    vec3 col = mix(brick, gold, lines);
-    col = mix(col, pearl, band);
-    float alpha = (0.06 + lines * 0.09 + band * 0.32) * flicker;
-    gl_FragColor = vec4(col, alpha);
+    vec3 rim = mix(brick, mix(gold, pearl, fres), fres);
+    vec3 col = peel * 0.35 + fringe + rim * fres;
+    float scan = 0.5 + 0.5 * sin(vUv.y * 64.0 + uTime * 2.4);
+    col += gold * scan * 0.06 * fres;
+    float alpha = 0.16 + length(fringe) * 0.55 + fres * 0.42;
+    gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.62));
   }
 `;
 
 function HoloFilm({
+  map,
   position,
   rotation,
 }: {
+  map: THREE.Texture;
   position: [number, number, number];
   rotation?: [number, number, number];
 }) {
-  const uniforms = useRef({ uTime: { value: 0 } });
-  useFrame(({ clock }) => {
-    uniforms.current.uTime.value = clock.elapsedTime;
+  const uniforms = useRef({
+    uMap: { value: map },
+    uPointer: { value: new THREE.Vector2() },
+    uTime: { value: 0 },
+  });
+  useFrame((state) => {
+    uniforms.current.uTime.value = state.clock.elapsedTime;
+    uniforms.current.uPointer.value.lerp(state.pointer, 0.12);
+    uniforms.current.uMap.value = map;
   });
   return (
     <mesh position={position} rotation={rotation} renderOrder={3}>
@@ -149,8 +170,8 @@ function Portrait({
       </mesh>
       <GhostPrint map={colorMap} sign={1} />
       <GhostPrint map={colorMap} sign={-1} />
-      <HoloFilm position={[0, 0, 0.03]} />
-      <HoloFilm position={[0, 0, -0.03]} rotation={[0, Math.PI, 0]} />
+      <HoloFilm map={colorMap} position={[0, 0, 0.03]} />
+      <HoloFilm map={colorMap} position={[0, 0, -0.03]} rotation={[0, Math.PI, 0]} />
       <ScanBar z={0.04} />
       <ScanBar z={-0.04} rotY={Math.PI} />
     </group>
