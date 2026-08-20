@@ -35,7 +35,7 @@ class TextureMemory {
   private map = new Map<string, Entry>();
   private inflight = new Map<string, Promise<THREE.Texture>>();
 
-  acquire(url: string) {
+  acquire(url: string, opts?: { hero?: boolean }) {
     const hit = this.map.get(url);
     if (hit) {
       hit.refs += 1;
@@ -53,12 +53,12 @@ class TextureMemory {
         return tex;
       });
     }
-    const job = this.load(url);
+    const job = this.load(url, opts);
     this.inflight.set(url, job);
     return job;
   }
 
-  private async load(url: string) {
+  private async load(url: string, opts?: { hero?: boolean }) {
     const img = await new Promise<HTMLImageElement>((resolve, reject) => {
       const i = new Image();
       i.crossOrigin = "anonymous";
@@ -66,14 +66,16 @@ class TextureMemory {
       i.onerror = () => reject(new Error(`texture ${url}`));
       i.src = url;
     });
-    const { maxDim, anisotropy, maxTextures } = gpuBudget();
-    this.evict(maxTextures - 1);
+    const budget = gpuBudget();
+    const maxDim = opts?.hero ? 2048 : budget.maxDim;
+    const anisotropy = opts?.hero ? 8 : budget.anisotropy;
+    this.evict(budget.maxTextures - 1);
     const canvas = downscale(img, img.naturalWidth || img.width, img.naturalHeight || img.height, maxDim);
     const tex = new THREE.Texture(canvas);
     tex.colorSpace = THREE.SRGBColorSpace;
-    tex.minFilter = THREE.LinearFilter;
+    tex.generateMipmaps = !!opts?.hero;
+    tex.minFilter = opts?.hero ? THREE.LinearMipmapLinearFilter : THREE.LinearFilter;
     tex.magFilter = THREE.LinearFilter;
-    tex.generateMipmaps = false;
     tex.anisotropy = anisotropy;
     tex.wrapS = THREE.ClampToEdgeWrapping;
     tex.wrapT = THREE.ClampToEdgeWrapping;
@@ -109,17 +111,18 @@ class TextureMemory {
 
 export const textureMemory = new TextureMemory();
 
-export function useManagedTexture(url: string) {
+export function useManagedTexture(url: string, opts?: { hero?: boolean }) {
   const [tex, setTex] = useState<THREE.Texture | null>(null);
+  const hero = !!opts?.hero;
   useEffect(() => {
     let live = true;
-    textureMemory.acquire(url).then((t) => {
+    textureMemory.acquire(url, { hero }).then((t) => {
       if (live) setTex(t);
     });
     return () => {
       live = false;
       textureMemory.release(url);
     };
-  }, [url]);
+  }, [url, hero]);
   return tex;
 }

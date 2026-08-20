@@ -20,7 +20,7 @@ import { waEarn, waReset } from "@/lib/links";
 import PhotoZoom from "@/components/k95/PhotoZoom";
 import SumanHero from "@/components/k95/SumanHero";
 
-const CENTER = "/photos/suman-face.jpg";
+const CENTER = "/photos/suman-center.png";
 const PAPER = "#eeece9";
 const PAPER_FOG = "#e4e0db";
 const INK = "#1a1816";
