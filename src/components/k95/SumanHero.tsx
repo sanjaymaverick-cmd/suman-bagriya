@@ -1,93 +1,14 @@
 import { useMemo, useRef } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { ContactShadows, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
 const COLOR = "/photos/suman-face.jpg";
-const DEPTH = "/photos/suman-depth.jpg";
 
 const W = 2.28;
 const H = 2.9;
 
-const portraitVert = /* glsl */ `
-  uniform sampler2D uDepth;
-  uniform vec2 uPointer;
-  uniform float uTime;
-  uniform float uAmp;
-  varying vec2 vUv;
-  varying float vDepth;
-  varying vec3 vView;
-  void main() {
-    vUv = uv;
-    float d = texture2D(uDepth, uv).r;
-    vDepth = d;
-    vec3 pos = position;
-    pos.z += (d - 0.22) * uAmp;
-    pos.x += uPointer.x * d * 0.12;
-    pos.y += uPointer.y * d * 0.07;
-    pos.y += sin(uTime * 0.7) * 0.018;
-    vec4 mv = modelViewMatrix * vec4(pos, 1.0);
-    vView = -mv.xyz;
-    gl_Position = projectionMatrix * mv;
-  }
-`;
-
-const portraitFrag = /* glsl */ `
-  uniform sampler2D uMap;
-  uniform sampler2D uDepth;
-  uniform vec2 uPointer;
-  uniform float uTime;
-  varying vec2 vUv;
-  varying float vDepth;
-  varying vec3 vView;
-  void main() {
-    vec2 uv = vUv + uPointer * (1.0 - vDepth) * 0.045;
-    uv = clamp(uv, 0.0, 1.0);
-    vec4 col = texture2D(uMap, uv);
-    float fres = pow(1.0 - abs(normalize(vView).z), 2.4);
-    float wave = 0.5 + 0.5 * sin(uTime * 0.6 + vUv.y * 9.0 + vUv.x * 3.0);
-    vec3 brick = vec3(0.77, 0.36, 0.20);
-    vec3 gold = vec3(0.86, 0.74, 0.52);
-    vec3 holo = mix(brick, gold, wave);
-    col.rgb += fres * holo * 0.42;
-    col.rgb += vDepth * 0.04;
-    gl_FragColor = vec4(col.rgb, 1.0);
-  }
-`;
-
-const pointsVert = /* glsl */ `
-  uniform sampler2D uDepth;
-  uniform float uTime;
-  uniform float uSize;
-  attribute vec2 aUv;
-  varying float vDepth;
-  varying vec2 vUv;
-  void main() {
-    vUv = aUv;
-    float d = texture2D(uDepth, aUv).r;
-    vDepth = d;
-    vec3 pos = vec3((aUv.x - 0.5) * ${W.toFixed(2)}, (aUv.y - 0.5) * ${H.toFixed(2)}, (d - 0.2) * 0.62);
-    pos.y += sin(uTime * 0.7 + aUv.x * 4.0) * 0.012;
-    vec4 mv = modelViewMatrix * vec4(pos, 1.0);
-    gl_PointSize = uSize * (0.6 + d) * (300.0 / -mv.z);
-    gl_Position = projectionMatrix * mv;
-  }
-`;
-
-const pointsFrag = /* glsl */ `
-  uniform sampler2D uMap;
-  varying float vDepth;
-  varying vec2 vUv;
-  void main() {
-    if (vDepth < 0.16) discard;
-    vec2 p = gl_PointCoord - 0.5;
-    if (dot(p, p) > 0.25) discard;
-    vec3 col = texture2D(uMap, vUv).rgb;
-    gl_FragColor = vec4(col, 0.22 * vDepth);
-  }
-`;
-
-function PortraitVolume({
+function Portrait({
   active,
   onSelect,
 }: {
@@ -95,37 +16,19 @@ function PortraitVolume({
   onSelect?: (url: string) => void;
 }) {
   const colorMap = useTexture(COLOR);
-  const depthMap = useTexture(DEPTH);
-  const uniforms = useRef({
-    uMap: { value: colorMap },
-    uDepth: { value: depthMap },
-    uPointer: { value: new THREE.Vector2() },
-    uTime: { value: 0 },
-    uAmp: { value: 0.52 },
-  });
   const down = useRef({ x: 0, y: 0, t: 0 });
-  const width = useThree((s) => s.size.width);
-  const mobile = width < 720;
 
   useMemo(() => {
     colorMap.colorSpace = THREE.SRGBColorSpace;
     colorMap.minFilter = THREE.LinearFilter;
     colorMap.magFilter = THREE.LinearFilter;
-    depthMap.minFilter = THREE.LinearFilter;
-    depthMap.magFilter = THREE.LinearFilter;
-  }, [colorMap, depthMap]);
-
-  useFrame((state) => {
-    const u = uniforms.current;
-    u.uTime.value = state.clock.elapsedTime;
-    u.uPointer.value.lerp(state.pointer, 0.08);
-    u.uAmp.value = THREE.MathUtils.lerp(u.uAmp.value, active ? 0.7 : 0.52, 0.08);
-  });
-
-  const segs = mobile ? [32, 42] : [64, 84];
+    colorMap.anisotropy = 8;
+    colorMap.needsUpdate = true;
+  }, [colorMap]);
 
   return (
     <mesh
+      renderOrder={1}
       onPointerOver={() => {
         document.body.style.cursor = "zoom-in";
       }}
@@ -146,128 +49,29 @@ function PortraitVolume({
         }
       }}
     >
-      <planeGeometry args={[W, H, segs[0], segs[1]]} />
-      <shaderMaterial
-        uniforms={uniforms.current}
-        vertexShader={portraitVert}
-        fragmentShader={portraitFrag}
-        toneMapped={false}
-      />
-    </mesh>
-  );
-}
-
-function HoloPoints() {
-  const colorMap = useTexture(COLOR);
-  const depthMap = useTexture(DEPTH);
-  const width = useThree((s) => s.size.width);
-  const mobile = width < 720;
-  const nx = mobile ? 48 : 88;
-  const ny = mobile ? 60 : 110;
-
-  const geo = useMemo(() => {
-    const count = nx * ny;
-    const aUv = new Float32Array(count * 2);
-    const pos = new Float32Array(count * 3);
-    let i = 0;
-    for (let y = 0; y < ny; y++) {
-      for (let x = 0; x < nx; x++) {
-        aUv[i * 2] = x / (nx - 1);
-        aUv[i * 2 + 1] = y / (ny - 1);
-        i++;
-      }
-    }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    g.setAttribute("aUv", new THREE.BufferAttribute(aUv, 2));
-    return g;
-  }, [nx, ny]);
-
-  const uniforms = useRef({
-    uMap: { value: colorMap },
-    uDepth: { value: depthMap },
-    uTime: { value: 0 },
-    uSize: { value: mobile ? 1.6 : 2.2 },
-  });
-
-  useFrame((s) => {
-    uniforms.current.uTime.value = s.clock.elapsedTime;
-  });
-
-  return (
-    <points geometry={geo} frustumCulled={false}>
-      <shaderMaterial
-        uniforms={uniforms.current}
-        vertexShader={pointsVert}
-        fragmentShader={pointsFrag}
-        transparent
-        depthWrite={false}
-        blending={THREE.AdditiveBlending}
-        toneMapped={false}
-      />
-    </points>
-  );
-}
-
-const glassVert = /* glsl */ `
-  varying vec3 vN;
-  varying vec3 vV;
-  void main() {
-    vec4 w = modelMatrix * vec4(position, 1.0);
-    vN = normalize(mat3(modelMatrix) * normal);
-    vV = cameraPosition - w.xyz;
-    gl_Position = projectionMatrix * viewMatrix * w;
-  }
-`;
-
-const glassFrag = /* glsl */ `
-  varying vec3 vN;
-  varying vec3 vV;
-  void main() {
-    float f = pow(1.0 - abs(dot(normalize(vN), normalize(vV))), 2.4);
-    vec3 tint = vec3(0.96, 0.93, 0.89);
-    vec3 edge = vec3(0.82, 0.55, 0.40);
-    gl_FragColor = vec4(mix(tint, edge, f), 0.06 + f * 0.42);
-  }
-`;
-
-function GlassPane({
-  position,
-  rotation,
-  args,
-}: {
-  position: [number, number, number];
-  rotation?: [number, number, number];
-  args: [number, number];
-}) {
-  return (
-    <mesh position={position} rotation={rotation} renderOrder={2}>
-      <planeGeometry args={args} />
-      <shaderMaterial
-        vertexShader={glassVert}
-        fragmentShader={glassFrag}
-        transparent
-        depthWrite={false}
-        side={THREE.DoubleSide}
-        toneMapped={false}
-      />
+      <planeGeometry args={[W, H]} />
+      <meshBasicMaterial map={colorMap} toneMapped={false} />
     </mesh>
   );
 }
 
 function GlassVitrine() {
-  const cw = W + 0.28;
-  const ch = H + 0.28;
-  const cd = 0.58;
-  const bar = 0.028;
+  const cw = W + 0.22;
+  const ch = H + 0.22;
+  const cd = 0.42;
+  const bar = 0.026;
   const hw = cw / 2;
   const hh = ch / 2;
   const hd = cd / 2;
-  const metal = {
-    color: "#6a3f2c",
-    metalness: 0.72,
-    roughness: 0.32,
+  const glass = {
+    color: "#f4efe8",
+    transparent: true,
+    opacity: 0.09,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+    toneMapped: false,
   } as const;
+  const metal = { color: "#6a3f2c", toneMapped: false } as const;
   const bars: { p: [number, number, number]; s: [number, number, number] }[] = [
     { p: [0, hh, hd], s: [cw, bar, bar] },
     { p: [0, -hh, hd], s: [cw, bar, bar] },
@@ -285,28 +89,36 @@ function GlassVitrine() {
 
   return (
     <group>
-      <mesh position={[0, -hh - 0.2, 0]}>
-        <boxGeometry args={[cw + 0.22, 0.16, cd + 0.28]} />
-        <meshStandardMaterial color="#1f1915" roughness={0.55} metalness={0.18} />
+      <mesh position={[0, -hh - 0.18, 0]}>
+        <boxGeometry args={[cw + 0.2, 0.14, cd + 0.24]} />
+        <meshBasicMaterial color="#1f1915" toneMapped={false} />
       </mesh>
-      <mesh position={[0, -hh - 0.1, 0]}>
-        <boxGeometry args={[cw + 0.04, 0.05, cd + 0.08]} />
-        <meshStandardMaterial color="#c45c32" roughness={0.32} metalness={0.55} />
+      <mesh position={[0, -hh - 0.09, 0]}>
+        <boxGeometry args={[cw + 0.02, 0.045, cd + 0.06]} />
+        <meshBasicMaterial color="#c45c32" toneMapped={false} />
       </mesh>
-      <GlassPane position={[0, 0, hd]} args={[cw, ch]} />
-      <GlassPane position={[0, 0, -hd]} args={[cw, ch]} />
-      <GlassPane position={[hw, 0, 0]} rotation={[0, Math.PI / 2, 0]} args={[cd, ch]} />
-      <GlassPane position={[-hw, 0, 0]} rotation={[0, Math.PI / 2, 0]} args={[cd, ch]} />
-      <GlassPane position={[0, hh, 0]} rotation={[Math.PI / 2, 0, 0]} args={[cw, cd]} />
-      <GlassPane position={[0, -hh, 0]} rotation={[Math.PI / 2, 0, 0]} args={[cw, cd]} />
+      <mesh position={[0, 0, hd]} renderOrder={2}>
+        <planeGeometry args={[cw, ch]} />
+        <meshBasicMaterial {...glass} />
+      </mesh>
+      <mesh position={[0, 0, -hd]} renderOrder={0}>
+        <planeGeometry args={[cw, ch]} />
+        <meshBasicMaterial {...glass} />
+      </mesh>
+      <mesh position={[hw, 0, 0]} rotation={[0, Math.PI / 2, 0]} renderOrder={2}>
+        <planeGeometry args={[cd, ch]} />
+        <meshBasicMaterial {...glass} />
+      </mesh>
+      <mesh position={[-hw, 0, 0]} rotation={[0, Math.PI / 2, 0]} renderOrder={2}>
+        <planeGeometry args={[cd, ch]} />
+        <meshBasicMaterial {...glass} />
+      </mesh>
       {bars.map((b, i) => (
         <mesh key={i} position={b.p}>
           <boxGeometry args={b.s} />
-          <meshStandardMaterial {...metal} />
+          <meshBasicMaterial {...metal} />
         </mesh>
       ))}
-      <pointLight position={[0.4, 1.2, 1.8]} intensity={1.2} color="#fff3e4" distance={8} />
-      <pointLight position={[-0.9, 0.4, 1.2]} intensity={0.4} color="#c45c32" distance={6} />
     </group>
   );
 }
@@ -327,25 +139,16 @@ export default function SumanHero({
     if (!group.current) return;
     const t = state.clock.elapsedTime;
     group.current.position.y = 0.92 + Math.sin(t * 0.32) * 0.04;
-    const target = active ? 1.12 : dimmed ? 0.92 : 1;
+    const target = active ? 1.1 : dimmed ? 0.94 : 1;
     scale.current += (target - scale.current) * 0.1;
     group.current.scale.setScalar(scale.current);
-    group.current.traverse((obj) => {
-      const mat = (obj as THREE.Mesh).material as THREE.Material | undefined;
-      if (mat && "opacity" in mat && dimmed) {
-        /* portrait shader stays opaque; glass already transparent */
-      }
-    });
   });
 
   return (
     <group ref={group} position={[0, 0.92, 0]}>
       <GlassVitrine />
-      <group position={[0, 0.02, 0]}>
-        <PortraitVolume active={active} onSelect={onSelect} />
-        <HoloPoints />
-      </group>
-      <ContactShadows position={[0, -H / 2 - 0.3, 0]} opacity={0.32} scale={7} blur={2.6} far={4} color="#2a211b" />
+      <Portrait active={active} onSelect={onSelect} />
+      <ContactShadows position={[0, -H / 2 - 0.28, 0]} opacity={0.28} scale={6.5} blur={2.4} far={4} color="#2a211b" />
     </group>
   );
 }
