@@ -15,10 +15,10 @@ export default function PhotoLibrary() {
   return (
     <section id="photos" className="relative scroll-mt-24 px-[3.5%] py-24 md:py-32">
       <div className="mx-auto max-w-[1280px]">
-        <p className="font-mono mb-6 text-[12px] tracking-[0.16em] text-muted uppercase">Library</p>
-        <h2 className="font-display mb-[72px] max-w-[14ch] text-[clamp(48px,8vw,96px)]">All photographs</h2>
+        <p className="font-mono mb-6 text-[12px] tracking-[0.16em] text-muted uppercase">Proof</p>
+        <h2 className="font-display mb-[72px] max-w-[14ch] text-[clamp(48px,8vw,96px)]">Results, not stock.</h2>
         <p className="font-mono mb-10 text-[12px] tracking-[0.12em] text-muted">
-          {photos.length} images · click to zoom
+          {photos.length} photographs · click to zoom
         </p>
         <div className="columns-2 gap-3 sm:columns-3 lg:columns-4 lg:gap-4">
           {photos.map((src) => (

@@ -3,9 +3,13 @@ export const IG = "https://www.instagram.com/sumanbagriyaa/";
 export const ORDER = "https://ufeelgreat.com/c/Suman";
 export const DISCLOSURE = "https://sumanbagriya.com/affiliatedisclosure";
 
-export const waStart =
-  `${WA}?text=${encodeURIComponent("Hi Suman, I want to start the Feel Great System")}`;
-export const waApply =
-  `${WA}?text=${encodeURIComponent("Hi Suman, I want to apply to work with you")}`;
+export const waReset =
+  `${WA}?text=${encodeURIComponent("Hi Suman, I want to start the 90-Day Reset / Feel Great System. Please guide me.")}`;
+export const waEarn =
+  `${WA}?text=${encodeURIComponent("Hi Suman, I want to know about building the Unicity business with you. Can we talk?")}`;
+export const waResetHi =
+  `${WA}?text=${encodeURIComponent("नमस्ते Suman, मैं 90-Day Reset शुरू करना चाहती/चाहता हूँ। गाइड कीजिए।")}`;
+export const waStart = waReset;
+export const waApply = waEarn;
 export const waConnect =
   `${WA}?text=${encodeURIComponent("Hi Suman, I would like to connect")}`;

@@ -2,7 +2,8 @@ import { useState } from "react";
 import PhotoLibrary from "@/components/site/PhotoLibrary";
 import ProductSection from "@/components/site/ProductSection";
 import BusinessSection from "@/components/site/BusinessSection";
-import { DISCLOSURE, IG, ORDER, WA, waConnect, waStart } from "@/lib/links";
+import FeelGreatBlock from "@/components/site/FeelGreatBlock";
+import { DISCLOSURE, IG, ORDER, WA, waConnect, waEarn, waReset, waResetHi } from "@/lib/links";
 
 const faqs = [
   {
@@ -79,14 +80,15 @@ export default function SiteSections() {
                 weight: often insulin and GLP-1, not a lack of willpower.
               </p>
               <p className="text-ink">
-                Today she coaches the protocol in person, and builds a digital health business with the people ready to
-                share it.
+                Unicity Senior Director, India. She coaches the protocol in person, and builds a digital health
+                business with the people ready to share it.
               </p>
             </div>
           </div>
         </div>
       </section>
 
+      <FeelGreatBlock />
       <Marquee />
       <PhotoLibrary />
       <ProductSection />
@@ -119,16 +121,44 @@ export default function SiteSections() {
 
       <section id="connect" className="relative scroll-mt-24 px-[3.5%] py-24 md:py-32">
         <div className="mx-auto max-w-[1280px]">
-          <h2 className="font-display mb-[72px] text-[clamp(56px,10vw,120px)]">Let’s talk.</h2>
+          <h2 className="font-display mb-[72px] text-[clamp(56px,10vw,120px)]">Two doors.</h2>
           <p className="mb-12 max-w-[42ch] text-[20px] leading-[1.4] text-muted">
-            Start the system, ask a question, or apply to build with Suman. Order online, or send a direct message.
+            Start the 90-Day Reset, or ask about building with Suman. Five minutes on WhatsApp. No pressure.
           </p>
-          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap">
-            <a href={ORDER} target="_blank" rel="noopener noreferrer" className="btn-brick">
-              Yes — get me started
+          <div className="grid gap-6 md:grid-cols-2">
+            <a
+              href={waReset}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-[5px] border border-black/10 bg-ink p-8 text-paper transition-colors hover:bg-brick md:p-10"
+            >
+              <p className="font-mono mb-6 text-[11px] tracking-[0.16em] text-white/50">01 — FOR YOU</p>
+              <h3 className="font-display mb-4 text-[36px] sm:text-[44px]">90-Day Reset</h3>
+              <p className="mb-8 max-w-[32ch] text-[16px] leading-[1.45] text-white/70">
+                Unimate, Balance, the window. She walks the first week with you.
+              </p>
+              <span className="font-mono text-[11px] tracking-[0.14em]">WHATSAPP THIS →</span>
             </a>
-            <a href={waStart} target="_blank" rel="noopener noreferrer" className="btn-ghost">
-              WhatsApp
+            <a
+              href={waEarn}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group rounded-[5px] border border-black/10 bg-paper p-8 transition-colors hover:border-brick md:p-10"
+            >
+              <p className="font-mono mb-6 text-[11px] tracking-[0.16em] text-muted">02 — WITH HER</p>
+              <h3 className="font-display mb-4 text-[36px] sm:text-[44px]">Earn with me</h3>
+              <p className="mb-8 max-w-[32ch] text-[16px] leading-[1.45] text-muted">
+                Unicity business from your phone. Mentorship included. Apply for a conversation.
+              </p>
+              <span className="font-mono text-[11px] tracking-[0.14em] text-brick">WHATSAPP THIS →</span>
+            </a>
+          </div>
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+            <a href={waResetHi} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+              हिंदी में लिखें
+            </a>
+            <a href={ORDER} target="_blank" rel="noopener noreferrer" className="btn-ghost">
+              Order online
             </a>
             <a href={IG} target="_blank" rel="noopener noreferrer" className="btn-ghost">
               Instagram
@@ -144,7 +174,7 @@ export default function SiteSections() {
           <div className="mt-[72px] flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <div>
               <p className="font-mono text-[12px] tracking-[0.14em] text-muted uppercase">
-                Metabolic health coach · Feel Great System
+                Unicity Senior Director, India · Metabolic health · Feel Great System
               </p>
               <p className="mt-6 max-w-[42ch] text-[14px] leading-[1.5] text-muted">
                 For Suman, on Rakshabandhan 2026 — a house of work made to honour the way she cares for others.
