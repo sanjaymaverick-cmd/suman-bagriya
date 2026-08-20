@@ -36,6 +36,26 @@ Then import the repo at [vercel.com/new](https://vercel.com/new).
 
 Vercel → Project → Domains → add `sumanbagriya.com`. Keep the Vercel URL as the demo until DNS is switched.
 
+## Hard refresh (if the live site looks old)
+
+Wait until Vercel shows the latest deploy as **Ready**. Then:
+
+### iPhone (Safari)
+1. Close the tab.
+2. Swipe Safari out of the app switcher.
+3. Open this instead (cache bypass): `https://suman-bagriya.vercel.app/?v=2`
+4. Still stuck: **Settings → Safari → Advanced → Website Data** → search `vercel` → **Remove**.
+
+### Android (Chrome)
+1. Tap the address bar and add `?v=2` at the end, then Go.
+2. Or: tap the lock / tune icon by the URL → **Site settings** → **Clear & reset**.
+
+### Desktop
+- Windows Chrome / Edge: `Ctrl + Shift + R`
+- Mac: `Cmd + Shift + R`
+
+If it is still old, the deploy is not finished. Check Vercel → **Deployments**.
+
 ## Local
 
 ```bash
