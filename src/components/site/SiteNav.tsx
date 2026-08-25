@@ -36,8 +36,9 @@ export default function SiteNav({ current }: { current?: string }) {
       }`}
     >
       <div className="mx-auto flex max-w-[1280px] items-center justify-between px-[3.5%] py-4">
-        <Link to="/" className="font-display text-[22px] leading-none tracking-tight">
-          Suman Bagriya
+        <Link to="/" className="flex items-center gap-2.5 text-ink">
+          <img src="/brand/suman-mark.svg" alt="" width="28" height="28" className="rounded-[4px]" />
+          <span className="font-display text-[22px] leading-none tracking-tight">Suman Bagriya</span>
         </Link>
         <nav className="hidden items-center gap-6 font-mono text-[11px] tracking-[0.12em] text-ink/80 lg:flex">
           {items.map((item) => (

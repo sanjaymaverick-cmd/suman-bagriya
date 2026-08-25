@@ -90,7 +90,7 @@ function SaathPage() {
           <div className="mx-auto max-w-[1280px]">
             <p className="font-mono mb-6 text-[12px] tracking-[0.16em] text-muted uppercase">The house tracker</p>
             <div className="flex flex-wrap items-end gap-6">
-              <img src="/saath-mark.png" alt="" width="72" height="72" className="rounded-[14px]" />
+              <img src="/brand/saath-mark.svg" alt="" width="72" height="72" className="rounded-[16px]" />
               <h1 className="font-display text-[clamp(72px,14vw,180px)] leading-[0.8]">Saath.</h1>
             </div>
             <p className="font-neue mt-[72px] max-w-[22ch] text-[22px] leading-[1.3] md:text-[28px]">
