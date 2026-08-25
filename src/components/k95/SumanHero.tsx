@@ -2,7 +2,7 @@ import { CENTER_PORTRAIT } from "@/lib/photos";
 
 export default function SumanHero({ onSelect }: { onSelect?: (url: string) => void }) {
   return (
-    <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center pb-[16vh] sm:pb-[14vh]">
+    <div className="pointer-events-none absolute inset-0 z-[5] flex items-start justify-center pt-24 sm:items-center sm:pt-8 sm:pb-[26vh]">
       <button
         type="button"
         onClick={() => onSelect?.(CENTER_PORTRAIT)}

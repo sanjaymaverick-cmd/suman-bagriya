@@ -69,7 +69,7 @@ export default function BusinessSection() {
               className={`pt-10 lg:px-6 ${i > 0 ? "lg:border-l lg:border-black/[0.07]" : "lg:pl-0"}`}
             >
               <p className="font-mono mb-8 text-[12px] tracking-[0.14em] text-brick">{item.k}</p>
-              <h3 className="font-display mb-[72px] text-[36px] sm:text-[44px]">{item.t}</h3>
+              <h3 className="font-display mb-8 text-[24px] sm:text-[32px]">{item.t}</h3>
               <p className="max-w-[28ch] text-[15px] leading-[1.5] text-muted">{item.b}</p>
             </article>
           ))}
@@ -81,7 +81,7 @@ export default function BusinessSection() {
               key={item.t}
               className={`pt-10 md:px-8 ${i > 0 ? "md:border-l md:border-black/[0.07]" : "md:pl-0"}`}
             >
-              <h3 className="font-display mb-[72px] text-[36px] sm:text-[48px]">{item.t}</h3>
+              <h3 className="font-display mb-8 text-[24px] sm:text-[32px]">{item.t}</h3>
               <p className="max-w-[32ch] text-[16px] leading-[1.5] text-muted">{item.b}</p>
             </article>
           ))}

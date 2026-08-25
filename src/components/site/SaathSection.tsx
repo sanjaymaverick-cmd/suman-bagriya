@@ -1,4 +1,6 @@
 import { SAATH, waReset } from "@/lib/links";
+import IPhoneFrame from "@/components/site/IPhoneFrame";
+import { motion } from "motion/react";
 
 export default function SaathSection() {
   return (
@@ -8,12 +10,12 @@ export default function SaathSection() {
           Free for every client
         </p>
         <h2 className="font-display max-w-[12ch] text-[clamp(56px,10vw,128px)]">Saath.</h2>
-        <div className="mt-[72px] grid gap-12 md:grid-cols-12">
-          <p className="font-neue max-w-[28ch] text-[22px] leading-[1.3] md:col-span-5 md:text-[26px]">
-            The house tracker. Together, not alone.
-          </p>
-          <div className="md:col-span-6 md:col-start-7">
-            <p className="max-w-[42ch] text-[16px] leading-[1.55] text-muted md:text-[18px]">
+        <div className="mt-[72px] grid items-center gap-12 md:grid-cols-12 md:gap-8">
+          <div className="md:col-span-6">
+            <p className="font-neue max-w-[28ch] text-[22px] leading-[1.3] md:text-[26px]">
+              The house tracker. Together, not alone.
+            </p>
+            <p className="mt-8 max-w-[42ch] text-[16px] leading-[1.55] text-muted md:text-[18px]">
               Workouts, weight, the week, the streak. Every one of Suman’s clients gets a seat — no extra fee.
               After she confirms, the administrator sends your login.
             </p>
@@ -25,6 +27,16 @@ export default function SaathSection() {
                 Start the Reset
               </a>
             </div>
+          </div>
+          <div className="flex justify-center md:col-span-5 md:col-start-8">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+            >
+              <IPhoneFrame src="/saath-shots/02-home.png" alt="Saath home — 75 kg now, 60 kg goal" />
+            </motion.div>
           </div>
         </div>
       </div>

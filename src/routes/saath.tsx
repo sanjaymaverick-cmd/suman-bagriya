@@ -3,7 +3,6 @@ import { lazy, Suspense } from "react";
 import SiteNav from "@/components/site/SiteNav";
 import PageGrid from "@/components/site/PageGrid";
 import { DISCLOSURE, IG, ORDER, SAATH_DEMO, WA, waReset, waSaath } from "@/lib/links";
-import { BEATS } from "@/lib/saath-beats";
 
 const SaathWalk = lazy(() => import("@/components/saath/SaathWalk"));
 
@@ -141,24 +140,11 @@ function SaathPage() {
               {features.map((f) => (
                 <article key={f.k} className="border-t border-black/[0.07] pt-8">
                   <p className="font-mono mb-4 text-[11px] tracking-[0.14em] text-brick">{f.k}</p>
-                  <h3 className="font-display mb-6 text-[36px] leading-[0.95]">{f.t}</h3>
+                  <h3 className="font-display mb-6 text-[28px] leading-[0.95] sm:text-[32px]">{f.t}</h3>
                   <p className="max-w-[32ch] text-[15px] leading-[1.5] text-muted">{f.b}</p>
                 </article>
               ))}
             </div>
-          </div>
-        </section>
-
-        <section className="px-[3.5%] pb-8">
-          <div className="mx-auto grid max-w-[1280px] grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-7">
-            {BEATS.map((b) => (
-              <figure key={b.src} className="overflow-hidden rounded-[12px] border border-black/10 bg-cream">
-                <img src={b.src} alt={b.t} className="aspect-[390/844] w-full object-cover object-top" />
-                <figcaption className="font-mono px-2 py-2 text-[10px] tracking-[0.12em] text-muted uppercase">
-                  {b.t}
-                </figcaption>
-              </figure>
-            ))}
           </div>
         </section>
 

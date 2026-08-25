@@ -1,6 +1,5 @@
 import {
   Suspense,
-  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -16,7 +15,7 @@ import {
 } from "@/lib/physics-presets";
 import { loadPhotoList, surroundingPhotos, CENTER_PORTRAIT } from "@/lib/photos";
 import { gpuBudget, isCoarsePointer, useManagedTexture } from "@/lib/texture-memory";
-import { waEarn, waReset, SAATH } from "@/lib/links";
+import { waEarn, waReset } from "@/lib/links";
 import PhotoZoom from "@/components/k95/PhotoZoom";
 import SumanHero from "@/components/k95/SumanHero";
 
@@ -469,29 +468,47 @@ function SceneContent({
   );
 }
 
-function FeelPanel({
+function StudioPanel({
   preset,
   setPreset,
   params,
   setParams,
+  mode,
+  setMode,
 }: {
   preset: FeelPreset;
   setPreset: (p: FeelPreset) => void;
   params: PhysicsParams;
   setParams: (p: PhysicsParams) => void;
+  mode: "rings" | "spiral";
+  setMode: (m: "rings" | "spiral") => void;
 }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="pointer-events-auto absolute bottom-20 left-5 z-20 sm:bottom-24 sm:left-10">
+    <div className="pointer-events-auto absolute top-20 right-4 z-20 sm:top-24 sm:right-10">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="rounded-[5px] border border-black/10 bg-paper/80 px-3 py-1.5 font-mono text-[10px] font-medium tracking-[0.18em] text-ink/80 backdrop-blur-md hover:bg-paper"
+        className="rounded-[5px] border border-black/10 bg-paper/80 px-3 py-1.5 font-mono text-[10px] font-medium tracking-[0.18em] text-ink/50 backdrop-blur-md hover:bg-paper hover:text-ink"
       >
-        FEEL
+        STUDIO
       </button>
       {open && (
         <div className="mt-3 w-[240px] rounded-[5px] border border-black/10 bg-paper p-4 text-ink shadow-xl">
+          <p className="font-mono mb-3 text-[10px] tracking-[0.16em] text-muted">LAYOUT</p>
+          <div className="mb-4 grid grid-cols-2 gap-1.5">
+            {(["spiral", "rings"] as const).map((key) => (
+              <button
+                key={key}
+                onClick={() => setMode(key)}
+                className={`rounded-[5px] px-2 py-1.5 font-mono text-[10px] tracking-[0.12em] uppercase ${
+                  mode === key ? "bg-ink text-paper" : "bg-black/5 text-ink/70 hover:bg-black/10"
+                }`}
+              >
+                {key}
+              </button>
+            ))}
+          </div>
           <p className="font-mono mb-3 text-[10px] tracking-[0.16em] text-muted">PHYSICS</p>
           <div className="mb-4 grid grid-cols-2 gap-1.5">
             {(Object.keys(PRESETS) as FeelPreset[]).map((key) => (
@@ -545,7 +562,6 @@ export default function K95Scene() {
   const [selected, setSelected] = useState<string | null>(null);
   const [preset, setPreset] = useState<FeelPreset>("premium");
   const [params, setParams] = useState<PhysicsParams>({ ...PRESETS.premium });
-  const [menuOpen, setMenuOpen] = useState(false);
 
   const physics = useRef<PhysicsState>({
     orbitY: 0,
@@ -571,11 +587,6 @@ export default function K95Scene() {
       const shuffledRest = [...rest].sort(() => Math.random() - 0.5);
       setImages([...shuffledProofs, ...shuffledRest].slice(0, gpuBudget().maxPlanes));
     });
-  }, []);
-
-  const scrollTo = useCallback((id: string) => {
-    setMenuOpen(false);
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
   return (
@@ -614,109 +625,16 @@ export default function K95Scene() {
       </Canvas>
 
       <SumanHero onSelect={setSelected} />
+      <StudioPanel
+        preset={preset}
+        setPreset={setPreset}
+        params={params}
+        setParams={setParams}
+        mode={mode}
+        setMode={setMode}
+      />
 
       <div className="pointer-events-none absolute inset-0 z-10">
-        <div className="pointer-events-auto absolute top-0 right-0 left-0 grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 py-5 sm:px-10">
-          <button
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="font-neue justify-self-start text-[18px] font-medium tracking-tight text-ink"
-          >
-            Suman Bagriya
-          </button>
-
-          <div className="flex rounded-[5px] border border-black/10 bg-paper/70 p-1 backdrop-blur-md">
-            <button
-              onClick={() => setMode("rings")}
-              className={`rounded-[5px] px-4 py-1.5 font-mono text-[10px] tracking-[0.16em] sm:text-[11px] ${
-                mode === "rings" ? "bg-ink text-paper" : "text-ink/60 hover:text-ink"
-              }`}
-            >
-              RINGS
-            </button>
-            <button
-              onClick={() => setMode("spiral")}
-              className={`rounded-[5px] px-4 py-1.5 font-mono text-[10px] tracking-[0.16em] sm:text-[11px] ${
-                mode === "spiral" ? "bg-ink text-paper" : "text-ink/60 hover:text-ink"
-              }`}
-            >
-              SPIRAL
-            </button>
-          </div>
-
-          <div className="flex items-center justify-self-end gap-2">
-          <nav className="hidden items-center gap-5 font-mono text-[11px] tracking-[0.12em] text-ink/80 lg:flex">
-            <button onClick={() => scrollTo("about")} className="hover:text-ink">
-              ABOUT
-            </button>
-            <button onClick={() => scrollTo("photos")} className="hover:text-ink">
-              PHOTOS
-            </button>
-            <button onClick={() => scrollTo("product")} className="hover:text-ink">
-              SYSTEM
-            </button>
-            <a href={SAATH} className="hover:text-ink">
-              SAATH
-            </a>
-            <button onClick={() => scrollTo("business")} className="hover:text-ink">
-              BUSINESS
-            </button>
-            <button onClick={() => scrollTo("faq")} className="hover:text-ink">
-              Q&A
-            </button>
-            <a
-              href={waReset}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-[5px] bg-brick px-4 py-[10px] text-[11px] tracking-[0.14em] text-white hover:bg-brick-dark"
-            >
-              START
-            </a>
-          </nav>
-
-          <button className="p-2 text-ink lg:hidden" onClick={() => setMenuOpen((v) => !v)} aria-label="Menu">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              {menuOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
-            </svg>
-          </button>
-          </div>
-        </div>
-
-        {menuOpen && (
-          <div className="pointer-events-auto absolute top-16 right-4 left-4 rounded-[5px] border border-black/10 bg-paper p-5 shadow-xl lg:hidden">
-            {["about", "photos", "product", "business", "faq", "connect"].map((id) => (
-              <button
-                key={id}
-                onClick={() => scrollTo(id)}
-                className="font-neue block w-full rounded-[5px] px-3 py-3 text-left text-sm tracking-wide text-ink hover:bg-black/5"
-              >
-                {id === "product"
-                  ? "System"
-                  : id === "faq"
-                    ? "Q&A"
-                    : id === "photos"
-                      ? "Photos"
-                      : id === "business"
-                        ? "Business"
-                        : id[0].toUpperCase() + id.slice(1)}
-              </button>
-            ))}
-            <a
-              href="/saath"
-              className="font-neue block w-full rounded-[5px] px-3 py-3 text-left text-sm tracking-wide text-ink hover:bg-black/5"
-            >
-              Saath
-            </a>
-            <a
-              href={waReset}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-brick mt-3 w-full"
-            >
-              Start the Reset
-            </a>
-          </div>
-        )}
-
         <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-paper via-paper/85 to-transparent pt-28">
           <div className="flex flex-col gap-5 px-5 pb-5 sm:flex-row sm:items-end sm:justify-between sm:px-10 sm:pb-8">
             <div className="max-w-[34rem]">
