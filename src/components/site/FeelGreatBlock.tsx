@@ -40,7 +40,7 @@ export default function FeelGreatBlock() {
               className={`pt-10 ${i > 0 ? "border-t border-black/[0.07] md:border-t-0 md:border-l md:pl-10" : "md:pr-10"}`}
             >
               <p className="font-mono mb-6 text-[12px] tracking-[0.14em] text-brick">{s.n}</p>
-              <h3 className="font-display mb-8 text-[32px] sm:text-[40px]">{s.t}</h3>
+              <h3 className="font-display mb-8 text-[24px] sm:text-[32px]">{s.t}</h3>
               <p className="max-w-[32ch] text-[16px] leading-[1.5] text-muted">{s.b}</p>
             </article>
           ))}

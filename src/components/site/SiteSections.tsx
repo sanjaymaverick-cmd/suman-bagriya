@@ -1,9 +1,10 @@
-import { useState } from "react";
+import * as Accordion from "@radix-ui/react-accordion";
 import PhotoLibrary from "@/components/site/PhotoLibrary";
 import ProductSection from "@/components/site/ProductSection";
 import BusinessSection from "@/components/site/BusinessSection";
 import FeelGreatBlock from "@/components/site/FeelGreatBlock";
-import { DISCLOSURE, IG, ORDER, WA, waConnect, waEarn, waReset, waResetHi } from "@/lib/links";
+import SaathSection from "@/components/site/SaathSection";
+import { DISCLOSURE, IG, ORDER, WA, waConnect, waEarn, waReset, waResetHi, SAATH } from "@/lib/links";
 
 const faqs = [
   {
@@ -34,6 +35,10 @@ const faqs = [
     q: "What if I want to help others too?",
     a: "There is a partner path. Apply to work with Suman — a five-minute WhatsApp conversation, no pressure.",
   },
+  {
+    q: "What is Saath?",
+    a: "Suman’s private house tracker — workouts, weight, plan, streaks. Every client gets free access. After she confirms, the administrator sends your login. See the Saath page for how the house works.",
+  },
 ];
 
 function Marquee() {
@@ -54,8 +59,6 @@ function Marquee() {
 }
 
 export default function SiteSections() {
-  const [open, setOpen] = useState<number | null>(null);
-
   return (
     <div className="relative z-10 bg-paper text-ink">
       <section id="about" className="relative scroll-mt-24 px-[3.5%] py-24 md:py-36">
@@ -92,27 +95,33 @@ export default function SiteSections() {
       <Marquee />
       <PhotoLibrary />
       <ProductSection />
+      <SaathSection />
 
       <section id="faq" className="relative scroll-mt-24 px-[3.5%] py-24 md:py-32">
         <div className="mx-auto max-w-[1280px]">
           <p className="font-mono mb-4 text-[12px] tracking-[0.16em] text-muted uppercase">Questions worth asking</p>
           <h2 className="font-display mb-[72px] max-w-[16ch] text-[clamp(42px,7vw,80px)]">before we begin.</h2>
           <div className="border-t border-black/[0.07]">
-            {faqs.map((item, i) => {
-              const isOpen = open === i;
-              return (
-                <div key={item.q} className="border-b border-black/[0.07]">
-                  <button
-                    onClick={() => setOpen(isOpen ? null : i)}
-                    className="flex w-full items-start justify-between gap-6 py-7 text-left"
-                  >
-                    <span className="font-neue text-[20px] leading-[1.25] md:text-[26px]">{item.q}</span>
-                    <span className="font-mono mt-1 shrink-0 text-[18px] text-brick">{isOpen ? "–" : "+"}</span>
-                  </button>
-                  {isOpen && <p className="max-w-[62ch] pb-8 text-[16px] leading-[1.55] text-muted">{item.a}</p>}
-                </div>
-              );
-            })}
+            <Accordion.Root type="single" collapsible>
+              {faqs.map((item) => (
+                <Accordion.Item key={item.q} value={item.q} className="border-b border-black/[0.07]">
+                  <Accordion.Header>
+                    <Accordion.Trigger className="group flex w-full items-start justify-between gap-6 py-7 text-left">
+                      <span className="font-neue text-[20px] leading-[1.25] md:text-[26px]">{item.q}</span>
+                      <span className="font-mono mt-1 shrink-0 text-[18px] text-brick group-data-[state=open]:hidden">
+                        +
+                      </span>
+                      <span className="font-mono mt-1 hidden shrink-0 text-[18px] text-brick group-data-[state=open]:inline">
+                        –
+                      </span>
+                    </Accordion.Trigger>
+                  </Accordion.Header>
+                  <Accordion.Content className="faq-content">
+                    <p className="max-w-[62ch] pb-8 text-[16px] leading-[1.55] text-muted">{item.a}</p>
+                  </Accordion.Content>
+                </Accordion.Item>
+              ))}
+            </Accordion.Root>
           </div>
         </div>
       </section>
@@ -133,9 +142,9 @@ export default function SiteSections() {
               className="group rounded-[5px] border border-black/10 bg-ink p-8 text-paper transition-colors hover:bg-brick md:p-10"
             >
               <p className="font-mono mb-6 text-[11px] tracking-[0.16em] text-white/50">01 — FOR YOU</p>
-              <h3 className="font-display mb-4 text-[36px] sm:text-[44px]">90-Day Reset</h3>
+              <h3 className="font-display mb-4 text-[28px] sm:text-[32px]">90-Day Reset</h3>
               <p className="mb-8 max-w-[32ch] text-[16px] leading-[1.45] text-white/70">
-                Unimate, Balance, the window. She walks the first week with you.
+                Unimate, Balance, the window. She walks the first week with you. Saath is included, free.
               </p>
               <span className="font-mono text-[11px] tracking-[0.14em]">WHATSAPP THIS →</span>
             </a>
@@ -146,7 +155,7 @@ export default function SiteSections() {
               className="group rounded-[5px] border border-black/10 bg-paper p-8 transition-colors hover:border-brick md:p-10"
             >
               <p className="font-mono mb-6 text-[11px] tracking-[0.16em] text-muted">02 — WITH HER</p>
-              <h3 className="font-display mb-4 text-[36px] sm:text-[44px]">Earn with me</h3>
+              <h3 className="font-display mb-4 text-[28px] sm:text-[32px]">Earn with me</h3>
               <p className="mb-8 max-w-[32ch] text-[16px] leading-[1.45] text-muted">
                 Unicity business from your phone. Mentorship included. Apply for a conversation.
               </p>
@@ -193,6 +202,9 @@ export default function SiteSections() {
               </a>
               <a href={WA} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
                 WhatsApp
+              </a>
+              <a href={SAATH} className="hover:text-brick">
+                Saath
               </a>
               <a href={waConnect} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
                 Connect

@@ -35,7 +35,7 @@ export default function ProductSection() {
           <div className="grid gap-16 md:grid-cols-2 md:gap-0">
             <div className="md:pr-12">
               <p className="font-mono mb-6 text-[12px] tracking-[0.14em] text-brick uppercase">What is happening now</p>
-              <h3 className="font-display mb-[72px] text-[40px] sm:text-[52px]">Spike. Crash. Repeat.</h3>
+              <h3 className="font-display mb-8 text-[24px] sm:text-[32px]">Spike. Crash. Repeat.</h3>
               <p className="max-w-[40ch] text-[16px] leading-[1.5] text-muted">
                 Cravings that feel like character. Fog after meals. Fat that will not move because insulin is telling
                 the body to hold. You can out-discipline this for a week. You cannot out-discipline a hormone.
@@ -43,7 +43,7 @@ export default function ProductSection() {
             </div>
             <div className="border-t border-black/[0.07] pt-16 md:border-t-0 md:border-l md:pt-0 md:pl-12">
               <p className="font-mono mb-6 text-[12px] tracking-[0.14em] text-brick uppercase">What becomes possible</p>
-              <h3 className="font-display mb-[72px] text-[40px] sm:text-[52px]">Quiet. Steady. Light.</h3>
+              <h3 className="font-display mb-8 text-[24px] sm:text-[32px]">Quiet. Steady. Light.</h3>
               <p className="max-w-[40ch] text-[16px] leading-[1.5] text-muted">
                 Appetite that ends when the plate does. Energy that lasts past 4pm. A metabolism that releases instead
                 of hoarding. Most people feel the cravings drop in the first week. The clothes follow.
@@ -62,7 +62,7 @@ export default function ProductSection() {
           <div className="grid gap-16 border-t border-black/[0.07] md:grid-cols-2 md:gap-0">
             <article className="pt-10 md:pr-12">
               <p className="font-mono mb-8 text-[12px] tracking-[0.14em] text-brick">01 — Morning</p>
-              <h3 className="font-display mb-[72px] text-[42px] sm:text-[56px]">Unimate</h3>
+              <h3 className="font-display mb-8 text-[28px] sm:text-[32px]">Unimate</h3>
               <p className="mb-6 max-w-[42ch] text-[18px] leading-[1.45] text-ink">
                 Drink this first. GLP-1 wakes up. The snack-voice goes quiet.
               </p>
@@ -74,7 +74,7 @@ export default function ProductSection() {
             </article>
             <article className="border-t border-black/[0.07] pt-10 md:border-t-0 md:border-l md:pl-12">
               <p className="font-mono mb-8 text-[12px] tracking-[0.14em] text-brick">02 — Before meals</p>
-              <h3 className="font-display mb-[72px] text-[42px] sm:text-[56px]">Balance</h3>
+              <h3 className="font-display mb-8 text-[28px] sm:text-[32px]">Balance</h3>
               <p className="mb-6 max-w-[42ch] text-[18px] leading-[1.45] text-ink">
                 Take this before you eat. The spike flattens. The crash never arrives.
               </p>

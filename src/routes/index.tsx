@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useState } from "react";
 import SiteSections from "@/components/site/SiteSections";
 import PageGrid from "@/components/site/PageGrid";
+import SiteNav from "@/components/site/SiteNav";
 
 const K95Scene = lazy(() => import("@/components/k95/K95Scene"));
 
@@ -15,6 +16,7 @@ function Home() {
     <main className="relative bg-paper">
       <div className="grain" aria-hidden="true" />
       <PageGrid />
+      <SiteNav />
       {ready ? (
         <Suspense
           fallback={

@@ -1,4 +1,7 @@
 node_modules
+saath-app/node_modules
+attachments
+.output
 .output
 .vinxi
 .vercel
@@ -17,3 +20,4 @@ artifacts
 .next
 .grok
 AGENTS.md
+*.webm

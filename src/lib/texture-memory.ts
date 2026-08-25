@@ -67,14 +67,15 @@ class TextureMemory {
       i.src = url;
     });
     const budget = gpuBudget();
-    const maxDim = opts?.hero ? 2048 : budget.maxDim;
-    const anisotropy = opts?.hero ? 8 : budget.anisotropy;
+    const maxDim = opts?.hero ? 1600 : budget.maxDim;
+    const anisotropy = opts?.hero ? 4 : budget.anisotropy;
     this.evict(budget.maxTextures - 1);
     const canvas = downscale(img, img.naturalWidth || img.width, img.naturalHeight || img.height, maxDim);
     const tex = new THREE.Texture(canvas);
     tex.colorSpace = THREE.SRGBColorSpace;
-    tex.generateMipmaps = !!opts?.hero;
-    tex.minFilter = opts?.hero ? THREE.LinearMipmapLinearFilter : THREE.LinearFilter;
+    // NPOT canvases + mipmaps can upload as a black texture on some GPUs.
+    tex.generateMipmaps = false;
+    tex.minFilter = THREE.LinearFilter;
     tex.magFilter = THREE.LinearFilter;
     tex.anisotropy = anisotropy;
     tex.wrapS = THREE.ClampToEdgeWrapping;
@@ -118,6 +119,8 @@ export function useManagedTexture(url: string, opts?: { hero?: boolean }) {
     let live = true;
     textureMemory.acquire(url, { hero }).then((t) => {
       if (live) setTex(t);
+    }).catch(() => {
+      if (live) setTex(null);
     });
     return () => {
       live = false;
