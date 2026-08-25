@@ -1,10 +1,4 @@
-import {
-  Suspense,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import {
@@ -51,7 +45,11 @@ function spiralLayout(count: number) {
     const t = i / Math.max(count - 1, 1);
     const angle = t * Math.PI * turns;
     const radius = 3.8 + t * (8.0 + count * 0.08);
-    positions.push([Math.cos(angle) * radius, (t - 0.5) * (7.4 + count * 0.05), Math.sin(angle) * radius]);
+    positions.push([
+      Math.cos(angle) * radius,
+      (t - 0.5) * (7.4 + count * 0.05),
+      Math.sin(angle) * radius,
+    ]);
     rotations.push([0.07, -angle + Math.PI / 2, 0]);
   }
   return { positions, rotations };
@@ -244,7 +242,8 @@ function SceneContent({
 
   useEffect(() => {
     const canvas = gl.domElement;
-    const hero = (canvas.closest("[data-hero]") as HTMLElement | null) ?? canvas.parentElement ?? canvas;
+    const hero =
+      (canvas.closest("[data-hero]") as HTMLElement | null) ?? canvas.parentElement ?? canvas;
     canvas.style.touchAction = "pan-y";
     hero.style.touchAction = "pan-y";
 
@@ -519,7 +518,9 @@ function StudioPanel({
                   setParams({ ...PRESETS[key] });
                 }}
                 className={`rounded-[5px] px-2 py-1.5 font-mono text-[10px] tracking-[0.12em] uppercase ${
-                  preset === key ? "bg-brick-solid text-white" : "bg-black/5 text-ink/70 hover:bg-black/10"
+                  preset === key
+                    ? "bg-brick-solid text-white"
+                    : "bg-black/5 text-ink/70 hover:bg-black/10"
                 }`}
               >
                 {key}
@@ -669,8 +670,7 @@ export default function K95Scene() {
               </p>
               <p className="font-display mt-2 text-[clamp(34px,6vw,64px)] leading-[0.92] text-ink">
                 No diet.
-                <br />
-                A metabolic reset.
+                <br />A metabolic reset.
               </p>
               <p className="font-neue mt-3 max-w-[32ch] text-[14px] leading-[1.35] text-ink/70 sm:text-[16px]">
                 Unimate in the morning. Balance before meals. Ninety days with Suman.

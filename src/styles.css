@@ -114,7 +114,9 @@
   text-transform: uppercase;
   padding: 15px 26px;
   border-radius: 999px;
-  transition: background 200ms cubic-bezier(0.23, 1, 0.32, 1), transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition:
+    background 200ms cubic-bezier(0.23, 1, 0.32, 1),
+    transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 .btn-dark-solid:hover {
   background: var(--brick-dark);
@@ -133,7 +135,9 @@
   text-transform: uppercase;
   padding: 15px 26px;
   border-radius: 999px;
-  transition: background 200ms cubic-bezier(0.23, 1, 0.32, 1), color 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition:
+    background 200ms cubic-bezier(0.23, 1, 0.32, 1),
+    color 200ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 .btn-dark-line:hover {
   background: #f3ede2;
@@ -170,7 +174,9 @@
   text-transform: uppercase;
   padding: 14px 24px;
   border-radius: 999px;
-  transition: background 200ms cubic-bezier(0.23, 1, 0.32, 1), color 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition:
+    background 200ms cubic-bezier(0.23, 1, 0.32, 1),
+    color 200ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 .v2-pill-line:hover {
   background: #f3ede2;
@@ -217,7 +223,9 @@
   text-transform: uppercase;
   padding: 14px 22px;
   border-radius: 5px;
-  transition: background 200ms cubic-bezier(0.23, 1, 0.32, 1), color 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition:
+    background 200ms cubic-bezier(0.23, 1, 0.32, 1),
+    color 200ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 .btn-ghost:hover {
   background: var(--ink);
@@ -252,6 +260,42 @@
   .marquee-track {
     animation: none;
   }
+  .photo-zoom-in {
+    animation: none;
+  }
+  .faq-content[data-state="open"],
+  .faq-content[data-state="closed"] {
+    animation: none;
+  }
+}
+
+/* Keyboard users land here first; it stays off-screen until focused. */
+.skip-link {
+  position: fixed;
+  top: -80px;
+  left: 12px;
+  z-index: 100;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 12px 18px;
+  border-radius: 5px;
+  transition: top 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* WCAG 2.2 AA asks for 24x24 CSS px pointer targets; nav and footer rows sat at 17px. */
+.tap-target {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  min-width: 24px;
 }
 
 .grain {
@@ -367,7 +411,9 @@
   border-radius: 36px;
   overflow: hidden;
   border: 10px solid #1a1410;
-  box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(232, 195, 122, 0.25);
+  box-shadow:
+    0 40px 80px -20px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(232, 195, 122, 0.25);
   background: #111;
 }
 .phone-bezel::before {

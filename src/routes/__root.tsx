@@ -21,7 +21,8 @@ export const Route = createRootRoute({
       { property: "og:title", content: "Suman Bagriya" },
       {
         property: "og:description",
-        content: "You don’t have a willpower problem. Metabolic health coaching — no dieting, no calorie counting.",
+        content:
+          "You don’t have a willpower problem. Metabolic health coaching — no dieting, no calorie counting.",
       },
       { property: "og:type", content: "website" },
       { property: "og:image", content: "/og.jpg" },
@@ -63,6 +64,9 @@ export const Route = createRootRoute({
         <HeadContent />
       </head>
       <body>
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
         <PreviewHostBridge />
         <SmoothScroll />
         <AuthProvider>

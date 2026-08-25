@@ -5,7 +5,11 @@ import { DISCLOSURE, IG, ORDER, SAATH, WA, waEarn, waReset, waSaath } from "@/li
 const steps = [
   { n: "01", t: "Morning", b: "Unimate. GLP-1 wakes up. The snack-voice goes quiet." },
   { n: "02", t: "Before meals", b: "Balance. The spike flattens. The 4pm crash never arrives." },
-  { n: "03", t: "The window", b: "Eat in a window your body already understands. No lists. No gym sentence." },
+  {
+    n: "03",
+    t: "The window",
+    b: "Eat in a window your body already understands. No lists. No gym sentence.",
+  },
 ];
 
 const houseFeatures = [
@@ -54,7 +58,9 @@ function Shell({ id, children }: { id?: string; children: React.ReactNode }) {
 
 function Label({ children }: { children: React.ReactNode }) {
   return (
-    <p className="font-mono mb-8 text-[10px] tracking-[0.2em] text-white/40 uppercase">{children}</p>
+    <p className="font-mono mb-8 text-[10px] tracking-[0.2em] text-white/60 uppercase">
+      {children}
+    </p>
   );
 }
 
@@ -66,22 +72,29 @@ function About() {
         <div>
           <h2 className="text-[clamp(40px,6.5vw,86px)] leading-[0.95] tracking-[-0.02em] text-[#f3ede2]">
             Not a textbook.
-            <br />
-            A life lived.
+            <br />A life lived.
           </h2>
-          <p className="mt-10 max-w-[46ch] text-[17px] leading-[1.6] text-white/55">
-            Five years in health and wellness. Diet plans that never held. Then a system that worked on her
-            first. For years the cycle was the same: try a diet, lose a little, regain more, feel worse. The
-            advice never addressed why the body was holding on so tightly.
+          <p className="mt-10 max-w-[46ch] text-[17px] leading-[1.6] text-white/65">
+            Five years in health and wellness. Diet plans that never held. Then a system that worked
+            on her first. For years the cycle was the same: try a diet, lose a little, regain more,
+            feel worse. The advice never addressed why the body was holding on so tightly.
           </p>
           <p className="mt-6 max-w-[46ch] text-[17px] leading-[1.6] text-[#f3ede2]">
-            Unicity Senior Director, India. She coaches the protocol in person, and builds a digital health
-            business with the people ready to share it.
+            Unicity Senior Director, India. She coaches the protocol in person, and builds a digital
+            health business with the people ready to share it.
           </p>
         </div>
         <figure className="overflow-hidden rounded-[18px]">
-          <img src="/photos/suman-transform.jpg" alt="Suman's own before and after" className="w-full object-cover" />
-          <figcaption className="font-mono mt-4 text-[10px] tracking-[0.16em] text-white/40 uppercase">
+          <img
+            src="/photos/suman-transform.jpg"
+            alt="Suman's own before and after"
+            loading="lazy"
+            decoding="async"
+            width="760"
+            height="1013"
+            className="w-full object-cover"
+          />
+          <figcaption className="font-mono mt-4 text-[10px] tracking-[0.16em] text-white/60 uppercase">
             Her own reset — before / after
           </figcaption>
         </figure>
@@ -106,27 +119,31 @@ function System() {
           <article key={s.n} className="rounded-[16px] border border-white/10 bg-white/[0.03] p-7">
             <p className="font-mono mb-6 text-[10px] tracking-[0.16em] text-[#e07a4d]">{s.n}</p>
             <h3 className="mb-4 text-[26px] leading-[1.05] text-[#f3ede2]">{s.t}</h3>
-            <p className="text-[15px] leading-[1.55] text-white/55">{s.b}</p>
+            <p className="text-[15px] leading-[1.55] text-white/65">{s.b}</p>
           </article>
         ))}
       </div>
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <div className="rounded-[16px] border border-white/10 bg-white/[0.03] p-7">
-          <p className="font-mono mb-5 text-[10px] tracking-[0.16em] text-[#e07a4d] uppercase">Now</p>
+          <p className="font-mono mb-5 text-[10px] tracking-[0.16em] text-[#e07a4d] uppercase">
+            Now
+          </p>
           <h3 className="mb-4 text-[26px] text-[#f3ede2]">Spike. Crash. Repeat.</h3>
-          <p className="max-w-[42ch] text-[15px] leading-[1.55] text-white/55">
-            Cravings that feel like character. Fog after meals. Fat that will not move because insulin is
-            telling the body to hold. You can out-discipline this for a week. You cannot out-discipline a
-            hormone.
+          <p className="max-w-[42ch] text-[15px] leading-[1.55] text-white/65">
+            Cravings that feel like character. Fog after meals. Fat that will not move because
+            insulin is telling the body to hold. You can out-discipline this for a week. You cannot
+            out-discipline a hormone.
           </p>
         </div>
         <div className="rounded-[16px] border border-white/10 bg-white/[0.03] p-7">
-          <p className="font-mono mb-5 text-[10px] tracking-[0.16em] text-[#e07a4d] uppercase">Possible</p>
+          <p className="font-mono mb-5 text-[10px] tracking-[0.16em] text-[#e07a4d] uppercase">
+            Possible
+          </p>
           <h3 className="mb-4 text-[26px] text-[#f3ede2]">Quiet. Steady. Light.</h3>
-          <p className="max-w-[42ch] text-[15px] leading-[1.55] text-white/55">
-            Appetite that ends when the plate does. Energy that lasts past 4pm. A metabolism that releases
-            instead of hoarding. Most people feel the cravings drop in the first week.
+          <p className="max-w-[42ch] text-[15px] leading-[1.55] text-white/65">
+            Appetite that ends when the plate does. Energy that lasts past 4pm. A metabolism that
+            releases instead of hoarding. Most people feel the cravings drop in the first week.
           </p>
         </div>
       </div>
@@ -148,19 +165,28 @@ function Saath() {
     <Shell id="saath">
       <Label>The house tracker · free for clients</Label>
       <div className="flex flex-wrap items-end gap-6">
-        <img src="/brand/saath-mark-v2.svg" alt="" width="64" height="64" className="rounded-[16px]" />
-        <h2 className="text-[clamp(44px,7vw,92px)] leading-[0.9] tracking-[-0.02em] text-[#f3ede2]">Saath.</h2>
+        <img
+          src="/brand/saath-mark-v2.svg"
+          alt=""
+          width="64"
+          height="64"
+          className="rounded-[16px]"
+        />
+        <h2 className="text-[clamp(44px,7vw,92px)] leading-[0.9] tracking-[-0.02em] text-[#f3ede2]">
+          Saath.
+        </h2>
       </div>
       <p className="mt-8 max-w-[48ch] text-[19px] leading-[1.5] text-white/70">
-        साथ — together. The exercise and gym tracker every client gets a free seat in. Set the line while you
-        still weigh more than it. Load the starter week. Log the set. Watch the curve fall.
+        साथ — together. The exercise and gym tracker every client gets a free seat in. Set the line
+        while you still weigh more than it. Load the starter week. Log the set. Watch the curve
+        fall.
       </p>
 
       <div className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {houseFeatures.map((f) => (
           <article key={f.t} className="rounded-[16px] border border-white/10 bg-white/[0.03] p-6">
             <h3 className="mb-3 text-[20px] text-[#f3ede2]">{f.t}</h3>
-            <p className="text-[14.5px] leading-[1.55] text-white/55">{f.b}</p>
+            <p className="text-[14.5px] leading-[1.55] text-white/65">{f.b}</p>
           </article>
         ))}
       </div>
@@ -184,10 +210,10 @@ function Business() {
       <h2 className="max-w-[18ch] text-[clamp(40px,6.5vw,86px)] leading-[0.95] tracking-[-0.02em] text-[#f3ede2]">
         Or build it with her.
       </h2>
-      <p className="mt-10 max-w-[46ch] text-[17px] leading-[1.6] text-white/55">
-        Some people finish the ninety days and want to hand it on. There is a path for that — Unicity, the same
-        products, the same coaching, as a business you run yourself. Five minutes on WhatsApp, no pressure and
-        no pitch deck. Suman will tell you honestly whether it fits.
+      <p className="mt-10 max-w-[46ch] text-[17px] leading-[1.6] text-white/65">
+        Some people finish the ninety days and want to hand it on. There is a path for that —
+        Unicity, the same products, the same coaching, as a business you run yourself. Five minutes
+        on WhatsApp, no pressure and no pitch deck. Suman will tell you honestly whether it fits.
       </p>
       <a href={waEarn} target="_blank" rel="noopener noreferrer" className="v2-pill-solid mt-10">
         Talk about building
@@ -208,14 +234,16 @@ function Faq() {
           <Accordion.Item key={i} value={`i${i}`} className="border-b border-white/10">
             <Accordion.Header>
               <Accordion.Trigger className="group flex w-full items-center justify-between gap-6 py-6 text-left">
-                <span className="text-[18px] leading-[1.3] text-[#f3ede2] md:text-[21px]">{f.q}</span>
+                <span className="text-[18px] leading-[1.3] text-[#f3ede2] md:text-[21px]">
+                  {f.q}
+                </span>
                 <span className="font-mono shrink-0 text-[20px] text-[#e07a4d] transition group-data-[state=open]:rotate-45">
                   +
                 </span>
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content className="faq-content">
-              <p className="max-w-[62ch] pb-7 text-[15.5px] leading-[1.6] text-white/55">{f.a}</p>
+              <p className="max-w-[62ch] pb-7 text-[15.5px] leading-[1.6] text-white/65">{f.a}</p>
             </Accordion.Content>
           </Accordion.Item>
         ))}
@@ -255,19 +283,39 @@ function Footer() {
           Suman Bagriya
         </Link>
         <div className="flex flex-wrap gap-7 font-mono text-[11px] tracking-[0.12em] text-white/50 uppercase">
-          <a href={ORDER} target="_blank" rel="noopener noreferrer" className="hover:text-[#e07a4d]">
+          <a
+            href={ORDER}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tap-target hover:text-[#e07a4d]"
+          >
             Order
           </a>
-          <a href={IG} target="_blank" rel="noopener noreferrer" className="hover:text-[#e07a4d]">
+          <a
+            href={IG}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tap-target hover:text-[#e07a4d]"
+          >
             Instagram
           </a>
-          <a href={WA} target="_blank" rel="noopener noreferrer" className="hover:text-[#e07a4d]">
+          <a
+            href={WA}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tap-target hover:text-[#e07a4d]"
+          >
             WhatsApp
           </a>
-          <a href={SAATH} className="hover:text-[#e07a4d]">
+          <a href={SAATH} className="tap-target hover:text-[#e07a4d]">
             Saath
           </a>
-          <a href={DISCLOSURE} target="_blank" rel="noopener noreferrer" className="hover:text-[#e07a4d]">
+          <a
+            href={DISCLOSURE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tap-target hover:text-[#e07a4d]"
+          >
             Disclosure
           </a>
         </div>

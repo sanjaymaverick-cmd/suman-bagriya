@@ -8,7 +8,13 @@ const SumanHero = lazy(() => import("@/components/k95/SumanHero"));
 export default function V3Hero() {
   return (
     <section className="relative flex min-h-[100dvh] flex-col justify-center overflow-hidden bg-[#0c0b0a] px-[5%] pt-32 pb-24 text-[#f3ede2]">
-      <div className="pointer-events-none absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "radial-gradient(circle, #f3ede2 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage: "radial-gradient(circle, #f3ede2 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
 
       <div className="relative mx-auto grid w-full max-w-[1320px] items-center gap-16 lg:grid-cols-[1.15fr_0.85fr]">
         <div>
@@ -24,8 +30,8 @@ export default function V3Hero() {
             <span className="text-brick italic">reset.</span>
           </h1>
           <p className="mt-10 max-w-[42ch] text-[16px] leading-[1.6] text-[#f3ede2]/70 md:text-[18px]">
-            Unimate in the morning. Balance before meals. Ninety days with Suman — no calorie counting, no
-            willpower theatre. The house does the remembering.
+            Unimate in the morning. Balance before meals. Ninety days with Suman — no calorie
+            counting, no willpower theatre. The house does the remembering.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <a href={waReset} target="_blank" rel="noopener noreferrer" className="btn-dark-solid">
@@ -60,8 +66,12 @@ export default function V3Hero() {
       </div>
 
       <div className="relative mx-auto mt-20 flex w-full max-w-[1320px] items-center justify-between">
-        <span className="font-mono text-[10px] tracking-[0.2em] text-[#f3ede2]/40 uppercase">Scroll</span>
-        <span className="font-mono text-[10px] tracking-[0.2em] text-[#f3ede2]/40 uppercase">V2 — Editorial</span>
+        <span className="font-mono text-[10px] tracking-[0.2em] text-[#f3ede2]/40 uppercase">
+          Scroll
+        </span>
+        <span className="font-mono text-[10px] tracking-[0.2em] text-[#f3ede2]/40 uppercase">
+          V2 — Editorial
+        </span>
       </div>
     </section>
   );

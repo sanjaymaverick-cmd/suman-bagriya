@@ -24,7 +24,10 @@ export default function V2Nav() {
       </div>
 
       {open && (
-        <div className="mx-auto mt-3 flex max-w-[1400px] flex-col rounded-[28px] bg-[#f3ede2] px-7 py-7 text-[#111]">
+        <nav
+          aria-label="Main"
+          className="mx-auto mt-3 flex max-w-[1400px] flex-col rounded-[28px] bg-[#f3ede2] px-7 py-7 text-[#111]"
+        >
           {[
             { href: "#gallery", label: "Drag to explore" },
             { href: "#about", label: "About" },
@@ -63,10 +66,10 @@ export default function V2Nav() {
           >
             Start the Reset
           </a>
-          <a href={WA} className="mt-4 text-[12px] tracking-[0.1em] text-[#111]/50">
+          <a href={WA} className="mt-4 text-[12px] tracking-[0.1em] text-[#111]/70">
             +91 99204 04375
           </a>
-        </div>
+        </nav>
       )}
     </header>
   );

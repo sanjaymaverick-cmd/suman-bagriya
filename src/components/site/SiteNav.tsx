@@ -32,20 +32,30 @@ export default function SiteNav({ current }: { current?: string }) {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
-        scrolled || open ? "border-b border-black/[0.07] bg-paper/92 backdrop-blur-md" : "bg-paper/70 backdrop-blur-sm"
+        scrolled || open
+          ? "border-b border-black/[0.07] bg-paper/92 backdrop-blur-md"
+          : "bg-paper/70 backdrop-blur-sm"
       }`}
     >
       <div className="mx-auto flex max-w-[1280px] items-center justify-between px-[3.5%] py-4">
         <Link to="/" className="flex items-center gap-2.5 text-ink">
-          <img src="/brand/suman-mark.svg" alt="" width="28" height="28" className="rounded-[4px]" />
-          <span className="font-display text-[22px] leading-none tracking-tight">Suman Bagriya</span>
+          <img
+            src="/brand/suman-mark.svg"
+            alt=""
+            width="28"
+            height="28"
+            className="rounded-[4px]"
+          />
+          <span className="font-display text-[22px] leading-none tracking-tight">
+            Suman Bagriya
+          </span>
         </Link>
         <nav className="hidden items-center gap-6 font-mono text-[11px] tracking-[0.12em] text-ink/80 lg:flex">
           {items.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className={current === item.label.toLowerCase() ? "text-ink" : "hover:text-ink"}
+              className={`tap-target ${current === item.label.toLowerCase() ? "text-ink" : "hover:text-ink"}`}
             >
               {item.label.toUpperCase()}
             </a>
@@ -65,7 +75,14 @@ export default function SiteNav({ current }: { current?: string }) {
           aria-label="Menu"
           aria-expanded={open}
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             {open ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
           </svg>
         </button>
@@ -85,7 +102,12 @@ export default function SiteNav({ current }: { current?: string }) {
           <a href={WA} className="font-mono mt-8 text-[12px] tracking-[0.14em] text-muted">
             +91 99204 04375
           </a>
-          <a href={waReset} target="_blank" rel="noopener noreferrer" className="btn-brick mt-6 w-full">
+          <a
+            href={waReset}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-brick mt-6 w-full"
+          >
             Start the Reset
           </a>
         </div>

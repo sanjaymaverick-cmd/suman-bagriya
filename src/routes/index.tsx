@@ -13,7 +13,13 @@ function Home() {
   useEffect(() => setReady(true), []);
 
   return (
-    <main className="relative bg-paper">
+    <main id="main" className="relative bg-paper">
+      {/* The visible hero line lives inside the WebGL scene, so the document had no
+          top-level heading for screen readers or search engines to anchor on. */}
+      <h1 className="sr-only">
+        Suman Bagriya — metabolic health coach. Lose weight and reclaim your energy without dieting
+        or calorie counting.
+      </h1>
       <div className="grain" aria-hidden="true" />
       <PageGrid />
       <SiteNav />

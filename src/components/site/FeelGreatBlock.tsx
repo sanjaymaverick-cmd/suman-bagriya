@@ -45,7 +45,12 @@ export default function FeelGreatBlock() {
             </article>
           ))}
         </div>
-        <a href={waReset} target="_blank" rel="noopener noreferrer" className="btn-brick mt-16 inline-flex">
+        <a
+          href={waReset}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-brick mt-16 inline-flex"
+        >
           Start my 90-Day Reset
         </a>
       </div>

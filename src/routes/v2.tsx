@@ -19,7 +19,7 @@ export const Route = createFileRoute("/v2")({
 
 function V2Page() {
   return (
-    <main className="bg-[#050505] text-[#f3ede2]">
+    <main id="main" className="bg-[#050505] text-[#f3ede2]">
       <V2Nav />
       <V2Hero />
       <About />

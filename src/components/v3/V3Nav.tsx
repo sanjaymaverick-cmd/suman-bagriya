@@ -15,19 +15,25 @@ export default function V3Nav() {
     <header className="fixed inset-x-0 top-0 z-50 px-[5%] pt-5">
       <div className="mx-auto flex max-w-[1320px] items-center justify-between rounded-full border border-white/10 bg-[#0c0b0a]/80 px-5 py-3 text-[#f3ede2] backdrop-blur-md">
         <Link to="/" className="flex items-center gap-2.5">
-          <img src="/brand/suman-mark.svg" alt="" width="24" height="24" className="rounded-[4px]" />
+          <img
+            src="/brand/suman-mark.svg"
+            alt=""
+            width="24"
+            height="24"
+            className="rounded-[4px]"
+          />
           <span className="font-mono text-[11px] tracking-[0.18em] uppercase">Suman Bagriya</span>
         </Link>
         <nav className="hidden items-center gap-7 font-mono text-[11px] tracking-[0.16em] text-[#f3ede2]/70 uppercase md:flex">
           {items.map((item) => (
-            <a key={item.href} href={item.href} className="hover:text-[#f3ede2]">
+            <a key={item.href} href={item.href} className="tap-target hover:text-[#f3ede2]">
               {item.label}
             </a>
           ))}
-          <Link to="/v2" className="hover:text-[#f3ede2]">
+          <Link to="/v2" className="tap-target hover:text-[#f3ede2]">
             V2
           </Link>
-          <Link to="/" className="hover:text-[#f3ede2]">
+          <Link to="/" className="tap-target hover:text-[#f3ede2]">
             Original
           </Link>
           <a
@@ -45,7 +51,14 @@ export default function V3Nav() {
           aria-label="Menu"
           aria-expanded={open}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             {open ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
           </svg>
         </button>
@@ -63,13 +76,24 @@ export default function V3Nav() {
               {item.label}
             </a>
           ))}
-          <Link to="/v2" className="font-editorial-serif border-b border-white/10 py-4 text-[32px] leading-none">
+          <Link
+            to="/v2"
+            className="font-editorial-serif border-b border-white/10 py-4 text-[32px] leading-none"
+          >
             V2
           </Link>
-          <Link to="/" className="font-editorial-serif border-b border-white/10 py-4 text-[32px] leading-none">
+          <Link
+            to="/"
+            className="font-editorial-serif border-b border-white/10 py-4 text-[32px] leading-none"
+          >
             Original site
           </Link>
-          <a href={waReset} target="_blank" rel="noopener noreferrer" className="btn-dark-solid mt-6 justify-center">
+          <a
+            href={waReset}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-dark-solid mt-6 justify-center"
+          >
             Start the Reset
           </a>
           <a href={WA} className="font-mono mt-5 text-[12px] tracking-[0.14em] text-[#f3ede2]/50">
