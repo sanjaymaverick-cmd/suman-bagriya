@@ -103,6 +103,28 @@ function SaathPage() {
           </div>
         </section>
 
+        <section id="house-live" className="scroll-mt-24 px-[3.5%] py-16 md:py-24">
+          <div className="mx-auto max-w-[1280px]">
+            <p className="font-mono mb-6 text-[12px] tracking-[0.16em] text-muted uppercase">Live demo</p>
+            <h2 className="font-display mb-6 max-w-[14ch] text-[clamp(42px,7vw,88px)]">The house, inside this page.</h2>
+            <p className="mb-10 max-w-[46ch] text-[16px] leading-[1.55] text-muted md:text-[18px]">
+              This is the real app — not a screenshot. Demo seat only. After Suman confirms, the administrator
+              sends your login.
+            </p>
+            <div className="saath-embed">
+              <iframe
+                src={`${SAATH_DEMO}#/home`}
+                title="Saath house tracker"
+                loading="lazy"
+                allow="fullscreen"
+              />
+            </div>
+            <a href={SAATH_DEMO} className="btn-ghost mt-8">
+              Open full screen
+            </a>
+          </div>
+        </section>
+
         <section className="px-[3.5%] py-8">
           <div className="mx-auto max-w-[1280px] border-y border-black/[0.07] py-10">
             <p className="font-mono mb-3 text-[11px] tracking-[0.16em] text-brick uppercase">How a seat is opened</p>
