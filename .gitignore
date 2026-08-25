@@ -21,3 +21,11 @@ artifacts
 .grok
 AGENTS.md
 *.webm
+
+# Instagram scrape dump — raw export lands here, only curated picks get committed
+public/photos/*
+!public/photos/p[0-9]*.jpg
+!public/photos/suman-*
+!public/photos/proof
+!public/photos/proof/*
+!public/photos/list.json
