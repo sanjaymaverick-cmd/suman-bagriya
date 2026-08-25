@@ -68,7 +68,7 @@ export default function BusinessSection() {
               key={item.k}
               className={`pt-10 lg:px-6 ${i > 0 ? "lg:border-l lg:border-black/[0.07]" : "lg:pl-0"}`}
             >
-              <p className="font-mono mb-8 text-[12px] tracking-[0.14em] text-brick">{item.k}</p>
+              <p className="font-mono mb-8 text-[12px] tracking-[0.14em] text-brick-text">{item.k}</p>
               <h3 className="font-display mb-8 text-[24px] sm:text-[32px]">{item.t}</h3>
               <p className="max-w-[28ch] text-[15px] leading-[1.5] text-muted">{item.b}</p>
             </article>

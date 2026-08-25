@@ -5,7 +5,13 @@
   --ink: #111111;
   --muted: #5c5854;
   --line: rgba(17, 17, 17, 0.08);
+  /* Brick has three jobs and they need different values to stay legible.
+     --brick        display type, borders, decorative fills (3.62:1 on paper — large text only)
+     --brick-text   small text on light grounds (5.11:1 on paper)
+     --brick-solid  fills that carry white text (4.81:1 with #fff) */
   --brick: #c45c32;
+  --brick-text: #a34724;
+  --brick-solid: #ba532e;
   --brick-dark: #a34724;
   --cream: #f4f1ec;
   --sage: #6f7a66;
@@ -26,6 +32,8 @@
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-brick: var(--brick);
+  --color-brick-text: var(--brick-text);
+  --color-brick-solid: var(--brick-solid);
   --color-brick-dark: var(--brick-dark);
   --color-cream: var(--cream);
   --color-sage: var(--sage);
@@ -98,7 +106,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--brick);
+  background: var(--brick-solid);
   color: #fff;
   font-family: var(--font-mono);
   font-size: 13px;
@@ -138,7 +146,7 @@
   justify-content: center;
   background: #f3ede2;
   color: #0a0a0a;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -156,7 +164,7 @@
   justify-content: center;
   border: 1px solid rgba(243, 237, 226, 0.28);
   color: #f3ede2;
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -180,7 +188,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--brick);
+  background: var(--brick-solid);
   color: #fff;
   font-family: var(--font-mono);
   font-size: 13px;

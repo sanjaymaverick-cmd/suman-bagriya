@@ -54,7 +54,7 @@ export default function SiteNav({ current }: { current?: string }) {
             href={waReset}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-[5px] bg-brick px-4 py-[10px] text-[11px] tracking-[0.14em] text-white hover:bg-brick-dark"
+            className="rounded-[5px] bg-brick-solid px-4 py-[10px] text-[11px] tracking-[0.14em] text-white hover:bg-brick-dark"
           >
             START
           </a>

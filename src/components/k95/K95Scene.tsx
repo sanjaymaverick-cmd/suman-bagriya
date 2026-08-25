@@ -519,7 +519,7 @@ function StudioPanel({
                   setParams({ ...PRESETS[key] });
                 }}
                 className={`rounded-[5px] px-2 py-1.5 font-mono text-[10px] tracking-[0.12em] uppercase ${
-                  preset === key ? "bg-brick text-white" : "bg-black/5 text-ink/70 hover:bg-black/10"
+                  preset === key ? "bg-brick-solid text-white" : "bg-black/5 text-ink/70 hover:bg-black/10"
                 }`}
               >
                 {key}
@@ -681,7 +681,7 @@ export default function K95Scene() {
                 href={waReset}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 rounded-[5px] bg-brick px-4 py-[14px] text-center font-mono text-[11px] tracking-[0.12em] text-white hover:bg-brick-dark sm:flex-none sm:px-5"
+                className="flex-1 rounded-[5px] bg-brick-solid px-4 py-[14px] text-center font-mono text-[11px] tracking-[0.12em] text-white hover:bg-brick-dark sm:flex-none sm:px-5"
               >
                 START THE RESET
               </a>

@@ -127,7 +127,7 @@ function SaathPage() {
 
         <section className="px-[3.5%] py-8">
           <div className="mx-auto max-w-[1280px] border-y border-black/[0.07] py-10">
-            <p className="font-mono mb-3 text-[11px] tracking-[0.16em] text-brick uppercase">How a seat is opened</p>
+            <p className="font-mono mb-3 text-[11px] tracking-[0.16em] text-brick-text uppercase">How a seat is opened</p>
             <ol className="grid gap-10 md:grid-cols-3">
               <li>
                 <p className="font-mono mb-4 text-[11px] tracking-[0.14em] text-muted">01</p>
@@ -161,7 +161,7 @@ function SaathPage() {
             <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
               {features.map((f) => (
                 <article key={f.k} className="border-t border-black/[0.07] pt-8">
-                  <p className="font-mono mb-4 text-[11px] tracking-[0.14em] text-brick">{f.k}</p>
+                  <p className="font-mono mb-4 text-[11px] tracking-[0.14em] text-brick-text">{f.k}</p>
                   <h3 className="font-display mb-6 text-[28px] leading-[0.95] sm:text-[32px]">{f.t}</h3>
                   <p className="max-w-[32ch] text-[15px] leading-[1.5] text-muted">{f.b}</p>
                 </article>
@@ -227,16 +227,16 @@ function SaathPage() {
               Suman Bagriya
             </Link>
             <div className="mt-[72px] flex flex-wrap gap-8 font-mono text-[12px] tracking-[0.12em] uppercase">
-              <a href={ORDER} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
+              <a href={ORDER} target="_blank" rel="noopener noreferrer" className="hover:text-brick-text">
                 Order
               </a>
-              <a href={IG} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
+              <a href={IG} target="_blank" rel="noopener noreferrer" className="hover:text-brick-text">
                 Instagram
               </a>
-              <a href={WA} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
+              <a href={WA} target="_blank" rel="noopener noreferrer" className="hover:text-brick-text">
                 WhatsApp
               </a>
-              <a href={DISCLOSURE} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
+              <a href={DISCLOSURE} target="_blank" rel="noopener noreferrer" className="hover:text-brick-text">
                 Affiliate disclosure
               </a>
             </div>

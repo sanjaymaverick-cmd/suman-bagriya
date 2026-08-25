@@ -70,7 +70,7 @@ export default function V2Hero() {
           href={waReset}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-mono rounded-full bg-[#c45c32] px-5 py-2.5 text-[10px] tracking-[0.18em] text-white uppercase hover:bg-[#a34724]"
+          className="font-mono rounded-full bg-[#ba532e] px-5 py-2.5 text-[10px] tracking-[0.18em] text-white uppercase hover:bg-[#a34724]"
         >
           Start the Reset
         </a>

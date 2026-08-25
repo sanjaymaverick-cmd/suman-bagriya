@@ -34,7 +34,7 @@ export default function V3Nav() {
             href={waReset}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-full bg-brick px-4 py-2 text-[11px] tracking-[0.14em] text-white hover:bg-brick-dark"
+            className="rounded-full bg-brick-solid px-4 py-2 text-[11px] tracking-[0.14em] text-white hover:bg-brick-dark"
           >
             Start
           </a>

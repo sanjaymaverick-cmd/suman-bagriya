@@ -53,7 +53,7 @@ export default function V3Hero() {
               </Canvas>
             </Suspense>
           </div>
-          <span className="font-mono absolute -right-2 top-6 -rotate-6 rounded-[3px] bg-brick px-3 py-1.5 text-[11px] tracking-[0.14em] text-white shadow-lg sm:-right-6">
+          <span className="font-mono absolute -right-2 top-6 -rotate-6 rounded-[3px] bg-brick-solid px-3 py-1.5 text-[11px] tracking-[0.14em] text-white shadow-lg sm:-right-6">
             90 DAYS.
           </span>
         </div>

@@ -108,10 +108,10 @@ export default function SiteSections() {
                   <Accordion.Header>
                     <Accordion.Trigger className="group flex w-full items-start justify-between gap-6 py-7 text-left">
                       <span className="font-neue text-[20px] leading-[1.25] md:text-[26px]">{item.q}</span>
-                      <span className="font-mono mt-1 shrink-0 text-[18px] text-brick group-data-[state=open]:hidden">
+                      <span className="font-mono mt-1 shrink-0 text-[18px] text-brick-text group-data-[state=open]:hidden">
                         +
                       </span>
-                      <span className="font-mono mt-1 hidden shrink-0 text-[18px] text-brick group-data-[state=open]:inline">
+                      <span className="font-mono mt-1 hidden shrink-0 text-[18px] text-brick-text group-data-[state=open]:inline">
                         –
                       </span>
                     </Accordion.Trigger>
@@ -159,7 +159,7 @@ export default function SiteSections() {
               <p className="mb-8 max-w-[32ch] text-[16px] leading-[1.45] text-muted">
                 Unicity business from your phone. Mentorship included. Apply for a conversation.
               </p>
-              <span className="font-mono text-[11px] tracking-[0.14em] text-brick">WHATSAPP THIS →</span>
+              <span className="font-mono text-[11px] tracking-[0.14em] text-brick-text">WHATSAPP THIS →</span>
             </a>
           </div>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
@@ -194,22 +194,22 @@ export default function SiteSections() {
               </p>
             </div>
             <div className="flex flex-wrap gap-8 font-mono text-[12px] tracking-[0.12em] uppercase">
-              <a href={ORDER} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
+              <a href={ORDER} target="_blank" rel="noopener noreferrer" className="hover:text-brick-text">
                 Order
               </a>
-              <a href={IG} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
+              <a href={IG} target="_blank" rel="noopener noreferrer" className="hover:text-brick-text">
                 Instagram
               </a>
-              <a href={WA} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
+              <a href={WA} target="_blank" rel="noopener noreferrer" className="hover:text-brick-text">
                 WhatsApp
               </a>
-              <a href={SAATH} className="hover:text-brick">
+              <a href={SAATH} className="hover:text-brick-text">
                 Saath
               </a>
-              <a href={waConnect} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
+              <a href={waConnect} target="_blank" rel="noopener noreferrer" className="hover:text-brick-text">
                 Connect
               </a>
-              <a href={DISCLOSURE} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
+              <a href={DISCLOSURE} target="_blank" rel="noopener noreferrer" className="hover:text-brick-text">
                 Affiliate disclosure
               </a>
             </div>

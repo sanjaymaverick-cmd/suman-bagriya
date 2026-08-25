@@ -143,12 +143,16 @@ export default function V2Canvas({
     if (drag.current.moved < CLICK_SLOP) onOpen(item);
   };
 
+  // touch-pan-y keeps vertical swipes with the page — with touch-action:none the drag
+  // handler ate them and the ~6,600px of content below the canvas was unreachable on a
+  // phone. Horizontal gestures still pan the canvas. The sub-100dvh height on small
+  // screens leaves the next section peeking, which is what invites the scroll.
   return (
     <div
       ref={wrapRef}
       onPointerDown={onPointerDown}
       onWheel={onWheel}
-      className="relative h-[100dvh] w-full touch-none overflow-hidden bg-[#050505] select-none"
+      className="relative h-[86dvh] w-full touch-pan-y overflow-hidden bg-[#050505] select-none md:h-[100dvh]"
       style={{ cursor: dragging ? "grabbing" : "grab" }}
     >
       {Array.from({ length: COLS * ROWS }).map((_, i) => {
