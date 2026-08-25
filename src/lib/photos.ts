@@ -52,7 +52,7 @@ export async function loadPhotoList(): Promise<string[]> {
   return CURATED.filter(isGalleryPhoto);
 }
 
-export const CENTER_PORTRAIT = "/photos/suman-hero.jpg";
+export const CENTER_PORTRAIT = "/photos/suman-face-v3.jpg";
 
 const SKIP = [
   "proof-01.png",

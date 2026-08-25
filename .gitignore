@@ -22,6 +22,8 @@ artifacts
 AGENTS.md
 *.webm
 
+photos instagram/
+
 # Instagram scrape dump — raw export lands here, only curated picks get committed
 public/photos/*
 !public/photos/p[0-9]*.jpg

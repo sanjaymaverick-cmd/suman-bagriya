@@ -88,6 +88,94 @@
   font-family: var(--font-body);
 }
 
+.font-editorial-serif {
+  font-family: "Fraunces", "Iowan Old Style", Georgia, serif;
+  font-weight: 480;
+  letter-spacing: -0.01em;
+}
+
+.btn-dark-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brick);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 15px 26px;
+  border-radius: 999px;
+  transition: background 200ms cubic-bezier(0.23, 1, 0.32, 1), transform 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.btn-dark-solid:hover {
+  background: var(--brick-dark);
+  transform: translateY(-1px);
+}
+
+.btn-dark-line {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(243, 237, 226, 0.35);
+  color: #f3ede2;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 15px 26px;
+  border-radius: 999px;
+  transition: background 200ms cubic-bezier(0.23, 1, 0.32, 1), color 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.btn-dark-line:hover {
+  background: #f3ede2;
+  color: #0c0b0a;
+}
+
+.v2-pill-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3ede2;
+  color: #0a0a0a;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px 24px;
+  border-radius: 999px;
+  transition: opacity 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.v2-pill-solid:hover {
+  opacity: 0.82;
+}
+
+.v2-pill-line {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(243, 237, 226, 0.28);
+  color: #f3ede2;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 14px 24px;
+  border-radius: 999px;
+  transition: background 200ms cubic-bezier(0.23, 1, 0.32, 1), color 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.v2-pill-line:hover {
+  background: #f3ede2;
+  color: #0a0a0a;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 .btn-brick {
   display: inline-flex;
   align-items: center;

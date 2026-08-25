@@ -592,6 +592,7 @@ export default function K95Scene() {
   return (
     <div
       data-hero
+      data-hero-portrait="3d"
       className="relative h-[88dvh] w-full overflow-hidden bg-paper md:h-screen"
       style={{ touchAction: "pan-y" }}
     >
@@ -624,7 +625,32 @@ export default function K95Scene() {
         />
       </Canvas>
 
-      <SumanHero onSelect={setSelected} />
+      <div className="pointer-events-none absolute inset-0 z-[5] flex items-start justify-center pt-20 sm:items-center sm:pt-8 sm:pb-[26vh]">
+        <div
+          data-suman-vitrine
+          className="pointer-events-auto relative h-[min(46vh,400px)] w-[min(72vw,280px)] cursor-zoom-in sm:h-[min(54vh,540px)] sm:w-[min(42vw,360px)]"
+        >
+          <Canvas
+            camera={{ position: [0, 0.12, 7.1], fov: 28, near: 0.1, far: 40 }}
+            dpr={isCoarsePointer() ? [1, 1.15] : [1, 1.5]}
+            gl={{
+              antialias: !isCoarsePointer(),
+              alpha: true,
+              powerPreference: "low-power",
+            }}
+            style={{ background: "transparent", cursor: "zoom-in" }}
+          >
+            <Suspense fallback={null}>
+              <SumanHero
+                active={selected === CENTER_PORTRAIT}
+                dimmed={!!selected && selected !== CENTER_PORTRAIT}
+                onSelect={setSelected}
+              />
+            </Suspense>
+          </Canvas>
+        </div>
+      </div>
+
       <StudioPanel
         preset={preset}
         setPreset={setPreset}

@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SaathRouteImport } from './routes/saath'
+import { Route as V2RouteImport } from './routes/v2'
+import { Route as V3RouteImport } from './routes/v3'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +24,49 @@ const SaathRoute = SaathRouteImport.update({
   path: '/saath',
   getParentRoute: () => rootRouteImport,
 } as any)
+const V2Route = V2RouteImport.update({
+  id: '/v2',
+  path: '/v2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const V3Route = V3RouteImport.update({
+  id: '/v3',
+  path: '/v3',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/saath': typeof SaathRoute
+  '/v2': typeof V2Route
+  '/v3': typeof V3Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/saath': typeof SaathRoute
+  '/v2': typeof V2Route
+  '/v3': typeof V3Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/saath': typeof SaathRoute
+  '/v2': typeof V2Route
+  '/v3': typeof V3Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/saath'
+  fullPaths: '/' | '/saath' | '/v2' | '/v3'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/saath'
-  id: '__root__' | '/' | '/saath'
+  to: '/' | '/saath' | '/v2' | '/v3'
+  id: '__root__' | '/' | '/saath' | '/v2' | '/v3'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SaathRoute: typeof SaathRoute
+  V2Route: typeof V2Route
+  V3Route: typeof V3Route
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +85,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaathRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/v2': {
+      id: '/v2'
+      path: '/v2'
+      fullPath: '/v2'
+      preLoaderRoute: typeof V2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/v3': {
+      id: '/v3'
+      path: '/v3'
+      fullPath: '/v3'
+      preLoaderRoute: typeof V3RouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SaathRoute: SaathRoute,
+  V2Route: V2Route,
+  V3Route: V3Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
