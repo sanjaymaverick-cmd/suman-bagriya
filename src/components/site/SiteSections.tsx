@@ -3,7 +3,8 @@ import PhotoLibrary from "@/components/site/PhotoLibrary";
 import ProductSection from "@/components/site/ProductSection";
 import BusinessSection from "@/components/site/BusinessSection";
 import FeelGreatBlock from "@/components/site/FeelGreatBlock";
-import { DISCLOSURE, IG, ORDER, WA, waConnect, waEarn, waReset, waResetHi } from "@/lib/links";
+import SaathSection from "@/components/site/SaathSection";
+import { DISCLOSURE, IG, ORDER, WA, waConnect, waEarn, waReset, waResetHi, SAATH } from "@/lib/links";
 
 const faqs = [
   {
@@ -33,6 +34,10 @@ const faqs = [
   {
     q: "What if I want to help others too?",
     a: "There is a partner path. Apply to work with Suman — a five-minute WhatsApp conversation, no pressure.",
+  },
+  {
+    q: "What is Saath?",
+    a: "Suman’s private house tracker — workouts, weight, plan, streaks. Every client gets free access. After she confirms, the administrator sends your login. See the Saath page for how the house works.",
   },
 ];
 
@@ -92,6 +97,7 @@ export default function SiteSections() {
       <Marquee />
       <PhotoLibrary />
       <ProductSection />
+      <SaathSection />
 
       <section id="faq" className="relative scroll-mt-24 px-[3.5%] py-24 md:py-32">
         <div className="mx-auto max-w-[1280px]">
@@ -135,7 +141,7 @@ export default function SiteSections() {
               <p className="font-mono mb-6 text-[11px] tracking-[0.16em] text-white/50">01 — FOR YOU</p>
               <h3 className="font-display mb-4 text-[36px] sm:text-[44px]">90-Day Reset</h3>
               <p className="mb-8 max-w-[32ch] text-[16px] leading-[1.45] text-white/70">
-                Unimate, Balance, the window. She walks the first week with you.
+                Unimate, Balance, the window. She walks the first week with you. Saath is included, free.
               </p>
               <span className="font-mono text-[11px] tracking-[0.14em]">WHATSAPP THIS →</span>
             </a>
@@ -193,6 +199,9 @@ export default function SiteSections() {
               </a>
               <a href={WA} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
                 WhatsApp
+              </a>
+              <a href={SAATH} className="hover:text-brick">
+                Saath
               </a>
               <a href={waConnect} target="_blank" rel="noopener noreferrer" className="hover:text-brick">
                 Connect

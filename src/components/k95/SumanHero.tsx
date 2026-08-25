@@ -1,230 +1,27 @@
-import { useRef } from "react";
-import { useFrame } from "@react-three/fiber";
-import { ContactShadows } from "@react-three/drei";
-import * as THREE from "three";
-import { isCoarsePointer, useManagedTexture } from "@/lib/texture-memory";
+import { CENTER_PORTRAIT } from "@/lib/photos";
 
-const COLOR = "/photos/suman-center.png";
-const DEPTH = "/photos/suman-center-depth.jpg";
-
-const W = 2.28;
-const H = 2.9;
-
-const paraVert = /* glsl */ `
-  precision highp float;
-  varying vec2 vUv;
-  varying vec3 vView;
-  void main() {
-    vUv = uv;
-    vec4 mv = modelViewMatrix * vec4(position, 1.0);
-    vView = -mv.xyz;
-    gl_Position = projectionMatrix * mv;
-  }
-`;
-
-const paraFrag = /* glsl */ `
-  precision highp float;
-  uniform sampler2D uMap;
-  uniform sampler2D uDepth;
-  uniform vec2 uPointer;
-  varying vec2 vUv;
-  varying vec3 vView;
-  void main() {
-    float d = texture2D(uDepth, vUv).r;
-    vec2 uv = vUv + uPointer * (1.0 - d) * 0.038;
-    uv = clamp(uv, 0.02, 0.98);
-    vec3 col = texture2D(uMap, uv).rgb;
-    float fres = pow(1.0 - abs(normalize(vView).z), 2.55);
-    vec3 brick = vec3(0.77, 0.36, 0.20);
-    vec3 gold = vec3(0.90, 0.74, 0.48);
-    vec3 pearl = vec3(0.94, 0.91, 0.86);
-    vec3 rim = mix(brick, mix(gold, pearl, fres), fres);
-    col += rim * fres * 0.42;
-    gl_FragColor = vec4(col, 1.0);
-  }
-`;
-
-function Portrait({
-  onSelect,
-}: {
-  active: boolean;
-  onSelect?: (url: string) => void;
-}) {
-  const colorMap = useManagedTexture(COLOR, { hero: true });
-  const depthMap = useManagedTexture(DEPTH, { hero: true });
-  const down = useRef({ x: 0, y: 0, t: 0 });
-  const uniforms = useRef({
-    uMap: { value: null as THREE.Texture | null },
-    uDepth: { value: null as THREE.Texture | null },
-    uPointer: { value: new THREE.Vector2() },
-  });
-
-  useFrame((state) => {
-    uniforms.current.uPointer.value.lerp(state.pointer, 0.1);
-    if (colorMap) uniforms.current.uMap.value = colorMap;
-    if (depthMap) uniforms.current.uDepth.value = depthMap;
-  });
-
-  const tap = {
-    onPointerOver: () => {
-      document.body.style.cursor = "zoom-in";
-    },
-    onPointerOut: () => {
-      document.body.style.cursor = "";
-    },
-    onPointerDown: (e: { nativeEvent: PointerEvent }) => {
-      const n = e.nativeEvent;
-      down.current = { x: n.clientX, y: n.clientY, t: performance.now() };
-    },
-    onPointerUp: (e: { nativeEvent: PointerEvent; stopPropagation: () => void }) => {
-      const n = e.nativeEvent;
-      const dx = n.clientX - down.current.x;
-      const dy = n.clientY - down.current.y;
-      if (dx * dx + dy * dy < 64 && performance.now() - down.current.t < 420) {
-        e.stopPropagation();
-        onSelect?.(COLOR);
-      }
-    },
-  };
-
-  if (!colorMap) return null;
-
-  const mat = depthMap ? (
-    <shaderMaterial
-      uniforms={uniforms.current}
-      vertexShader={paraVert}
-      fragmentShader={paraFrag}
-      toneMapped={false}
-      side={THREE.FrontSide}
-    />
-  ) : (
-    <meshBasicMaterial map={colorMap} toneMapped={false} side={THREE.FrontSide} />
-  );
-
+export default function SumanHero({ onSelect }: { onSelect?: (url: string) => void }) {
   return (
-    <group>
-      <mesh position={[0, 0, 0.012]} renderOrder={1} {...tap}>
-        <planeGeometry args={[W, H]} />
-        {mat}
-      </mesh>
-      <mesh position={[0, 0, -0.012]} rotation={[0, Math.PI, 0]} renderOrder={1} {...tap}>
-        <planeGeometry args={[W, H]} />
-        {depthMap ? (
-          <shaderMaterial
-            uniforms={uniforms.current}
-            vertexShader={paraVert}
-            fragmentShader={paraFrag}
-            toneMapped={false}
-            side={THREE.FrontSide}
+    <div className="pointer-events-none absolute inset-0 z-[5] flex items-center justify-center pb-[16vh] sm:pb-[14vh]">
+      <button
+        type="button"
+        onClick={() => onSelect?.(CENTER_PORTRAIT)}
+        className="suman-hero-float pointer-events-auto cursor-zoom-in"
+        aria-label="Portrait of Suman Bagriya — open"
+      >
+        <span className="suman-hero-frame">
+          <img
+            src={CENTER_PORTRAIT}
+            alt="Suman Bagriya"
+            width={600}
+            height={800}
+            draggable={false}
           />
-        ) : (
-          <meshBasicMaterial map={colorMap} toneMapped={false} side={THREE.FrontSide} />
-        )}
-      </mesh>
-      <mesh renderOrder={0}>
-        <boxGeometry args={[W - 0.02, H - 0.02, 0.02]} />
-        <meshBasicMaterial color="#0c0b0a" toneMapped={false} />
-      </mesh>
-    </group>
-  );
-}
-
-function GlassVitrine() {
-  const cw = W + 0.22;
-  const ch = H + 0.22;
-  const cd = 0.42;
-  const bar = 0.026;
-  const hw = cw / 2;
-  const hh = ch / 2;
-  const hd = cd / 2;
-  const glass = {
-    color: "#1a1816",
-    transparent: true,
-    opacity: 0.045,
-    depthWrite: false,
-    side: THREE.DoubleSide,
-    toneMapped: false,
-  } as const;
-  const metal = { color: "#111110", toneMapped: false } as const;
-  const bars: { p: [number, number, number]; s: [number, number, number] }[] = [
-    { p: [0, hh, hd], s: [cw, bar, bar] },
-    { p: [0, -hh, hd], s: [cw, bar, bar] },
-    { p: [hw, 0, hd], s: [bar, ch, bar] },
-    { p: [-hw, 0, hd], s: [bar, ch, bar] },
-    { p: [0, hh, -hd], s: [cw, bar, bar] },
-    { p: [0, -hh, -hd], s: [cw, bar, bar] },
-    { p: [hw, 0, -hd], s: [bar, ch, bar] },
-    { p: [-hw, 0, -hd], s: [bar, ch, bar] },
-    { p: [hw, hh, 0], s: [bar, bar, cd] },
-    { p: [-hw, hh, 0], s: [bar, bar, cd] },
-    { p: [hw, -hh, 0], s: [bar, bar, cd] },
-    { p: [-hw, -hh, 0], s: [bar, bar, cd] },
-  ];
-
-  return (
-    <group>
-      <mesh position={[0, -hh - 0.18, 0]}>
-        <boxGeometry args={[cw + 0.2, 0.14, cd + 0.24]} />
-        <meshBasicMaterial color="#0a0908" toneMapped={false} />
-      </mesh>
-      <mesh position={[0, -hh - 0.09, 0]}>
-        <boxGeometry args={[cw + 0.02, 0.045, cd + 0.06]} />
-        <meshBasicMaterial color="#161412" toneMapped={false} />
-      </mesh>
-      <mesh position={[0, 0, hd]} renderOrder={2}>
-        <planeGeometry args={[cw, ch]} />
-        <meshBasicMaterial {...glass} />
-      </mesh>
-      <mesh position={[0, 0, -hd]} renderOrder={0}>
-        <planeGeometry args={[cw, ch]} />
-        <meshBasicMaterial {...glass} />
-      </mesh>
-      <mesh position={[hw, 0, 0]} rotation={[0, Math.PI / 2, 0]} renderOrder={2}>
-        <planeGeometry args={[cd, ch]} />
-        <meshBasicMaterial {...glass} />
-      </mesh>
-      <mesh position={[-hw, 0, 0]} rotation={[0, Math.PI / 2, 0]} renderOrder={2}>
-        <planeGeometry args={[cd, ch]} />
-        <meshBasicMaterial {...glass} />
-      </mesh>
-      {bars.map((b, i) => (
-        <mesh key={i} position={b.p}>
-          <boxGeometry args={b.s} />
-          <meshBasicMaterial {...metal} />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
-export default function SumanHero({
-  active,
-  dimmed,
-  onSelect,
-}: {
-  active: boolean;
-  dimmed: boolean;
-  onSelect?: (url: string) => void;
-}) {
-  const group = useRef<THREE.Group>(null);
-  const scale = useRef(1);
-
-  useFrame((state) => {
-    if (!group.current) return;
-    const t = state.clock.elapsedTime;
-    group.current.position.y = 0.92 + Math.sin(t * 0.32) * 0.04;
-    const target = active ? 1.1 : dimmed ? 0.94 : 1;
-    scale.current += (target - scale.current) * 0.1;
-    group.current.scale.setScalar(scale.current);
-  });
-
-  return (
-    <group ref={group} position={[0, 0.92, 0]}>
-      <GlassVitrine />
-      <Portrait active={active} onSelect={onSelect} />
-      {!isCoarsePointer() && (
-        <ContactShadows position={[0, -H / 2 - 0.28, 0]} opacity={0.28} scale={6.5} blur={2.4} far={4} color="#2a211b" />
-      )}
-    </group>
+        </span>
+        <span className="font-mono mt-2 block text-center text-[10px] tracking-[0.18em] text-ink/45 uppercase">
+          Suman Bagriya
+        </span>
+      </button>
+    </div>
   );
 }

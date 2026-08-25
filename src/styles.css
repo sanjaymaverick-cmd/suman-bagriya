@@ -177,3 +177,24 @@
     transform: scale(1) translateY(0);
   }
 }
+
+.saath-walk {
+  background: #1c110c;
+}
+.phone-bezel {
+  width: min(360px, 86vw);
+  aspect-ratio: 390 / 844;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 8px solid #1a1410;
+  box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(232, 195, 122, 0.25);
+  background: #111;
+}
+.phone-still {
+  width: min(360px, 86vw);
+  aspect-ratio: 390 / 844;
+  object-fit: cover;
+  border-radius: 28px;
+  border: 8px solid #1a1410;
+  box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.55);
+}

@@ -14,13 +14,12 @@ import {
   type PhysicsParams,
   type PhysicsState,
 } from "@/lib/physics-presets";
-import { loadPhotoList, surroundingPhotos } from "@/lib/photos";
+import { loadPhotoList, surroundingPhotos, CENTER_PORTRAIT } from "@/lib/photos";
 import { gpuBudget, isCoarsePointer, useManagedTexture } from "@/lib/texture-memory";
-import { waEarn, waReset } from "@/lib/links";
+import { waEarn, waReset, SAATH } from "@/lib/links";
 import PhotoZoom from "@/components/k95/PhotoZoom";
 import SumanHero from "@/components/k95/SumanHero";
 
-const CENTER = "/photos/suman-center.png";
 const PAPER = "#eeece9";
 const PAPER_FOG = "#e4e0db";
 const INK = "#1a1816";
@@ -52,7 +51,7 @@ function spiralLayout(count: number) {
   for (let i = 0; i < count; i++) {
     const t = i / Math.max(count - 1, 1);
     const angle = t * Math.PI * turns;
-    const radius = 2.1 + t * (8.2 + count * 0.08);
+    const radius = 3.8 + t * (8.0 + count * 0.08);
     positions.push([Math.cos(angle) * radius, (t - 0.5) * (7.4 + count * 0.05), Math.sin(angle) * radius]);
     rotations.push([0.07, -angle + Math.PI / 2, 0]);
   }
@@ -451,9 +450,6 @@ function SceneContent({
 
   return (
     <group ref={group}>
-      <Suspense fallback={null}>
-        <SumanHero active={selected === CENTER} dimmed={!!selected && selected !== CENTER} onSelect={onSelect} />
-      </Suspense>
       {images.map((url, i) => {
         if (i >= positions.length) return null;
         return (
@@ -568,7 +564,7 @@ export default function K95Scene() {
 
   useEffect(() => {
     loadPhotoList().then((all) => {
-      const pool = surroundingPhotos(all, CENTER);
+      const pool = surroundingPhotos(all, CENTER_PORTRAIT);
       const proofs = pool.filter((u) => u.includes("/proof/"));
       const rest = pool.filter((u) => !u.includes("/proof/"));
       const shuffledProofs = [...proofs].sort(() => Math.random() - 0.5);
@@ -607,17 +603,17 @@ export default function K95Scene() {
         <directionalLight position={[6, 10, 5]} intensity={0.55} color="#fff6ea" />
         <directionalLight position={[-4, 4, -2]} intensity={0.2} color="#c4b8a8" />
         <GridFloor />
-        {images.length > 0 && (
-          <SceneContent
-            images={images}
-            mode={mode}
-            physics={physics}
-            params={params}
-            selected={selected}
-            onSelect={setSelected}
-          />
-        )}
+        <SceneContent
+          images={images}
+          mode={mode}
+          physics={physics}
+          params={params}
+          selected={selected}
+          onSelect={setSelected}
+        />
       </Canvas>
+
+      <SumanHero onSelect={setSelected} />
 
       <div className="pointer-events-none absolute inset-0 z-10">
         <div className="pointer-events-auto absolute top-0 right-0 left-0 grid grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 py-5 sm:px-10">
@@ -658,6 +654,9 @@ export default function K95Scene() {
             <button onClick={() => scrollTo("product")} className="hover:text-ink">
               SYSTEM
             </button>
+            <a href={SAATH} className="hover:text-ink">
+              SAATH
+            </a>
             <button onClick={() => scrollTo("business")} className="hover:text-ink">
               BUSINESS
             </button>
@@ -701,6 +700,20 @@ export default function K95Scene() {
                         : id[0].toUpperCase() + id.slice(1)}
               </button>
             ))}
+            <a
+              href="/saath"
+              className="font-neue block w-full rounded-[5px] px-3 py-3 text-left text-sm tracking-wide text-ink hover:bg-black/5"
+            >
+              Saath
+            </a>
+            <a
+              href={waReset}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-brick mt-3 w-full"
+            >
+              Start the Reset
+            </a>
           </div>
         )}
 
@@ -742,16 +755,16 @@ export default function K95Scene() {
       </div>
       <PhotoZoom
         url={selected}
-        urls={[CENTER, ...images]}
+        urls={[CENTER_PORTRAIT, ...images]}
         onClose={() => setSelected(null)}
         onPrev={() => {
-          const all = [CENTER, ...images];
+          const all = [CENTER_PORTRAIT, ...images];
           if (!selected) return;
           const i = all.indexOf(selected);
           setSelected(all[(i - 1 + all.length) % all.length]);
         }}
         onNext={() => {
-          const all = [CENTER, ...images];
+          const all = [CENTER_PORTRAIT, ...images];
           if (!selected) return;
           const i = all.indexOf(selected);
           setSelected(all[(i + 1) % all.length]);
