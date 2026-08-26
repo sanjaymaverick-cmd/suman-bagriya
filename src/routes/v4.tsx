@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import V4Nav from "@/components/v4/V4Nav";
 import V4Hero from "@/components/v4/V4Hero";
 import { V4Closing, V4Faq, V4Journey, V4Manifesto, V4Ritual, V4Saath, V4Stories, V4Suman } from "@/components/v4/V4Sections";
-import { V4Scene, V4SceneHud } from "@/components/v4/V4Scene";
+import { V4Scene, V4SceneHud, V4VelocityField } from "@/components/v4/V4Scene";
 
 export const Route = createFileRoute("/v4")({
   component: V4Page,
@@ -22,6 +22,7 @@ function V4Page() {
   return (
     <main id="main" className="bg-[#f1ece4] font-['DM_Sans',sans-serif]">
       <V4Nav />
+      <V4VelocityField />
       <V4Scene index={1} title="Opening" first><V4Hero /></V4Scene>
       <V4Scene index={2} title="Manifesto"><V4Manifesto /></V4Scene>
       <V4Scene index={3} title="The ritual"><V4Ritual /></V4Scene>

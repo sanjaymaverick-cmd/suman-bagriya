@@ -555,3 +555,27 @@
   .v4-scene-face, .v4-scene-seam { animation: none !important; transform: none !important; clip-path: none !important; filter: none !important; }
   .v4-scene-seam { display: none; }
 }
+
+/* Motion-driven V4 scrollytelling overrides the CSS-only prototype above. */
+.v4-scene-shell { padding-block: clamp(10px, 1.2vw, 22px); view-timeline-name: none; }
+.v4-scene-face {
+  animation: none !important;
+  clip-path: none !important;
+  filter: none !important;
+  transform-style: preserve-3d;
+  box-shadow: 0 -18px 60px rgba(10,7,6,.14), 0 32px 90px rgba(10,7,6,.22);
+  will-change: transform, opacity, border-radius;
+}
+.v4-scene-depth { position: absolute; inset: -18%; z-index: 1; pointer-events: none; opacity: .5; }
+.v4-scene-depth-far { background: radial-gradient(circle at 18% 40%, rgba(216,140,123,.16), transparent 25%), radial-gradient(circle at 82% 62%, rgba(139,146,125,.13), transparent 28%); filter: blur(42px); }
+.v4-scene-depth-near { inset: auto -10% 12%; height: 24%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.1), transparent); filter: blur(32px); transform: rotate(-4deg); }
+.v4-scene-curtain { position: absolute; z-index: 6; inset: 0; transform-origin: top; background: linear-gradient(180deg, #120e0c 0%, rgba(18,14,12,.96) 55%, rgba(18,14,12,0) 100%); pointer-events: none; }
+.v4-velocity-orb { position: absolute; border-radius: 999px; filter: blur(90px); opacity: .22; }
+.v4-velocity-orb-a { width: 42vw; height: 42vw; left: -16vw; top: 30vh; background: #bd6b59; }
+.v4-velocity-orb-b { width: 36vw; height: 36vw; right: -12vw; top: 88vh; background: #89977e; }
+.v4-velocity-line { position: absolute; left: 8vw; top: 160vh; width: 84vw; height: 2px; background: linear-gradient(90deg, transparent, rgba(242,211,184,.5), transparent); filter: blur(1px); }
+@media (prefers-reduced-motion: reduce) {
+  .v4-scene-face { opacity: 1 !important; border-radius: 0 !important; }
+  .v4-scene-shell { padding-block: 0; }
+  .v4-scene-depth, .v4-scene-curtain { display: none; }
+}
