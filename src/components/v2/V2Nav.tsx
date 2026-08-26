@@ -53,6 +53,7 @@ export default function V2Nav() {
             { href: "#business", label: "Build with me" },
             { href: "#faq", label: "Questions" },
             { href: "/v3", label: "V3", internal: true },
+            { href: "/v4", label: "V4 — Metabolic Muse", internal: true },
             { href: "/", label: "Original site", internal: true },
           ].map((item) =>
             item.internal ? (

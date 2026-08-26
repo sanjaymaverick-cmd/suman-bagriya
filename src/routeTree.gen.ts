@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SaathRouteImport } from './routes/saath'
 import { Route as V2RouteImport } from './routes/v2'
 import { Route as V3RouteImport } from './routes/v3'
+import { Route as V4RouteImport } from './routes/v4'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -34,18 +35,25 @@ const V3Route = V3RouteImport.update({
   path: '/v3',
   getParentRoute: () => rootRouteImport,
 } as any)
+const V4Route = V4RouteImport.update({
+  id: '/v4',
+  path: '/v4',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/saath': typeof SaathRoute
   '/v2': typeof V2Route
   '/v3': typeof V3Route
+  '/v4': typeof V4Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/saath': typeof SaathRoute
   '/v2': typeof V2Route
   '/v3': typeof V3Route
+  '/v4': typeof V4Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,14 @@ export interface FileRoutesById {
   '/saath': typeof SaathRoute
   '/v2': typeof V2Route
   '/v3': typeof V3Route
+  '/v4': typeof V4Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/saath' | '/v2' | '/v3'
+  fullPaths: '/' | '/saath' | '/v2' | '/v3' | '/v4'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/saath' | '/v2' | '/v3'
-  id: '__root__' | '/' | '/saath' | '/v2' | '/v3'
+  to: '/' | '/saath' | '/v2' | '/v3' | '/v4'
+  id: '__root__' | '/' | '/saath' | '/v2' | '/v3' | '/v4'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +76,7 @@ export interface RootRouteChildren {
   SaathRoute: typeof SaathRoute
   V2Route: typeof V2Route
   V3Route: typeof V3Route
+  V4Route: typeof V4Route
 }
 
 declare module '@tanstack/react-router' {
@@ -99,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof V3RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/v4': {
+      id: '/v4'
+      path: '/v4'
+      fullPath: '/v4'
+      preLoaderRoute: typeof V4RouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -107,6 +124,7 @@ const rootRouteChildren: RootRouteChildren = {
   SaathRoute: SaathRoute,
   V2Route: V2Route,
   V3Route: V3Route,
+  V4Route: V4Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

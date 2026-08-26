@@ -49,6 +49,9 @@ export default function V3Nav() {
           <Link to="/v2" className="tap-target hover:text-[#f3ede2]">
             V2
           </Link>
+          <Link to="/v4" className="tap-target hover:text-[#f3ede2]">
+            V4
+          </Link>
           <Link to="/" className="tap-target hover:text-[#f3ede2]">
             Original
           </Link>
@@ -102,6 +105,13 @@ export default function V3Nav() {
             className="font-editorial-serif border-b border-white/10 py-4 text-[32px] leading-none"
           >
             V2
+          </Link>
+          <Link
+            to="/v4"
+            onClick={() => setOpen(false)}
+            className="font-editorial-serif border-b border-white/10 py-4 text-[32px] leading-none"
+          >
+            V4 — Metabolic Muse
           </Link>
           <Link
             to="/"
