@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { waEarn, waReset, ORDER, IG } from "@/lib/links";
 
@@ -66,15 +66,19 @@ export function V4Ritual() {
 }
 
 export function V4Stories() {
+  const rail = useRef<HTMLDivElement>(null);
+  const drag = useRef({ active: false, x: 0, left: 0 });
+  const move = (direction: number) => rail.current?.scrollBy({ left: direction * Math.min(window.innerWidth * 0.72, 410), behavior: "smooth" });
   return (
     <section id="stories" className="overflow-hidden bg-[#f4efe8] py-28 text-[#171310] sm:py-40">
       <div className="mx-auto mb-14 flex max-w-[1450px] items-end justify-between gap-8 px-5 sm:px-10 lg:px-16">
         <div><p className="mb-5 text-[10px] tracking-[0.24em] uppercase text-[#846c5e]">Real stories · real lives</p><h2 className="v4-display text-[clamp(62px,10vw,132px)] leading-[0.84] tracking-[-0.04em]">The quiet<br/><span className="italic text-[#a74d3d]">glow-up.</span></h2></div>
-        <p className="hidden max-w-[30ch] text-[14px] leading-6 text-[#68564b] md:block">A selection from the transformation library. Individual experiences vary.</p>
+        <div className="hidden items-end gap-6 md:flex"><p className="max-w-[30ch] text-[14px] leading-6 text-[#68564b]">Drag, swipe or scroll through a selection from the transformation library. Individual experiences vary.</p><div className="flex gap-2"><button type="button" onClick={()=>move(-1)} aria-label="Previous transformation" className="v4-proof-arrow">←</button><button type="button" onClick={()=>move(1)} aria-label="Next transformation" className="v4-proof-arrow">→</button></div></div>
       </div>
-      <div className="v4-proof-scroll flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-5 sm:px-10 lg:px-[max(4rem,calc((100vw-1450px)/2))]">
+      <div ref={rail} data-v4-physics className="v4-proof-scroll flex cursor-grab snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-5 select-none active:cursor-grabbing sm:px-10 lg:px-[max(4rem,calc((100vw-1450px)/2))]" onPointerDown={(event)=>{drag.current={active:true,x:event.clientX,left:rail.current?.scrollLeft??0}; event.currentTarget.setPointerCapture(event.pointerId);}} onPointerMove={(event)=>{if(!drag.current.active||!rail.current)return; rail.current.scrollLeft=drag.current.left-(event.clientX-drag.current.x)*1.15;}} onPointerUp={(event)=>{drag.current.active=false; event.currentTarget.releasePointerCapture(event.pointerId);}} onPointerCancel={()=>{drag.current.active=false;}} onWheel={(event)=>{const node=rail.current;if(!node)return;const delta=Math.abs(event.deltaX)>Math.abs(event.deltaY)?event.deltaX:event.deltaY;if((delta>0&&node.scrollLeft<node.scrollWidth-node.clientWidth-2)||(delta<0&&node.scrollLeft>2)){event.preventDefault();node.scrollLeft+=delta*1.35;}}}>
         {proof.map((src, index) => <figure key={src} className="group relative aspect-[3/4] w-[78vw] max-w-[390px] shrink-0 snap-center overflow-hidden rounded-[24px] bg-[#d7c7b6]"><img src={src} alt={`Transformation story ${index + 1}`} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.025]"/><figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-6 pt-24 text-white"><span className="text-[10px] tracking-[0.2em] uppercase">Story {String(index + 1).padStart(2,"0")}</span></figcaption></figure>)}
       </div>
+      <div className="mt-7 flex items-center justify-between px-5 md:hidden"><span className="text-[10px] tracking-[0.18em] uppercase text-[#846c5e]">Swipe · drag · wheel</span><div className="flex gap-2"><button type="button" onClick={()=>move(-1)} aria-label="Previous transformation" className="v4-proof-arrow">←</button><button type="button" onClick={()=>move(1)} aria-label="Next transformation" className="v4-proof-arrow">→</button></div></div>
     </section>
   );
 }

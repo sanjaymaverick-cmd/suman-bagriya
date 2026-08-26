@@ -269,6 +269,24 @@
   }
 }
 
+/* Pointer physics: fine pointers get a spring cursor, magnetic controls and card tilt. */
+@media (pointer: fine) {
+  .v4-cursor-active, .v4-cursor-active a, .v4-cursor-active button { cursor: none !important; }
+  .v4-cursor-system { position: fixed; inset: 0; z-index: 120; pointer-events: none; opacity: 0; transition: opacity .2s ease; }
+  .v4-cursor-system.is-visible { opacity: 1; }
+  .v4-cursor-dot, .v4-cursor-ring, .v4-cursor-halo { position: absolute; left: 0; top: 0; display: block; border-radius: 999px; transform: translate(-50%, -50%); }
+  .v4-cursor-dot { width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; background: #f4dfc6; box-shadow: 0 0 18px rgba(244,223,198,.7); }
+  .v4-cursor-ring { width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1px solid rgba(244,223,198,.72); mix-blend-mode: difference; transition: width .32s cubic-bezier(.2,.8,.2,1), height .32s cubic-bezier(.2,.8,.2,1), margin .32s cubic-bezier(.2,.8,.2,1), background-color .32s ease; }
+  .v4-cursor-halo { width: 88px; height: 88px; margin: -44px 0 0 -44px; background: radial-gradient(circle, rgba(216,140,123,.18), transparent 66%); filter: blur(5px); transition: transform .35s ease, opacity .35s ease; }
+  .v4-cursor-system.is-hovering .v4-cursor-ring { width: 68px; height: 68px; margin: -34px 0 0 -34px; background: rgba(244,223,198,.1); }
+  .v4-cursor-system.is-hovering .v4-cursor-halo { transform: translate(-50%, -50%) scale(1.45); }
+  .v4-cursor-system.is-pressed .v4-cursor-ring { width: 24px; height: 24px; margin: -12px 0 0 -12px; }
+  #main a, #main button { translate: var(--v4-magnet-x, 0) var(--v4-magnet-y, 0); transition: translate .5s cubic-bezier(.16,1,.3,1), transform .3s ease, background-color .3s ease, color .3s ease; }
+  #main article, #main figure, #main [data-v4-physics] { transform-style: preserve-3d; transition: transform .55s cubic-bezier(.16,1,.3,1), box-shadow .55s ease; }
+  #main article.v4-physics-active, #main figure.v4-physics-active, #main [data-v4-physics].v4-physics-active { transform: perspective(1100px) rotateX(var(--v4-tilt-x,0deg)) rotateY(var(--v4-tilt-y,0deg)) translateZ(10px); box-shadow: 0 38px 90px rgba(30,18,14,.22); }
+  #main article.v4-physics-active::after, #main figure.v4-physics-active::after { content: ""; position: absolute; inset: 0; z-index: 8; border-radius: inherit; pointer-events: none; background: radial-gradient(circle at var(--v4-light-x,50%) var(--v4-light-y,50%), rgba(255,255,255,.18), transparent 32%); mix-blend-mode: soft-light; }
+}
+
 /* Keyboard users land here first; it stays off-screen until focused. */
 .skip-link {
   position: fixed;
@@ -469,6 +487,10 @@
 .v4-proof-scroll { scrollbar-width: thin; scrollbar-color: rgba(94,72,59,.35) transparent; }
 .v4-proof-scroll::-webkit-scrollbar { height: 4px; }
 .v4-proof-scroll::-webkit-scrollbar-thumb { background: rgba(94,72,59,.35); border-radius: 999px; }
+.v4-proof-scroll { overscroll-behavior-inline: contain; scroll-behavior: smooth; touch-action: pan-y pinch-zoom; }
+.v4-proof-scroll img { pointer-events: none; -webkit-user-drag: none; }
+.v4-proof-arrow { display: inline-flex; height: 48px; width: 48px; align-items: center; justify-content: center; border-radius: 999px; border: 1px solid rgba(23,19,16,.22); font-size: 18px; transition: transform .3s cubic-bezier(.16,1,.3,1), background-color .3s ease, color .3s ease; }
+.v4-proof-arrow:hover { transform: scale(1.08); background: #171310; color: #f4efe8; }
 
 /* V4 scene choreography — modern browsers get a cinematic chapter transition;
    the base layout remains a normal document flow everywhere else. */
