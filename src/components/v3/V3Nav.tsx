@@ -1,15 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { WA, waReset } from "@/lib/links";
 
+// #saath was a real section with nothing pointing at it; the tracker is the strongest
+// differentiator on the page, so it earns a nav slot.
 const items = [
   { href: "#offerings", label: "Offerings" },
   { href: "#results", label: "Results" },
+  { href: "#saath", label: "Saath" },
   { href: "#start", label: "Start" },
 ];
 
 export default function V3Nav() {
   const [open, setOpen] = useState(false);
+
+  // Escape closes the sheet; without it the only way out is the (now hidden) toggle.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-[5%] pt-5">
@@ -24,12 +37,15 @@ export default function V3Nav() {
           />
           <span className="font-mono text-[11px] tracking-[0.18em] uppercase">Suman Bagriya</span>
         </Link>
-        <nav className="hidden items-center gap-7 font-mono text-[11px] tracking-[0.16em] text-[#f3ede2]/70 uppercase md:flex">
+        {/* Six links plus a pill plus the wordmark measured ~770px, which overflowed the
+            md (768px) row. The inline nav now starts at lg and tablets get the sheet. */}
+        <nav className="hidden items-center gap-7 font-mono text-[11px] tracking-[0.16em] text-[#f3ede2]/70 uppercase lg:flex">
           {items.map((item) => (
             <a key={item.href} href={item.href} className="tap-target hover:text-[#f3ede2]">
               {item.label}
             </a>
           ))}
+          <span aria-hidden="true" className="h-3 w-px bg-white/15" />
           <Link to="/v2" className="tap-target hover:text-[#f3ede2]">
             V2
           </Link>
@@ -46,10 +62,11 @@ export default function V3Nav() {
           </a>
         </nav>
         <button
-          className="p-1.5 md:hidden"
+          className="p-1.5 lg:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-label="Menu"
           aria-expanded={open}
+          aria-controls="v3-menu"
         >
           <svg
             width="20"
@@ -65,7 +82,10 @@ export default function V3Nav() {
       </div>
 
       {open && (
-        <div className="mx-auto mt-3 flex max-w-[1320px] flex-col rounded-[24px] border border-white/10 bg-[#0c0b0a] px-6 py-6 text-[#f3ede2] md:hidden">
+        <div
+          id="v3-menu"
+          className="mx-auto mt-3 flex max-h-[calc(100dvh-8rem)] max-w-[1320px] flex-col overflow-y-auto rounded-[24px] border border-white/10 bg-[#0c0b0a] px-6 py-6 text-[#f3ede2] lg:hidden"
+        >
           {items.map((item) => (
             <a
               key={item.href}
@@ -78,12 +98,14 @@ export default function V3Nav() {
           ))}
           <Link
             to="/v2"
+            onClick={() => setOpen(false)}
             className="font-editorial-serif border-b border-white/10 py-4 text-[32px] leading-none"
           >
             V2
           </Link>
           <Link
             to="/"
+            onClick={() => setOpen(false)}
             className="font-editorial-serif border-b border-white/10 py-4 text-[32px] leading-none"
           >
             Original site
@@ -96,7 +118,10 @@ export default function V3Nav() {
           >
             Start the Reset
           </a>
-          <a href={WA} className="font-mono mt-5 text-[12px] tracking-[0.14em] text-[#f3ede2]/50">
+          <a
+            href={WA}
+            className="tap-target font-mono mt-5 self-start text-[12px] tracking-[0.14em] text-[#f3ede2]/50"
+          >
             +91 99204 04375
           </a>
         </div>

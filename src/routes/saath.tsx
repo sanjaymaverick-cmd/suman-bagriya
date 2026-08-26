@@ -111,7 +111,7 @@ function SaathPage() {
           </div>
         </section>
 
-        <section id="house-live" className="scroll-mt-24 px-[3.5%] py-16 md:py-24">
+        <section id="house-live" className="scroll-mt-24 px-[3.5%] py-24 md:py-32">
           <div className="mx-auto max-w-[1280px]">
             <p className="font-mono mb-6 text-[12px] tracking-[0.16em] text-muted uppercase">
               Live demo
@@ -131,7 +131,13 @@ function SaathPage() {
                 allow="fullscreen"
               />
             </div>
-            <a href={SAATH_DEMO} className="btn-ghost mt-8">
+            {/* The embedded build opens on its door screen; the demo is one tap in.
+                Say so rather than letting the frame look like a login wall. */}
+            <p className="font-mono mt-6 text-[12px] leading-[1.6] tracking-[0.06em] text-muted">
+              Tap <span className="text-ink">Look around the house</span> inside the frame — the
+              demo runs on sample data, no login needed.
+            </p>
+            <a href={SAATH_DEMO} className="btn-ghost mt-6">
               Open full screen
             </a>
           </div>
@@ -139,27 +145,29 @@ function SaathPage() {
 
         <section className="px-[3.5%] py-8">
           <div className="mx-auto max-w-[1280px] border-y border-black/[0.07] py-10">
-            <p className="font-mono mb-3 text-[11px] tracking-[0.16em] text-brick-text uppercase">
+            {/* The three steps were h2s, i.e. siblings of the page's section headings.
+                They are sub-items of this block, so the block owns the h2 and they are h3s. */}
+            <h2 className="font-mono mb-3 text-[11px] font-normal tracking-[0.16em] text-brick-text uppercase">
               How a seat is opened
-            </p>
+            </h2>
             <ol className="grid gap-10 md:grid-cols-3">
               <li>
                 <p className="font-mono mb-4 text-[11px] tracking-[0.14em] text-muted">01</p>
-                <h2 className="font-display mb-6 text-[32px] leading-[0.95]">Start with her</h2>
+                <h3 className="font-display mb-6 text-[32px] leading-[0.95]">Start with her</h3>
                 <p className="max-w-[28ch] text-[15px] leading-[1.5] text-muted">
                   The Reset, or build with me — five minutes on WhatsApp. Same doors as always.
                 </p>
               </li>
               <li>
                 <p className="font-mono mb-4 text-[11px] tracking-[0.14em] text-muted">02</p>
-                <h2 className="font-display mb-6 text-[32px] leading-[0.95]">She confirms</h2>
+                <h3 className="font-display mb-6 text-[32px] leading-[0.95]">She confirms</h3>
                 <p className="max-w-[28ch] text-[15px] leading-[1.5] text-muted">
                   Suman says yes. You are in the house. Not a waitlist. A person.
                 </p>
               </li>
               <li>
                 <p className="font-mono mb-4 text-[11px] tracking-[0.14em] text-muted">03</p>
-                <h2 className="font-display mb-6 text-[32px] leading-[0.95]">Login arrives</h2>
+                <h3 className="font-display mb-6 text-[32px] leading-[0.95]">Login arrives</h3>
                 <p className="max-w-[28ch] text-[15px] leading-[1.5] text-muted">
                   The administrator sends your ID and password. Then Saath is yours for the 90 days
                   — and after.
@@ -169,7 +177,7 @@ function SaathPage() {
           </div>
         </section>
 
-        <section className="px-[3.5%] py-24">
+        <section className="px-[3.5%] py-24 md:py-32">
           <div className="mx-auto max-w-[1280px]">
             <p className="font-mono mb-6 text-[12px] tracking-[0.16em] text-muted uppercase">
               Inside the house
@@ -193,7 +201,7 @@ function SaathPage() {
           </div>
         </section>
 
-        <section className="px-[3.5%] py-24">
+        <section className="px-[3.5%] py-24 md:py-32">
           <div className="mx-auto max-w-[1280px]">
             <p className="font-mono mb-6 text-[12px] tracking-[0.16em] text-muted uppercase">
               The people already in it
@@ -216,7 +224,7 @@ function SaathPage() {
           </div>
         </section>
 
-        <section className="px-[3.5%] py-24">
+        <section className="px-[3.5%] py-24 md:py-32">
           <div className="mx-auto max-w-[1280px]">
             <h2 className="font-display mb-[72px] max-w-[16ch] text-[clamp(42px,7vw,88px)]">
               Free with her. Not for sale.
@@ -250,7 +258,7 @@ function SaathPage() {
           </div>
         </section>
 
-        <footer className="border-t border-black/[0.07] px-[3.5%] py-16">
+        <footer className="border-t border-black/[0.07] px-[3.5%] py-16 md:py-20">
           <div className="mx-auto max-w-[1280px]">
             <Link to="/" className="font-display text-[clamp(40px,8vw,96px)] leading-[0.85]">
               Suman Bagriya
@@ -289,7 +297,8 @@ function SaathPage() {
                 Affiliate disclosure
               </a>
             </div>
-            <p className="font-mono mt-10 max-w-[52ch] text-[11px] leading-[1.5] text-muted/70">
+            {/* muted/70 measured 3.14:1 on paper — below AA at 11px. */}
+            <p className="font-mono mt-10 max-w-[52ch] text-[11px] leading-[1.5] text-muted">
               Saath is a branded house built on openGym (AGPL). Login IDs are issued after Suman
               confirms. © 2026
             </p>

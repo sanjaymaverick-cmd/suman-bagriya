@@ -65,10 +65,16 @@ function Portrait({ onSelect }: { onSelect?: (url: string) => void }) {
 
   useEffect(() => () => shader.dispose(), [shader]);
 
-  useFrame((state) => {
-    shader.uniforms.uPointer.value.lerp(state.pointer, 0.1);
+  // Bind the maps the moment they resolve. Doing this only inside useFrame meant the
+  // material rendered with null samplers on its first frame (and forever, if the frame
+  // loop is ever throttled — background tab, low-power mode).
+  useEffect(() => {
     if (colorMap) shader.uniforms.uMap.value = colorMap;
     if (depthMap) shader.uniforms.uDepth.value = depthMap;
+  }, [shader, colorMap, depthMap]);
+
+  useFrame((state) => {
+    shader.uniforms.uPointer.value.lerp(state.pointer, 0.1);
   });
 
   const tap = {
@@ -99,7 +105,12 @@ function Portrait({ onSelect }: { onSelect?: (url: string) => void }) {
 
   return (
     <group>
-      <mesh position={[0, 0, 0.012]} renderOrder={21} material={useParallax ? shader : undefined} {...tap}>
+      <mesh
+        position={[0, 0, 0.012]}
+        renderOrder={21}
+        material={useParallax ? shader : undefined}
+        {...tap}
+      >
         <planeGeometry args={[W, H]} />
         {!useParallax && (
           <meshBasicMaterial map={colorMap} toneMapped={false} side={THREE.FrontSide} />
@@ -196,11 +207,18 @@ export default function SumanHero({
 }) {
   const group = useRef<THREE.Group>(null);
   const scale = useRef(1);
+  // Ambient float is decoration; drop it for visitors who ask for reduced motion.
+  const still = useMemo(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    [],
+  );
 
   useFrame((state) => {
     if (!group.current) return;
     const t = state.clock.elapsedTime;
-    group.current.position.y = Math.sin(t * 0.32) * 0.04;
+    group.current.position.y = still ? 0 : Math.sin(t * 0.32) * 0.04;
     const target = active ? 1.1 : dimmed ? 0.94 : 1;
     scale.current += (target - scale.current) * 0.1;
     group.current.scale.setScalar(scale.current);

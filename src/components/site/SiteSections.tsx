@@ -117,8 +117,10 @@ export default function SiteSections() {
           <p className="font-mono mb-4 text-[12px] tracking-[0.16em] text-muted uppercase">
             Questions worth asking
           </p>
+          {/* Every other section pairs an eyebrow label with a headline that stands alone.
+              This one read as a sentence fragment out of context (and in a headings list). */}
           <h2 className="font-display mb-[72px] max-w-[16ch] text-[clamp(42px,7vw,80px)]">
-            before we begin.
+            Before we begin.
           </h2>
           <div className="border-t border-black/[0.07]">
             <Accordion.Root type="single" collapsible>
@@ -224,7 +226,8 @@ export default function SiteSections() {
                 For Suman, on Rakshabandhan 2026 — a house of work made to honour the way she cares
                 for others.
               </p>
-              <p className="mt-4 max-w-[52ch] text-[12px] leading-[1.5] text-muted/70">
+              {/* muted/70 measured 3.14:1 on paper — a regulatory notice has to be readable. */}
+              <p className="mt-4 max-w-[52ch] text-[12px] leading-[1.5] text-muted">
                 These statements have not been evaluated by regulatory authorities. This product is
                 not intended to diagnose, treat, cure, or prevent any disease. Results vary. Powered
                 by Unicity International.
@@ -276,7 +279,7 @@ export default function SiteSections() {
               </a>
             </div>
           </div>
-          <p className="font-mono mt-16 text-[11px] tracking-[0.12em] text-muted/70 uppercase">
+          <p className="font-mono mt-16 text-[11px] tracking-[0.12em] text-muted uppercase">
             © 2026 Suman Bagriya
           </p>
         </div>

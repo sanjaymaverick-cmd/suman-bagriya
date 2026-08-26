@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "@tanstack/react-router";
 import { DISCLOSURE, IG, ORDER, SAATH, WA, waEarn, waReset, waSaath } from "@/lib/links";
 
@@ -68,9 +68,12 @@ const proof = [
 
 function Ticker() {
   const words = ["NO DIET", "NO COUNTING", "METABOLIC RESET", "GLP-1", "90 DAYS", "TOGETHER"];
-  const row = [...words, ...words, ...words];
+  // .marquee-track animates to translateX(-50%), so the track must be an EVEN number of
+  // copies or the loop restarts mid-phrase. It was three copies, which visibly jumped
+  // every 38s. Four keeps the seam invisible and still covers an ultrawide viewport.
+  const row = [...words, ...words, ...words, ...words];
   return (
-    <div className="overflow-hidden border-y border-white/10 bg-[#0c0b0a] py-7">
+    <div aria-hidden="true" className="overflow-hidden border-y border-white/10 bg-[#0c0b0a] py-7">
       <div className="marquee-track gap-12">
         {row.map((w, i) => (
           <span
@@ -86,45 +89,76 @@ function Ticker() {
   );
 }
 
+/** The three cards are identical except for their wrapper: two go out to WhatsApp, one
+ *  stays in the app. The internal one was a plain <a>, which threw away client-side
+ *  routing on the heaviest route on the site. Focus rings are explicit because the UA
+ *  default ring is close to invisible on a near-black card. */
+const cardClass =
+  "group relative flex aspect-[3/4] flex-col justify-end overflow-hidden rounded-[18px] border border-white/10 p-7 " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f3ede2]";
+
+function OfferingCard({ o }: { o: (typeof offerings)[number] }) {
+  const inner = (
+    <>
+      <img
+        src={o.photo}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        className="absolute inset-0 h-full w-full object-cover opacity-55 grayscale transition duration-500 group-hover:opacity-80 group-hover:grayscale-0 group-focus-visible:opacity-80 group-focus-visible:grayscale-0"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#0c0b0a] via-[#0c0b0a]/40 to-transparent" />
+      <div className="relative">
+        <p className="font-mono mb-4 text-[10px] tracking-[0.16em] text-brick uppercase">{o.tag}</p>
+        <h3 className="font-editorial-serif mb-3 text-[40px] leading-[0.95]">{o.title}</h3>
+        <p className="max-w-[30ch] text-[14px] leading-[1.5] text-[#f3ede2]/70">{o.body}</p>
+        <span className="font-mono mt-6 inline-flex items-center gap-2 text-[11px] tracking-[0.14em] text-[#f3ede2] uppercase">
+          {o.cta}{" "}
+          <span aria-hidden="true" className="transition group-hover:translate-x-1">
+            →
+          </span>
+        </span>
+      </div>
+    </>
+  );
+
+  if (o.href.startsWith("http")) {
+    return (
+      <a href={o.href} target="_blank" rel="noopener noreferrer" className={cardClass}>
+        {inner}
+      </a>
+    );
+  }
+  // SAATH is the only internal destination in the list, and Link's `to` is typed
+  // against the route tree, so it is named rather than threaded through as a string.
+  return (
+    <Link to="/saath" className={cardClass}>
+      {inner}
+    </Link>
+  );
+}
+
 function Offerings() {
   return (
-    <section id="offerings" className="bg-[#0c0b0a] px-[5%] py-24 text-[#f3ede2] md:py-32">
+    <section
+      id="offerings"
+      className="scroll-mt-24 bg-[#0c0b0a] px-[5%] py-24 text-[#f3ede2] md:py-32"
+    >
       <div className="mx-auto max-w-[1320px]">
         <p className="font-mono mb-4 text-[11px] tracking-[0.2em] text-[#f3ede2]/60 uppercase">
           What's inside
         </p>
-        <h2 className="font-editorial-serif mb-16 max-w-[16ch] text-[13vw] leading-[0.92] sm:text-[7vw] lg:text-[4.6vw]">
-          Three doors. <span className="italic text-brick">One house.</span>
+        {/* The 16ch measure was breaking this as "Three doors. One / house." from 768px
+            up, splitting the italic accent across two lines and leaving a five-letter
+            widow. The break is now explicit, so the accent always reads as one phrase. */}
+        <h2 className="font-editorial-serif mb-16 text-[clamp(38px,10.5vw,84px)] leading-[0.92]">
+          Three doors.
+          <br />
+          <span className="text-brick italic">One house.</span>
         </h2>
         <div className="grid gap-6 lg:grid-cols-3">
           {offerings.map((o) => (
-            <a
-              key={o.title}
-              href={o.href}
-              target={o.href.startsWith("http") ? "_blank" : undefined}
-              rel={o.href.startsWith("http") ? "noopener noreferrer" : undefined}
-              className="group relative flex aspect-[3/4] flex-col justify-end overflow-hidden rounded-[18px] border border-white/10 p-7"
-            >
-              <img
-                src={o.photo}
-                alt=""
-
-                loading="lazy"
-                decoding="async"
-                className="absolute inset-0 h-full w-full object-cover opacity-55 grayscale transition duration-500 group-hover:opacity-80 group-hover:grayscale-0"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0c0b0a] via-[#0c0b0a]/40 to-transparent" />
-              <div className="relative">
-                <p className="font-mono mb-4 text-[10px] tracking-[0.16em] text-brick uppercase">
-                  {o.tag}
-                </p>
-                <h3 className="font-editorial-serif mb-3 text-[40px] leading-[0.95]">{o.title}</h3>
-                <p className="max-w-[30ch] text-[14px] leading-[1.5] text-[#f3ede2]/70">{o.body}</p>
-                <span className="font-mono mt-6 inline-flex items-center gap-2 text-[11px] tracking-[0.14em] text-[#f3ede2] uppercase">
-                  {o.cta} <span className="transition group-hover:translate-x-1">→</span>
-                </span>
-              </div>
-            </a>
+            <OfferingCard key={o.title} o={o} />
           ))}
         </div>
       </div>
@@ -134,6 +168,32 @@ function Offerings() {
 
 function ResultsStrip() {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<number | null>(null);
+  const rafRef = useRef(0); // 0 doubles as "no frame pending" — rAF never returns 0.
+
+  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
+
+  // Ease toward the cursor instead of snapping to it. A bare scrollLeft write on every
+  // mousemove reads as a teleport; a ~12%-per-frame lerp reads as the strip following you.
+  const step = () => {
+    const wrap = wrapRef.current;
+    const target = targetRef.current;
+    if (!wrap || target === null) {
+      rafRef.current = 0;
+      return;
+    }
+    const advance = (target - wrap.scrollLeft) * 0.12;
+    // scrollLeft snaps to whole pixels, so once a frame's advance falls under 1px the
+    // lerp stops making progress and the loop would spin forever a few px short of the
+    // target. Close the gap in one write and stand down instead.
+    if (Math.abs(advance) < 1) {
+      wrap.scrollLeft = target;
+      rafRef.current = 0;
+      return;
+    }
+    wrap.scrollLeft += advance;
+    rafRef.current = requestAnimationFrame(step);
+  };
 
   // Driving native scrollLeft rather than a transform keeps the cursor-flow as a
   // progressive enhancement: touch swipe, trackpad and keyboard arrows all still work
@@ -148,17 +208,30 @@ function ResultsStrip() {
     const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     const max = wrap.scrollWidth - wrap.clientWidth;
     if (max <= 0) return;
-    wrap.scrollLeft = ratio * max;
+    targetRef.current = ratio * max;
+    if (!rafRef.current) rafRef.current = requestAnimationFrame(step);
+  };
+
+  // Any deliberate input — wheel, trackpad, arrow keys — takes the wheel back from the
+  // cursor-flow, so the two never fight over scrollLeft.
+  const release = () => {
+    targetRef.current = null;
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = 0;
   };
 
   return (
-    <section id="results" className="bg-[#0c0b0a] pb-24 text-[#f3ede2] md:pb-32">
+    <section id="results" className="scroll-mt-24 bg-[#0c0b0a] pb-24 text-[#f3ede2] md:pb-32">
       <div className="mx-auto max-w-[1320px] px-[5%]">
         <p className="font-mono mb-4 text-[11px] tracking-[0.2em] text-[#f3ede2]/60 uppercase">
           Results, not promises
         </p>
-        <h2 className="font-editorial-serif mb-12 max-w-[18ch] text-[9vw] leading-[0.95] sm:text-[5vw] lg:text-[3.2vw]">
-          The bloodwork <span className="italic text-brick">talks back.</span>
+        {/* Was breaking as "The bloodwork talks / back." at every width from 375px up —
+            a five-letter widow that also cut the italic accent in half. */}
+        <h2 className="font-editorial-serif mb-12 text-[clamp(30px,7vw,60px)] leading-[0.95]">
+          The bloodwork
+          <br />
+          <span className="text-brick italic">talks back.</span>
         </h2>
         <p className="font-mono mb-6 text-[10px] tracking-[0.16em] text-[#f3ede2]/65 uppercase">
           Move your cursor across the strip, or swipe
@@ -167,12 +240,18 @@ function ResultsStrip() {
       <div
         ref={wrapRef}
         onMouseMove={(e) => flow(e.clientX)}
+        onMouseLeave={release}
+        onWheel={release}
+        onKeyDown={release}
         tabIndex={0}
         role="group"
         aria-label="Client results. Scroll or use the arrow keys to move through them."
-        className="scrollbar-none relative overflow-x-auto px-[5%] pb-2 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#f3ede2]/60"
+        className="scrollbar-none relative overflow-x-auto pb-2 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#f3ede2]/60"
       >
-        <div className="flex w-max gap-3">
+        {/* Gutters live on the track, not the scroll container: Chrome drops a scroll
+            container's inline-end padding from its scrollable area, so the last card
+            used to end flush against the viewport edge. */}
+        <div className="flex w-max gap-3 px-[5%]">
           {proof.map((p) => (
             <img
               key={p.src}
@@ -213,7 +292,8 @@ function SaathBlock() {
             height="68"
             className="rounded-[17px]"
           />
-          <h2 className="font-editorial-serif text-[clamp(48px,8vw,104px)] leading-[0.88]">
+          {/* Same clamp as Offerings and the closing CTA — one display tier, three uses. */}
+          <h2 className="font-editorial-serif text-[clamp(38px,10.5vw,84px)] leading-[0.88]">
             Saath<span className="text-brick">.</span>
           </h2>
         </div>
@@ -247,12 +327,15 @@ function SaathBlock() {
 
 function ClosingCTA() {
   return (
-    <section id="start" className="bg-[#0c0b0a] px-[5%] pt-8 pb-28 text-[#f3ede2] md:pb-40">
-      <div className="mx-auto max-w-[1320px] border-t border-white/10 pt-16 md:pt-24">
-        <h2 className="font-editorial-serif max-w-[20ch] text-[13vw] leading-[0.92] sm:text-[8vw] lg:text-[5.6vw]">
+    <section id="start" className="scroll-mt-24 bg-[#0c0b0a] px-[5%] pb-28 text-[#f3ede2] md:pb-40">
+      {/* pt-20 after the rule matches Saath's, so both hairlines sit on the same rhythm. */}
+      <div className="mx-auto max-w-[1320px] border-t border-white/10 pt-20">
+        {/* "reset, together." was the widest string on the page and sat 5px inside a
+            375px viewport — one missing webfont away from a horizontal scrollbar. */}
+        <h2 className="font-editorial-serif text-[clamp(38px,10.5vw,84px)] leading-[0.92]">
           Let's start the
           <br />
-          <span className="italic text-brick">reset,</span> together.
+          <span className="text-brick italic">reset,</span> together.
         </h2>
         <div className="mt-12 flex flex-wrap gap-4">
           <a href={waReset} target="_blank" rel="noopener noreferrer" className="btn-dark-solid">
@@ -308,7 +391,7 @@ function Footer() {
         </div>
       </div>
       <p className="font-mono mx-auto mt-8 max-w-[1320px] text-[10px] leading-[1.6] text-[#f3ede2]/35">
-        V2 — an editorial design exploration, running alongside the original site. © 2026
+        V3 — an editorial design exploration, running alongside the original site. © 2026
       </p>
     </footer>
   );

@@ -29,6 +29,16 @@ export default function SiteNav({ current }: { current?: string }) {
     };
   }, [open]);
 
+  // Escape closed nothing before: the panel covers the page, so it needs a keyboard exit.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${
@@ -55,7 +65,13 @@ export default function SiteNav({ current }: { current?: string }) {
             <a
               key={item.href}
               href={item.href}
-              className={`tap-target ${current === item.label.toLowerCase() ? "text-ink" : "hover:text-ink"}`}
+              aria-current={current === item.label.toLowerCase() ? "page" : undefined}
+              // The current page used to differ from the rest by ink/80 vs ink — invisible.
+              className={`tap-target ${
+                current === item.label.toLowerCase()
+                  ? "text-ink underline decoration-brick decoration-2 underline-offset-[6px]"
+                  : "hover:text-ink"
+              }`}
             >
               {item.label.toUpperCase()}
             </a>
@@ -72,8 +88,9 @@ export default function SiteNav({ current }: { current?: string }) {
         <button
           className="p-2 lg:hidden"
           onClick={() => setOpen((v) => !v)}
-          aria-label="Menu"
+          aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
+          aria-controls="site-menu"
         >
           <svg
             width="22"
@@ -87,8 +104,13 @@ export default function SiteNav({ current }: { current?: string }) {
           </svg>
         </button>
       </div>
+      {/* min-h as well as max-h: the panel used to stop ~100px short of the bottom on an
+          812px screen, leaving the 3D hero showing beneath the menu. */}
       {open && (
-        <div className="flex max-h-[calc(100dvh-4.5rem)] flex-col overflow-y-auto bg-paper px-[3.5%] pt-6 pb-10 lg:hidden">
+        <div
+          id="site-menu"
+          className="flex max-h-[calc(100dvh-4.5rem)] min-h-[calc(100dvh-4.5rem)] flex-col overflow-y-auto bg-paper px-[3.5%] pt-6 pb-10 lg:hidden"
+        >
           {items.map((item) => (
             <a
               key={item.href}
@@ -99,7 +121,12 @@ export default function SiteNav({ current }: { current?: string }) {
               {item.label}
             </a>
           ))}
-          <a href={WA} className="font-mono mt-8 text-[12px] tracking-[0.14em] text-muted">
+          <a
+            href={WA}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tap-target font-mono mt-8 self-start text-[12px] tracking-[0.14em] text-muted"
+          >
             +91 99204 04375
           </a>
           <a

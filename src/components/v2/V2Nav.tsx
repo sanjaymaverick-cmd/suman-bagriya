@@ -1,14 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { WA, waReset } from "@/lib/links";
 
 export default function V2Nav() {
   const [open, setOpen] = useState(false);
 
+  // The panel is a plain disclosure, not a dialog, so Radix is not involved — but a
+  // full-width overlay that swallows the page and cannot be dismissed with Escape is a
+  // keyboard trap in everything but name.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-[4%] pt-5">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between rounded-full bg-[#f3ede2] px-2 py-2 pl-5 text-[#111]">
-        <Link to="/" className="flex items-center gap-2 text-[15px]">
+        {/* Stays inside V2 — the menu already offers the original site explicitly. */}
+        <Link to="/v2" className="flex items-center gap-2 text-[15px]">
           <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#111]/15">
             <img src="/brand/suman-mark.svg" alt="" width="16" height="16" />
           </span>
@@ -16,7 +29,10 @@ export default function V2Nav() {
           <span className="text-[#111]/45">Bagriya</span>
         </Link>
         <button
+          type="button"
           onClick={() => setOpen((v) => !v)}
+          aria-expanded={open}
+          aria-controls="v2-menu"
           className="rounded-full bg-[#111] px-5 py-2.5 text-[13px] text-[#f3ede2]"
         >
           {open ? "Close" : "Menu"}
@@ -25,6 +41,7 @@ export default function V2Nav() {
 
       {open && (
         <nav
+          id="v2-menu"
           aria-label="Main"
           className="mx-auto mt-3 flex max-w-[1400px] flex-col rounded-[28px] bg-[#f3ede2] px-7 py-7 text-[#111]"
         >
@@ -66,7 +83,10 @@ export default function V2Nav() {
           >
             Start the Reset
           </a>
-          <a href={WA} className="mt-4 text-[12px] tracking-[0.1em] text-[#111]/70">
+          <a
+            href={WA}
+            className="tap-target mt-4 self-start text-[12px] tracking-[0.1em] text-[#111]/70"
+          >
             +91 99204 04375
           </a>
         </nav>

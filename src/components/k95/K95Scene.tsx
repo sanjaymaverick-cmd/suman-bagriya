@@ -17,6 +17,18 @@ const PAPER = "#eeece9";
 const PAPER_FOG = "#e4e0db";
 const INK = "#1a1816";
 
+/** Visitors who ask the OS for less motion get a still scene: no auto-orbit, no drift, no float. */
+function prefersReducedMotion() {
+  return (
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  );
+}
+
+/** The physics tuner is a build tool, not part of the site. Open it with /?studio. */
+function studioRequested() {
+  return typeof window !== "undefined" && new URLSearchParams(window.location.search).has("studio");
+}
+
 function ringLayout(count: number) {
   const positions: [number, number, number][] = [];
   const rotations: [number, number, number][] = [];
@@ -110,11 +122,12 @@ function PhotoPlane({
   const group = useRef<THREE.Group>(null);
   const scale = useRef(1);
   const down = useRef({ x: 0, y: 0, t: 0 });
+  const still = useMemo(() => prefersReducedMotion(), []);
 
   useFrame((state) => {
     if (!group.current) return;
     const t = state.clock.elapsedTime;
-    const amp = isCenter ? 0.05 : 0.11;
+    const amp = still ? 0 : isCenter ? 0.05 : 0.11;
     group.current.position.y =
       position[1] + Math.sin(t * 0.32 + position[0] * 0.45 + position[2] * 0.28) * amp;
     const target = active ? 1.18 : 1;
@@ -194,16 +207,52 @@ function SceneContent({
   const { gl } = useThree();
   const paramsRef = useRef(params);
   paramsRef.current = params;
+  const still = useMemo(() => prefersReducedMotion(), []);
 
   const { positions, rotations } = useMemo(() => {
     return mode === "rings" ? ringLayout(images.length) : spiralLayout(images.length);
   }, [images.length, mode]);
+
+  // The proof set is ~18MB of screenshots. Mounting all 36 planes at once fires 36
+  // parallel image loads the moment the page opens and starves the first paint, so
+  // the ring fills in a few frames at a time. Layout is computed from the full count,
+  // so nothing ever moves once it has appeared.
+  const [mounted, setMounted] = useState(0);
+  useEffect(() => {
+    if (images.length === 0) return;
+    setMounted(Math.min(6, images.length));
+    let live = true;
+    const step = () => {
+      if (!live) return;
+      setMounted((n) => {
+        const next = Math.min(n + 3, images.length);
+        if (next < images.length) window.setTimeout(step, 320);
+        return next;
+      });
+    };
+    const id = window.setTimeout(step, 420);
+    return () => {
+      live = false;
+      window.clearTimeout(id);
+    };
+  }, [images.length]);
 
   useFrame((_, delta) => {
     if (!group.current) return;
     const p = physics.current;
     const prm = paramsRef.current;
     const dt = Math.min(delta, 0.033);
+
+    // Reduced motion: nothing moves unless the visitor drags it. Kill the ambient
+    // sources — auto-orbit, edge shuttle and pointer-proximity tilt — but keep drag.
+    if (still) {
+      p.edgeX = 0;
+      p.edgeY = 0;
+      p.lookX = 0;
+      p.lookY = 0;
+      p.smoothDx = 0;
+      p.smoothDy = 0;
+    }
 
     // If the pointer left the window, ease the shuttle off so it coasts
     if (performance.now() - p.lastMoveAt > 380) {
@@ -226,7 +275,7 @@ function SceneContent({
 
     // Orbit: no restoring spring — never clamps to a screen-mapped target
     p.velY *= Math.exp(-prm.dampingY * dt);
-    p.orbitY += p.velY * dt + prm.autoSpin * dt;
+    p.orbitY += p.velY * dt + (still ? 0 : prm.autoSpin * dt);
 
     // Tilt: spring toward a small look offset, critically damped-ish
     const targetTilt = THREE.MathUtils.clamp(p.lookX * prm.lookGain, -0.38, 0.38);
@@ -449,7 +498,7 @@ function SceneContent({
   return (
     <group ref={group}>
       {images.map((url, i) => {
-        if (i >= positions.length) return null;
+        if (i >= positions.length || i >= mounted) return null;
         return (
           <Suspense key={`${url}-${i}`} fallback={null}>
             <PhotoPlane
@@ -563,6 +612,10 @@ export default function K95Scene() {
   const [selected, setSelected] = useState<string | null>(null);
   const [preset, setPreset] = useState<FeelPreset>("premium");
   const [params, setParams] = useState<PhysicsParams>({ ...PRESETS.premium });
+  // Read once on the client so SSR and the first client render agree.
+  const [showStudio, setShowStudio] = useState(false);
+  useEffect(() => setShowStudio(studioRequested()), []);
+  const vitrineTap = useRef({ x: 0, y: 0, t: 0 });
 
   const physics = useRef<PhysicsState>({
     orbitY: 0,
@@ -630,6 +683,22 @@ export default function K95Scene() {
         <div
           data-suman-vitrine
           className="pointer-events-auto relative h-[min(46vh,400px)] w-[min(72vw,280px)] cursor-zoom-in sm:h-[min(54vh,540px)] sm:w-[min(42vw,360px)]"
+          // styles.css disables canvas pointer events on coarse pointers to protect
+          // page scroll, which also kills the in-scene tap handler. Catch the tap on
+          // the wrapper instead so the portrait still opens on phones — using the same
+          // tap-not-drag test as the in-scene handler so spinning does not open it.
+          onPointerDown={(e) => {
+            vitrineTap.current = { x: e.clientX, y: e.clientY, t: performance.now() };
+          }}
+          onClick={(e) => {
+            if (!isCoarsePointer()) return;
+            const d = vitrineTap.current;
+            const dx = e.clientX - d.x;
+            const dy = e.clientY - d.y;
+            if (dx * dx + dy * dy < 144 && performance.now() - d.t < 420) {
+              setSelected(CENTER_PORTRAIT);
+            }
+          }}
         >
           <Canvas
             camera={{ position: [0, 0.12, 7.1], fov: 28, near: 0.1, far: 40 }}
@@ -652,20 +721,23 @@ export default function K95Scene() {
         </div>
       </div>
 
-      <StudioPanel
-        preset={preset}
-        setPreset={setPreset}
-        params={params}
-        setParams={setParams}
-        mode={mode}
-        setMode={setMode}
-      />
+      {showStudio && (
+        <StudioPanel
+          preset={preset}
+          setPreset={setPreset}
+          params={params}
+          setParams={setParams}
+          mode={mode}
+          setMode={setMode}
+        />
+      )}
 
       <div className="pointer-events-none absolute inset-0 z-10">
         <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-paper via-paper/85 to-transparent pt-28">
           <div className="flex flex-col gap-5 px-5 pb-5 sm:flex-row sm:items-end sm:justify-between sm:px-10 sm:pb-8">
             <div className="max-w-[34rem]">
-              <p className="font-mono text-[10px] tracking-[0.18em] text-ink/50 sm:text-[11px]">
+              {/* ink/50 measured 3.41:1 on paper — below AA for 10px type. ink/65 clears 4.5:1. */}
+              <p className="font-mono text-[10px] tracking-[0.18em] text-ink/65 sm:text-[11px]">
                 UNICITY SENIOR DIRECTOR · INDIA
               </p>
               <p className="font-display mt-2 text-[clamp(34px,6vw,64px)] leading-[0.92] text-ink">

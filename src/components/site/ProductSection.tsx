@@ -65,7 +65,8 @@ export default function ProductSection() {
         </div>
       </section>
 
-      <section id="reset" className="relative scroll-mt-24 px-[3.5%] py-24">
+      {/* Was the only major section without md:py-32 — it sat 32px tighter than its neighbours. */}
+      <section id="reset" className="relative scroll-mt-24 px-[3.5%] py-24 md:py-32">
         <div className="mx-auto max-w-[1280px]">
           <p className="font-mono mb-6 text-[12px] tracking-[0.16em] text-muted uppercase">
             The protocol

@@ -5,7 +5,13 @@ import { X } from "lucide-react";
 import V2Canvas, { type CanvasItem } from "@/components/v2/V2Canvas";
 import { ORDER, SAATH, waEarn, waReset, waSaath } from "@/lib/links";
 
-/** Every tile earns its place: her own result, the products, the protocol, or a client's proof. */
+/** Every tile earns its place: her own result, the products, the protocol, or a client's proof.
+ *
+ *  The count matters as well as the content. The field wraps, so a tile index repeats every
+ *  `items.length` cells; at 20 items on the 5-column phone grid that landed the same photo
+ *  twice in the same column, two rows apart, which reads as a rendering fault rather than a
+ *  wrap. At 22 no repeat is ever closer than one row *and* two columns. If tiles are added,
+ *  22, 23, 27 and 30 keep that spacing; 21, 24, 25, 26 and 29 do not. */
 const items: CanvasItem[] = [
   {
     id: "transform",
@@ -80,7 +86,14 @@ const items: CanvasItem[] = [
     blurb:
       "साथ — together. Workouts, weigh-ins, streaks and a thousand-exercise library. Free with her coaching.",
   },
-  { id: "form-01", kind: "photo", src: "/photos/suman-form-01.jpg", title: "Suman", meta: "Coach" },
+  {
+    id: "form-01",
+    kind: "photo",
+    src: "/photos/suman-form-01.jpg",
+    title: "Five years in",
+    meta: "Suman",
+    blurb: "Five years in health and wellness, and every diet plan she tried before this one.",
+  },
   {
     id: "proof-21",
     kind: "photo",
@@ -88,6 +101,24 @@ const items: CanvasItem[] = [
     title: "165 lbs down",
     meta: "Client result",
     blurb: "No more sleep apnoea, prediabetes or high blood pressure.",
+  },
+  {
+    id: "proof-19",
+    kind: "photo",
+    src: "/photos/proof/proof-19.png",
+    title: "100 lbs, from a truck cab",
+    meta: "Client result",
+    blurb:
+      "John did it as a long-haul driver — most of the day behind a steering wheel, eating truck-stop food.",
+  },
+  {
+    id: "week-one",
+    kind: "note",
+    title: "Week one.",
+    meta: "What moves first",
+    tone: "#3b3320",
+    blurb:
+      "Most people notice cravings drop and energy lift inside the first week. Weight and bloodwork usually show by thirty days.",
   },
   {
     id: "glp1",
@@ -102,8 +133,10 @@ const items: CanvasItem[] = [
     id: "blazer",
     kind: "photo",
     src: "/photos/suman-blazer.jpg",
-    title: "Suman",
-    meta: "Senior Director, Unicity",
+    title: "Senior Director",
+    meta: "Unicity, India",
+    href: waEarn,
+    blurb: "She also builds the business side with the people who want to hand the protocol on.",
   },
   {
     id: "proof-29",
@@ -123,7 +156,24 @@ const items: CanvasItem[] = [
     blurb:
       "Finished the ninety days and want to hand it on? Five minutes on WhatsApp, no pitch deck.",
   },
-  { id: "form-02", kind: "photo", src: "/photos/suman-form-02.jpg", title: "Suman", meta: "Coach" },
+  {
+    id: "guarantee",
+    kind: "note",
+    title: "Bloodwork or refund.",
+    meta: "The guarantee",
+    href: waReset,
+    tone: "#1f4d3d",
+    blurb:
+      "Test the markers before. Test them ninety days later. If they have not moved, the money comes back.",
+  },
+  {
+    id: "form-02",
+    kind: "photo",
+    src: "/photos/suman-form-02.jpg",
+    title: "In person, in India",
+    meta: "Suman",
+    blurb: "She coaches the protocol in person and on WhatsApp, from Mumbai.",
+  },
   {
     id: "proof-32",
     kind: "photo",
@@ -132,8 +182,31 @@ const items: CanvasItem[] = [
     meta: "Client result",
     blurb: "One of Suman's mentees, start to finish.",
   },
-  { id: "smile", kind: "photo", src: "/photos/suman-smile.jpg", title: "Suman", meta: "Coach" },
-  { id: "form-03", kind: "photo", src: "/photos/suman-form-03.jpg", title: "Suman", meta: "Coach" },
+  {
+    id: "ozempic",
+    kind: "note",
+    title: "Not Ozempic.",
+    meta: "The difference",
+    tone: "#2b2118",
+    blurb:
+      "No injections. A plant-based protocol that supports the body's own GLP-1, at a fraction of the cost — and the weight does not come back when you stop.",
+  },
+  {
+    id: "smile",
+    kind: "photo",
+    src: "/photos/suman-smile.jpg",
+    title: "Ninety days later",
+    meta: "Suman",
+    blurb: "What the other side of the protocol looks like on the person who wrote it.",
+  },
+  {
+    id: "form-03",
+    kind: "photo",
+    src: "/photos/suman-form-03.jpg",
+    title: "Still holding",
+    meta: "Suman",
+    blurb: "Kept, not crash-lost. The reset changed the setting, not just the number.",
+  },
 ];
 
 export default function V2Hero() {
@@ -142,20 +215,41 @@ export default function V2Hero() {
 
   return (
     <section id="gallery" className="relative">
-      {/* The canvas carries the page's opening statement as tiles, so the heading
-          outline needs a real h1 that isn't dependent on where the field is panned. */}
-      <h1 className="sr-only">
-        Suman Bagriya — metabolic health coach. No diet, a metabolic reset over ninety days.
-      </h1>
       <V2Canvas items={items} onOpen={setOpen} />
 
-      {/* corner rails, personaal-style */}
-      <div className="pointer-events-none absolute inset-x-0 top-24 flex justify-between px-[4%]">
-        <span className="font-mono text-[10px] tracking-[0.2em] text-white/60 uppercase">
-          Recent work — Suman Bagriya
-        </span>
-        <span className="font-mono hidden text-[10px] tracking-[0.2em] text-white/60 uppercase sm:block">
-          Metabolic health coach
+      {/* The tiles carry the argument, but they drift — a visitor who lands mid-field saw
+          only photographs and two small pills. The proposition is stated once, in place,
+          over a scrim so it stays legible whatever photo pans under it. Non-interactive,
+          so the drag still starts anywhere in this corner. */}
+      {/* Two scrims: a broad one to sink the whole top of the field, and a tighter one down
+          the left edge where the type actually sits. A photo tile can pan under the headline
+          at any moment, so the text also carries its own shadow rather than trusting the
+          gradient alone. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[70%] bg-gradient-to-b from-black/70 to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-full max-w-[720px] bg-gradient-to-r from-black/85 via-black/45 to-transparent" />
+
+      <div className="pointer-events-none absolute inset-x-0 top-24 flex items-start justify-between gap-6 px-[4%]">
+        <div>
+          <p className="font-mono text-[10px] tracking-[0.2em] text-white/75 uppercase">
+            Suman Bagriya — metabolic health coach
+          </p>
+          <h1
+            className="font-display mt-4 max-w-[10ch] text-[clamp(36px,4.8vw,62px)] leading-[0.94] tracking-[-0.01em] text-white"
+            style={{ textShadow: "0 2px 24px rgba(0,0,0,0.75)" }}
+          >
+            No diet.
+            <br />
+            Ninety days.
+          </h1>
+          <p
+            className="mt-4 max-w-[28ch] text-[14px] leading-[1.5] text-white/85 md:text-[15px]"
+            style={{ textShadow: "0 1px 14px rgba(0,0,0,0.8)" }}
+          >
+            Bloodwork before and ninety days after — or your money back.
+          </p>
+        </div>
+        <span className="font-mono hidden shrink-0 pt-1 text-[10px] tracking-[0.2em] text-white/60 uppercase md:block">
+          Unicity · India
         </span>
       </div>
 
@@ -223,7 +317,11 @@ export default function V2Hero() {
                         rel="noopener noreferrer"
                         className="v2-pill-solid !px-5 !py-3 !text-[11px]"
                       >
-                        {open.href === ORDER ? "Order the system" : "Talk to Suman"}
+                        {open.href === ORDER
+                          ? "Order the system"
+                          : open.href === waEarn
+                            ? "Talk about building"
+                            : "Talk to Suman"}
                       </a>
                     )}
                     <Dialog.Close className="v2-pill-line !px-5 !py-3 !text-[11px]">

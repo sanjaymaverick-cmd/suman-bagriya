@@ -113,7 +113,8 @@ export default function BusinessSection() {
           >
             Apply to work with me
           </a>
-          <p className="mt-10 max-w-[52ch] text-[12px] leading-[1.5] text-white/40">
+          {/* white/40 measured 3.82:1 on the ink panel — an income disclaimer must be legible. */}
+          <p className="mt-10 max-w-[52ch] text-[12px] leading-[1.5] text-white/60">
             Income results vary. No specific outcomes are guaranteed. This is not a get-rich-quick
             opportunity. Success requires effort, consistency, and a willingness to learn.
           </p>
