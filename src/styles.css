@@ -487,7 +487,7 @@
 .v4-proof-scroll { scrollbar-width: thin; scrollbar-color: rgba(94,72,59,.35) transparent; }
 .v4-proof-scroll::-webkit-scrollbar { height: 4px; }
 .v4-proof-scroll::-webkit-scrollbar-thumb { background: rgba(94,72,59,.35); border-radius: 999px; }
-.v4-proof-scroll { overscroll-behavior-inline: contain; scroll-behavior: smooth; touch-action: pan-y pinch-zoom; }
+.v4-proof-scroll { overscroll-behavior-inline: contain; scroll-behavior: auto; touch-action: pan-y pinch-zoom; }
 .v4-proof-scroll img { pointer-events: none; -webkit-user-drag: none; }
 .v4-proof-arrow { display: inline-flex; height: 48px; width: 48px; align-items: center; justify-content: center; border-radius: 999px; border: 1px solid rgba(23,19,16,.22); font-size: 18px; transition: transform .3s cubic-bezier(.16,1,.3,1), background-color .3s ease, color .3s ease; }
 .v4-proof-arrow:hover { transform: scale(1.08); background: #171310; color: #f4efe8; }
