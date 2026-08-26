@@ -279,9 +279,20 @@ export default function SiteSections() {
               </a>
             </div>
           </div>
-          <p className="font-mono mt-16 text-[11px] tracking-[0.12em] text-muted uppercase">
-            © 2026 Suman Bagriya
-          </p>
+          <div className="mt-16 flex flex-wrap items-baseline justify-between gap-4">
+            <p className="font-mono text-[11px] tracking-[0.12em] text-muted uppercase">
+              © 2026 Suman Bagriya
+            </p>
+            <p className="font-mono flex gap-5 text-[11px] tracking-[0.12em] text-muted uppercase">
+              <span>Design explorations</span>
+              <a href="/v2" className="tap-target hover:text-brick-text">
+                V2
+              </a>
+              <a href="/v3" className="tap-target hover:text-brick-text">
+                V3
+              </a>
+            </p>
+          </div>
         </div>
       </footer>
     </div>

@@ -11,6 +11,14 @@ const items = [
   { href: "/#faq", label: "Q&A" },
 ];
 
+// Design explorations live alongside the site proper — v2 and v3 already cross-link
+// each other and back here, so this closes the loop rather than leaving them
+// reachable only by typing the URL.
+const explorations = [
+  { href: "/v2", label: "V2" },
+  { href: "/v3", label: "V3" },
+];
+
 export default function SiteNav({ current }: { current?: string }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -76,6 +84,12 @@ export default function SiteNav({ current }: { current?: string }) {
               {item.label.toUpperCase()}
             </a>
           ))}
+          <span className="h-4 w-px bg-black/15" aria-hidden="true" />
+          {explorations.map((item) => (
+            <a key={item.href} href={item.href} className="tap-target hover:text-ink">
+              {item.label}
+            </a>
+          ))}
           <a
             href={waReset}
             target="_blank"
@@ -121,6 +135,21 @@ export default function SiteNav({ current }: { current?: string }) {
               {item.label}
             </a>
           ))}
+          <p className="font-mono mt-8 text-[11px] tracking-[0.16em] text-muted uppercase">
+            Design explorations
+          </p>
+          <div className="mt-3 flex gap-3">
+            {explorations.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="tap-target font-mono rounded-[5px] border border-black/15 px-4 py-2 text-[13px] tracking-[0.1em]"
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
           <a
             href={WA}
             target="_blank"

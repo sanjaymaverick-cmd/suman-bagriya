@@ -296,6 +296,13 @@ function SaathPage() {
               >
                 Affiliate disclosure
               </a>
+              <span className="mx-1 h-4 w-px self-center bg-black/15" aria-hidden="true" />
+              <a href="/v2" className="tap-target hover:text-brick-text">
+                V2
+              </a>
+              <a href="/v3" className="tap-target hover:text-brick-text">
+                V3
+              </a>
             </div>
             {/* muted/70 measured 3.14:1 on paper — below AA at 11px. */}
             <p className="font-mono mt-10 max-w-[52ch] text-[11px] leading-[1.5] text-muted">
