@@ -309,6 +309,9 @@ function SaathPage() {
               Saath is a branded house built on openGym (AGPL). Login IDs are issued after Suman
               confirms. © 2026
             </p>
+            <p className="font-mono mt-3 text-[11px] tracking-[0.12em] text-muted/70 uppercase">
+              Designed and built by Sanjay Bagriya
+            </p>
           </div>
         </footer>
       </div>

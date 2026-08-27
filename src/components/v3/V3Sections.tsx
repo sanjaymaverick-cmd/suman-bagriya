@@ -392,6 +392,8 @@ function Footer() {
       </div>
       <p className="font-mono mx-auto mt-8 max-w-[1320px] text-[10px] leading-[1.6] text-[#f3ede2]/35">
         V3 — an editorial design exploration, running alongside the original site. © 2026
+        <br />
+        Designed and developed by Sanjay Bagriya
       </p>
     </footer>
   );

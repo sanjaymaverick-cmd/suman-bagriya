@@ -712,6 +712,7 @@ function Finale() {
       <footer>
         <b>SUMAN BAGRIYA</b>
         <span>Individual experiences vary. Always consult your healthcare provider.</span>
+        <span>Design + build — Sanjay Bagriya</span>
       </footer>
     </section>
   );

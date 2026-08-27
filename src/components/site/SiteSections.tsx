@@ -280,9 +280,14 @@ export default function SiteSections() {
             </div>
           </div>
           <div className="mt-16 flex flex-wrap items-baseline justify-between gap-4">
-            <p className="font-mono text-[11px] tracking-[0.12em] text-muted uppercase">
-              © 2026 Suman Bagriya
-            </p>
+            <div className="flex flex-col gap-1.5">
+              <p className="font-mono text-[11px] tracking-[0.12em] text-muted uppercase">
+                © 2026 Suman Bagriya
+              </p>
+              <p className="font-mono text-[11px] tracking-[0.12em] text-muted/70 uppercase">
+                Design &amp; build — Sanjay Bagriya
+              </p>
+            </div>
             <p className="font-mono flex gap-5 text-[11px] tracking-[0.12em] text-muted uppercase">
               <span>Design explorations</span>
               <a href="/v2" className="tap-target hover:text-brick-text">

@@ -322,6 +322,8 @@ function Footer() {
       </div>
       <p className="font-mono mx-auto mt-8 max-w-[1400px] text-[10px] leading-[1.6] text-white/30">
         V2 — a drag-canvas design exploration, running alongside the original site. © 2026
+        <br />
+        Design &amp; code — Sanjay Bagriya
       </p>
     </footer>
   );
