@@ -56,7 +56,7 @@ function MotionDirector() {
     const observer=new IntersectionObserver((entries)=>entries.forEach(entry=>entry.target.classList.toggle("v5-in-view",entry.isIntersecting)),{threshold:.12,rootMargin:"0px 0px -8%"});
     sections.forEach(section=>observer.observe(section));
     const cleanups=targets.map(target=>{const move=(event:PointerEvent)=>{const rect=target.getBoundingClientRect();const x=(event.clientX-rect.left)/rect.width-.5;const y=(event.clientY-rect.top)/rect.height-.5;target.style.setProperty("--hover-x",`${x*12}px`);target.style.setProperty("--hover-y",`${y*10}px`);target.style.setProperty("--hover-r",`${x*3}deg`);target.classList.add("v5-physics-active")};const leave=()=>{target.classList.remove("v5-physics-active");target.style.setProperty("--hover-x","0px");target.style.setProperty("--hover-y","0px");target.style.setProperty("--hover-r","0deg")};target.addEventListener("pointermove",move);target.addEventListener("pointerleave",leave);return()=>{target.removeEventListener("pointermove",move);target.removeEventListener("pointerleave",leave)}});
-    let frame=0;const update=()=>{for(const section of sections){const rect=section.getBoundingClientRect();const progress=Math.max(-1,Math.min(1,(innerHeight/2-(rect.top+rect.height/2))/(innerHeight+rect.height)*2));section.style.setProperty("--scene-progress",String(progress))}frame=0};const scroll=()=>{if(!frame)frame=requestAnimationFrame(update)};addEventListener("scroll",scroll,{passive:true});update();
+    let frame=0;const update=()=>{for(const section of sections){const rect=section.getBoundingClientRect();const progress=Math.max(-1,Math.min(1,(innerHeight/2-(rect.top+rect.height/2))/(innerHeight+rect.height)*2));section.style.setProperty("--scene-progress",String(progress));if(section.classList.contains("v5-manifesto")){const range=Math.max(1,rect.height-innerHeight);section.style.setProperty("--manifesto-progress",String(Math.max(0,Math.min(1,-rect.top/range))))}}frame=0};const scroll=()=>{if(!frame)frame=requestAnimationFrame(update)};addEventListener("scroll",scroll,{passive:true});update();
     return()=>{observer.disconnect();cleanups.forEach(fn=>fn());removeEventListener("scroll",scroll);if(frame)cancelAnimationFrame(frame);root?.classList.remove("v5-motion-ready")};
   },[]);
   return null;
@@ -67,10 +67,12 @@ export default function V5Experience() {
   return <main className="v5" id="main">
     <MotionDirector/>
     <Cursor/>
+    <div className="v5-versionbar" aria-label="Design versions"><Link to="/">V1</Link><Link to="/v2">V2</Link><Link to="/v3">V3</Link><Link to="/v4">V4</Link><span aria-current="page">V5</span></div>
     <nav className="v5-nav"><a href="#main" className="v5-brand">SUMAN<span>✦</span></a><div className="v5-navlinks"><a href="#ritual">RITUAL</a><a href="#proof">STORIES</a><a href="#saath">SAATH</a></div><a href={waReset} className="v5-mini-cta">LET'S TALK ↗</a></nav>
 
     <section className="v5-hero">
       <div className="v5-orbit v5-orbit-a"/><div className="v5-orbit v5-orbit-b"/><div className="v5-spark s1">✦</div><div className="v5-spark s2">✺</div><div className="v5-spark s3">●</div>
+      <div className="v5-particles" aria-hidden="true">{Array.from({length:10},(_,i)=><span key={i} className={`particle-${i+1}`}/>)}</div>
       <div className="v5-hero-content">
         <p className="v5-kicker"><span/>METABOLIC HEALTH COACH · FEEL GREAT SYSTEM · 90-DAY SUPPORT</p>
         <h1><span className="plain">ENERGY</span><span className="gradient">LOOKS GOOD</span><span className="plain">ON YOU.</span></h1>
