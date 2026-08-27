@@ -54,12 +54,16 @@ export default function V5Experience() {
 
     <section className="v5-hero">
       <div className="v5-orbit v5-orbit-a"/><div className="v5-orbit v5-orbit-b"/><div className="v5-spark s1">✦</div><div className="v5-spark s2">✺</div><div className="v5-spark s3">●</div>
-      <p className="v5-kicker">THE 90-DAY FEEL GREAT RITUAL · GUIDED BY SUMAN</p>
-      <h1>ENERGY<br/><span>LOOKS GOOD</span><br/>ON YOU.</h1>
-      <div className="v5-hero-portrait"><div className="v5-photo-glow"/><img src="/photos/suman-v4-editorial.png" alt="Suman Bagriya" fetchPriority="high"/></div>
-      <div className="v5-product p-a"><img src="https://assets.cdn.filesafe.space/NGZ5Kh3Cb7Vo4u8VnD2Q/media/69cf5579849c507b526b51cd.png" alt="Unimate product"/><span>MORNING ENERGY</span></div>
-      <div className="v5-product p-b"><img src="https://assets.cdn.filesafe.space/NGZ5Kh3Cb7Vo4u8VnD2Q/media/69cf55134cde4bbc2a6d5b2c.png" alt="Balance product"/><span>BEFORE MEALS</span></div>
-      <div className="v5-hero-actions"><a href={waReset} className="v5-button">START WITH SUMAN <b>↗</b></a><a href="#ritual" className="v5-text-link">DISCOVER THE RITUAL ↓</a></div>
+      <div className="v5-hero-content">
+        <p className="v5-kicker"><span/>METABOLIC HEALTH COACH · FEEL GREAT SYSTEM · 90-DAY SUPPORT</p>
+        <h1><span className="plain">ENERGY</span><span className="gradient">LOOKS GOOD</span><span className="plain">ON YOU.</span></h1>
+        <p className="v5-hero-intro">A two-step daily ritual—not another diet—designed for modern women who want to feel energized, focused and completely in control.</p>
+        <div className="v5-hero-steps" aria-label="Product overview">
+          <article className="unimate"><small>STEP 01 · MORNING</small><b>UNIMATE</b><p>Energy · Clarity · Daily ritual</p></article>
+          <article className="balance"><small>STEP 02 · BEFORE MEALS</small><b>BALANCE</b><p>Fiber · Simple rhythm · Support</p></article>
+        </div>
+        <div className="v5-hero-actions"><a href={waReset} className="v5-button">START YOUR RITUAL <b>↗</b></a><a href="#ritual" className="v5-button-secondary">SEE THE RITUAL ↓</a></div>
+      </div>
       <div className="v5-marquee"><div>FEEL GOOD ✦ LOOK ALIVE ✦ MOVE DIFFERENT ✦ YOUR RITUAL ✦ YOUR MOMENT ✦ FEEL GOOD ✦ LOOK ALIVE ✦ MOVE DIFFERENT ✦</div></div>
     </section>
 
