@@ -35,20 +35,37 @@ function ProofRail() {
 }
 
 function Cursor() {
-  const dot = useRef<HTMLDivElement>(null), aura = useRef<HTMLDivElement>(null);
+  const dot = useRef<HTMLDivElement>(null), aura = useRef<HTMLDivElement>(null), label = useRef<HTMLDivElement>(null);
   useEffect(()=>{
     if(matchMedia("(pointer: coarse), (prefers-reduced-motion: reduce)").matches)return;
     let x=-100,y=-100,ax=-100,ay=-100,id=0;
-    const move=(e:PointerEvent)=>{x=e.clientX;y=e.clientY;dot.current?.style.setProperty("transform",`translate3d(${x}px,${y}px,0)`) };
-    const tick=()=>{ax+=(x-ax)*.14;ay+=(y-ay)*.14;aura.current?.style.setProperty("transform",`translate3d(${ax}px,${ay}px,0)`);id=requestAnimationFrame(tick)};
+    const move=(e:PointerEvent)=>{x=e.clientX;y=e.clientY;dot.current?.style.setProperty("transform",`translate3d(${x}px,${y}px,0)`);const target=(e.target as Element)?.closest("a,button,.v5-proof-card,.v5-ritual-card,.v5-day,.phone");const word=target?.matches("a,button")?"OPEN":target?.matches(".v5-proof-card")?"DRAG":target?"VIEW":"";aura.current?.classList.toggle("active",!!target);if(label.current){label.current.textContent=word;label.current.classList.toggle("active",!!word)}};
+    const tick=()=>{ax+=(x-ax)*.14;ay+=(y-ay)*.14;aura.current?.style.setProperty("transform",`translate3d(${ax}px,${ay}px,0)`);label.current?.style.setProperty("transform",`translate3d(${ax+31}px,${ay+25}px,0)`);id=requestAnimationFrame(tick)};
     addEventListener("pointermove",move);id=requestAnimationFrame(tick);return()=>{removeEventListener("pointermove",move);cancelAnimationFrame(id)};
   },[]);
-  return <><div ref={aura} className="v5-cursor-aura"/><div ref={dot} className="v5-cursor-dot"/></>;
+  return <><div ref={aura} className="v5-cursor-aura"/><div ref={dot} className="v5-cursor-dot"/><div ref={label} className="v5-cursor-label"/></>;
+}
+
+function MotionDirector() {
+  useEffect(()=>{
+    if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+    const root=document.querySelector<HTMLElement>(".v5");
+    const sections=[...document.querySelectorAll<HTMLElement>(".v5 section")];
+    const targets=[...document.querySelectorAll<HTMLElement>(".v5-button,.v5-button-secondary,.v5-mini-cta,.v5-ritual-card,.v5-proof-card,.v5-day,.v5-faq-list article")];
+    root?.classList.add("v5-motion-ready");
+    const observer=new IntersectionObserver((entries)=>entries.forEach(entry=>entry.target.classList.toggle("v5-in-view",entry.isIntersecting)),{threshold:.12,rootMargin:"0px 0px -8%"});
+    sections.forEach(section=>observer.observe(section));
+    const cleanups=targets.map(target=>{const move=(event:PointerEvent)=>{const rect=target.getBoundingClientRect();const x=(event.clientX-rect.left)/rect.width-.5;const y=(event.clientY-rect.top)/rect.height-.5;target.style.setProperty("--hover-x",`${x*12}px`);target.style.setProperty("--hover-y",`${y*10}px`);target.style.setProperty("--hover-r",`${x*3}deg`);target.classList.add("v5-physics-active")};const leave=()=>{target.classList.remove("v5-physics-active");target.style.setProperty("--hover-x","0px");target.style.setProperty("--hover-y","0px");target.style.setProperty("--hover-r","0deg")};target.addEventListener("pointermove",move);target.addEventListener("pointerleave",leave);return()=>{target.removeEventListener("pointermove",move);target.removeEventListener("pointerleave",leave)}});
+    let frame=0;const update=()=>{for(const section of sections){const rect=section.getBoundingClientRect();const progress=Math.max(-1,Math.min(1,(innerHeight/2-(rect.top+rect.height/2))/(innerHeight+rect.height)*2));section.style.setProperty("--scene-progress",String(progress))}frame=0};const scroll=()=>{if(!frame)frame=requestAnimationFrame(update)};addEventListener("scroll",scroll,{passive:true});update();
+    return()=>{observer.disconnect();cleanups.forEach(fn=>fn());removeEventListener("scroll",scroll);if(frame)cancelAnimationFrame(frame);root?.classList.remove("v5-motion-ready")};
+  },[]);
+  return null;
 }
 
 export default function V5Experience() {
   const [open,setOpen]=useState<number|null>(null);
   return <main className="v5" id="main">
+    <MotionDirector/>
     <Cursor/>
     <nav className="v5-nav"><a href="#main" className="v5-brand">SUMAN<span>✦</span></a><div className="v5-navlinks"><a href="#ritual">RITUAL</a><a href="#proof">STORIES</a><a href="#saath">SAATH</a></div><a href={waReset} className="v5-mini-cta">LET'S TALK ↗</a></nav>
 
