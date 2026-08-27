@@ -176,6 +176,7 @@ function Reveal({ children, className = "" }: { children: React.ReactNode; class
 }
 
 function Hero() {
+  const headline = useRef<HTMLHeadingElement>(null);
   const { scrollYProgress } = useScroll();
   const smooth = useSpring(scrollYProgress, { stiffness: 80, damping: 24 });
   const y = useTransform(smooth, [0, 0.12], [0, 130]);
@@ -193,7 +194,34 @@ function Hero() {
         <div className="v5x-eyebrow">
           <i /> METABOLIC HEALTH COACH · FEEL GREAT SYSTEM · 90-DAY SUPPORT
         </div>
-        <h1>
+        <h1
+          ref={headline}
+          data-cursor="VIEW"
+          onPointerMove={(event) => {
+            if (matchMedia("(pointer: coarse), (prefers-reduced-motion: reduce)").matches) return;
+            const box = event.currentTarget.getBoundingClientRect();
+            const x = (event.clientX - box.left) / box.width - 0.5;
+            const y = (event.clientY - box.top) / box.height - 0.5;
+            event.currentTarget.style.setProperty("--hero-x", `${x * 22}px`);
+            event.currentTarget.style.setProperty("--hero-y", `${y * 16}px`);
+            event.currentTarget.style.setProperty("--hero-x2", `${x * -12}px`);
+            event.currentTarget.style.setProperty("--hero-y2", `${y * -6}px`);
+            event.currentTarget.style.setProperty("--hero-x3", `${x * 8}px`);
+            event.currentTarget.style.setProperty("--hero-y3", `${y * -8}px`);
+            event.currentTarget.style.setProperty("--hero-r", `${x * 1.4}deg`);
+            event.currentTarget.style.setProperty("--hero-r2", `${x * -0.8}deg`);
+          }}
+          onPointerLeave={() => {
+            headline.current?.style.setProperty("--hero-x", "0px");
+            headline.current?.style.setProperty("--hero-y", "0px");
+            headline.current?.style.setProperty("--hero-x2", "0px");
+            headline.current?.style.setProperty("--hero-y2", "0px");
+            headline.current?.style.setProperty("--hero-x3", "0px");
+            headline.current?.style.setProperty("--hero-y3", "0px");
+            headline.current?.style.setProperty("--hero-r", "0deg");
+            headline.current?.style.setProperty("--hero-r2", "0deg");
+          }}
+        >
           <span>ENERGY</span>
           <em>LOOKS GOOD</em>
           <span>ON YOU.</span>
