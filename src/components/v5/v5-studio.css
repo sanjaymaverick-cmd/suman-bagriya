@@ -1,3 +1,8 @@
+.antialiased:has(.v5x),
+body:has(.v5x) {
+  overflow-x: clip;
+  overflow-y: visible;
+}
 .v5x {
   --bg: #0d0d1a;
   --panel: #1a1030;
@@ -7,7 +12,7 @@
   --yellow: #ffe600;
   --orange: #ff6b35;
   --purple: #7b2fff;
-  overflow: hidden;
+  overflow: visible;
   background: var(--bg);
   color: #fff;
   font-family: "DM Sans", sans-serif;
@@ -353,43 +358,125 @@
   animation: v5x-pulse 1.6s ease infinite;
 }
 .v5x-manifesto {
-  height: 300vh;
+  height: 200vh;
   background: var(--bg);
+  scroll-margin-top: 112px;
 }
 .v5x-manifesto-sticky {
   position: sticky;
-  top: 0;
+  top: 112px;
   display: flex;
-  height: 100vh;
+  height: calc(100vh - 112px);
   align-items: center;
   justify-content: center;
   flex-direction: column;
   gap: 16px;
   overflow: hidden;
-  padding: 110px 4vw 30px;
+  padding: 20px 4vw 30px;
 }
 .v5x-ghost {
   position: absolute;
-  color: rgba(255, 255, 255, 0.025);
-  font: 900 25vw "Unbounded";
+  color: rgba(255, 255, 255, 0.055);
+  font: 900 23vw "Unbounded";
   letter-spacing: -0.08em;
+  line-height: 1;
+  will-change: transform;
+  transform: scale(0.92);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.v5x-manifesto[data-phase="2"] .v5x-ghost {
+  transform: scale(0.98);
+}
+.v5x-manifesto[data-phase="3"] .v5x-ghost {
+  transform: scale(1.04);
+}
+.v5x-manifesto[data-phase="4"] .v5x-ghost {
+  transform: scale(1.1);
 }
 .v5x-manifesto h2 {
-  position: relative;
+  position: absolute;
+  width: min(92vw, 1320px);
   margin: 0;
   text-align: center;
   font-size: clamp(40px, 6.8vw, 102px);
   line-height: 0.88;
   letter-spacing: -0.06em;
+  will-change: transform, opacity;
+  opacity: 0;
+  transform: translateY(72px) scale(0.94);
+  transition:
+    opacity 0.45s ease,
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.v5x-manifesto h2:nth-of-type(1) {
+.v5x-manifesto h2.is-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.v5x-manifesto h2.diet {
   color: var(--pink);
 }
-.v5x-manifesto h2:nth-of-type(2) {
+.v5x-manifesto h2.reset {
   color: var(--cyan);
 }
-.v5x-manifesto h2:nth-of-type(3) {
+.v5x-manifesto h2.moves {
   color: var(--yellow);
+}
+.v5x-manifesto-final {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  width: min(92vw, 1200px);
+  gap: clamp(8px, 1.5vh, 18px);
+  text-align: center;
+  will-change: transform, opacity;
+  opacity: 0;
+  transform: translateY(82px) scale(0.88);
+  transition:
+    opacity 0.5s ease,
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.v5x-manifesto-final.is-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.v5x-manifesto-final span {
+  display: block;
+  font: 900 clamp(28px, 5.5vw, 82px)/0.92 "Unbounded";
+  letter-spacing: -0.06em;
+}
+.v5x-manifesto-final span:nth-child(1) {
+  color: var(--pink);
+}
+.v5x-manifesto-final span:nth-child(2) {
+  color: var(--cyan);
+}
+.v5x-manifesto-final span:nth-child(3) {
+  color: var(--yellow);
+}
+.v5x-manifesto-cue {
+  position: absolute;
+  bottom: 28px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.45);
+  font: 700 8px "Unbounded";
+  letter-spacing: 0.16em;
+}
+.v5x-manifesto-cue i {
+  width: 42px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--pink), var(--cyan));
+  animation: v5x-pulse 1.5s ease infinite;
+}
+.v5x-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 .v5x-section {
   position: relative;
@@ -1038,6 +1125,13 @@
   .v5x-nav {
     height: 64px;
   }
+  .v5x-manifesto {
+    scroll-margin-top: 96px;
+  }
+  .v5x-manifesto-sticky {
+    top: 96px;
+    height: calc(100vh - 96px);
+  }
   .v5x-hero {
     padding-top: 120px;
   }
@@ -1073,6 +1167,11 @@
   }
   .v5x-faq-title h2 {
     margin-bottom: 20px;
+  }
+}
+@media (pointer: coarse) {
+  .v5x-manifesto {
+    height: 400vh;
   }
 }
 @media (max-width: 560px) {

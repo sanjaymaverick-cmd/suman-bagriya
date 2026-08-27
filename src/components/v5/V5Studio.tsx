@@ -262,24 +262,122 @@ function Hero() {
 
 function Manifesto() {
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const y1 = useTransform(scrollYProgress, [0, 0.28], [80, 0]),
-    o1 = useTransform(scrollYProgress, [0, 0.18], [0, 1]);
-  const y2 = useTransform(scrollYProgress, [0.25, 0.55], [80, 0]),
-    o2 = useTransform(scrollYProgress, [0.2, 0.48], [0.08, 1]);
-  const y3 = useTransform(scrollYProgress, [0.55, 0.88], [100, 0]),
-    o3 = useTransform(scrollYProgress, [0.5, 0.8], [0.06, 1]);
+  const phaseRef = useRef(0);
+  const wheelLock = useRef(false);
+  const entered = useRef(false);
+  const [phase, setPhase] = useState(0);
+  useEffect(() => {
+    let raf = 0;
+    let unlockTimer = 0;
+    const update = () => {
+      const el = ref.current;
+      if (!el) return;
+      const box = el.getBoundingClientRect();
+      if (matchMedia("(pointer: coarse)").matches) {
+        const distance = Math.max(box.height - innerHeight, 1);
+        const progress = Math.min(0.999, Math.max(0, -box.top / distance));
+        const next = Math.min(3, Math.floor(progress * 4));
+        phaseRef.current = next;
+        setPhase((current) => (current === next ? current : next));
+        return;
+      }
+      if (box.top > 4 && !wheelLock.current) {
+        entered.current = false;
+        phaseRef.current = 0;
+        setPhase(0);
+      }
+    };
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    const onWheel = (event: WheelEvent) => {
+      const el = ref.current;
+      if (!el || Math.abs(event.deltaY) < 8) return;
+      const box = el.getBoundingClientRect();
+      const pinTop = innerWidth <= 900 ? 96 : 112;
+      const pinned = box.top <= pinTop + 1 && box.bottom >= innerHeight - 1;
+      const approaching = box.top <= pinTop + Math.max(100, Math.abs(event.deltaY));
+      if (!pinned && !(approaching && !entered.current && event.deltaY > 0)) return;
+      if (wheelLock.current) {
+        event.preventDefault();
+        return;
+      }
+      const direction = event.deltaY > 0 ? 1 : -1;
+      const current = phaseRef.current;
+      if (!entered.current && direction > 0) {
+        event.preventDefault();
+        entered.current = true;
+        wheelLock.current = true;
+        phaseRef.current = 0;
+        setPhase(0);
+        el.scrollIntoView({ block: "start", behavior: "auto" });
+        unlockTimer = window.setTimeout(() => {
+          wheelLock.current = false;
+        }, 420);
+        return;
+      }
+      if (current === 0 && direction < 0) {
+        entered.current = false;
+        return;
+      }
+      if (current === 3 && direction > 0) {
+        event.preventDefault();
+        wheelLock.current = true;
+        document.getElementById("ritual")?.scrollIntoView({ block: "start", behavior: "smooth" });
+        unlockTimer = window.setTimeout(() => {
+          wheelLock.current = false;
+          entered.current = false;
+        }, 720);
+        return;
+      }
+      event.preventDefault();
+      const next = Math.max(0, Math.min(3, current + direction));
+      wheelLock.current = true;
+      phaseRef.current = next;
+      setPhase(next);
+      unlockTimer = window.setTimeout(() => {
+        wheelLock.current = false;
+      }, 520);
+    };
+    update();
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll);
+    addEventListener("wheel", onWheel, { passive: false });
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(unlockTimer);
+      removeEventListener("scroll", onScroll);
+      removeEventListener("resize", onScroll);
+      removeEventListener("wheel", onWheel);
+    };
+  }, []);
   return (
-    <section ref={ref} className="v5x-manifesto">
+    <section ref={ref} className="v5x-manifesto" data-phase={phase + 1}>
       <div className="v5x-manifesto-sticky">
-        <div className="v5x-ghost">RITUAL</div>
-        <motion.h2 style={{ y: y1, opacity: o1 }}>NOT ANOTHER DIET</motion.h2>
-        <motion.h2 style={{ y: y2, opacity: o2 }}>NOT ANOTHER RESET</motion.h2>
-        <motion.h2 style={{ y: y3, opacity: o3 }}>
+        <div className="v5x-ghost" aria-hidden="true">
+          RITUAL
+        </div>
+        <p className="v5x-sr">Not another diet. Not another reset. A ritual that moves with you.</p>
+        <h2 className={`diet ${phase === 0 ? "is-active" : ""}`} aria-hidden="true">
+          NOT ANOTHER DIET
+        </h2>
+        <h2 className={`reset ${phase === 1 ? "is-active" : ""}`} aria-hidden="true">
+          NOT ANOTHER RESET
+        </h2>
+        <h2 className={`moves ${phase === 2 ? "is-active" : ""}`} aria-hidden="true">
           A RITUAL THAT
           <br />
           MOVES WITH YOU
-        </motion.h2>
+        </h2>
+        <div className={`v5x-manifesto-final ${phase === 3 ? "is-active" : ""}`} aria-hidden="true">
+          <span>NOT ANOTHER DIET</span>
+          <span>NOT ANOTHER RESET</span>
+          <span>A RITUAL THAT MOVES WITH YOU</span>
+        </div>
+        <div className="v5x-manifesto-cue" aria-hidden="true">
+          SCROLL TO ADVANCE <i />
+        </div>
       </div>
     </section>
   );
