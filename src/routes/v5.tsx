@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import V5Experience from "@/components/v5/V5Experience";
+import V5Studio from "@/components/v5/V5Studio";
 
 export const Route = createFileRoute("/v5")({
   component: V5Page,
@@ -15,4 +15,4 @@ export const Route = createFileRoute("/v5")({
   }),
 });
 
-function V5Page() { return <V5Experience />; }
+function V5Page() { return <V5Studio />; }
