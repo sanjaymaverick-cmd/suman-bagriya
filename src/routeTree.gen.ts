@@ -14,6 +14,7 @@ import { Route as SaathRouteImport } from './routes/saath'
 import { Route as V2RouteImport } from './routes/v2'
 import { Route as V3RouteImport } from './routes/v3'
 import { Route as V4RouteImport } from './routes/v4'
+import { Route as V5RouteImport } from './routes/v5'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const V4Route = V4RouteImport.update({
   path: '/v4',
   getParentRoute: () => rootRouteImport,
 } as any)
+const V5Route = V5RouteImport.update({
+  id: '/v5',
+  path: '/v5',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/v2': typeof V2Route
   '/v3': typeof V3Route
   '/v4': typeof V4Route
+  '/v5': typeof V5Route
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/v2': typeof V2Route
   '/v3': typeof V3Route
   '/v4': typeof V4Route
+  '/v5': typeof V5Route
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,14 @@ export interface FileRoutesById {
   '/v2': typeof V2Route
   '/v3': typeof V3Route
   '/v4': typeof V4Route
+  '/v5': typeof V5Route
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/saath' | '/v2' | '/v3' | '/v4'
+  fullPaths: '/' | '/saath' | '/v2' | '/v3' | '/v4' | '/v5'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/saath' | '/v2' | '/v3' | '/v4'
-  id: '__root__' | '/' | '/saath' | '/v2' | '/v3' | '/v4'
+  to: '/' | '/saath' | '/v2' | '/v3' | '/v4' | '/v5'
+  id: '__root__' | '/' | '/saath' | '/v2' | '/v3' | '/v4' | '/v5'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +86,7 @@ export interface RootRouteChildren {
   V2Route: typeof V2Route
   V3Route: typeof V3Route
   V4Route: typeof V4Route
+  V5Route: typeof V5Route
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof V4RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/v5': {
+      id: '/v5'
+      path: '/v5'
+      fullPath: '/v5'
+      preLoaderRoute: typeof V5RouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +142,7 @@ const rootRouteChildren: RootRouteChildren = {
   V2Route: V2Route,
   V3Route: V3Route,
   V4Route: V4Route,
+  V5Route: V5Route,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
