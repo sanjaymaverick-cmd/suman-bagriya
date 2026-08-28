@@ -18,6 +18,7 @@ const explorations = [
   { href: "/v2", label: "V2" },
   { href: "/v3", label: "V3" },
   { href: "/v4", label: "V4" },
+  { href: "/v5", label: "V5" },
 ];
 
 export default function SiteNav({ current }: { current?: string }) {

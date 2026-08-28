@@ -52,9 +52,10 @@ export default function V2Nav() {
             { href: "#saath", label: "Saath" },
             { href: "#business", label: "Build with me" },
             { href: "#faq", label: "Questions" },
+            { href: "/", label: "V1 — Original site", internal: true },
             { href: "/v3", label: "V3", internal: true },
             { href: "/v4", label: "V4 — Metabolic Muse", internal: true },
-            { href: "/", label: "Original site", internal: true },
+            { href: "/v5", label: "V5", internal: true },
           ].map((item) =>
             item.internal ? (
               <Link

@@ -46,14 +46,17 @@ export default function V3Nav() {
             </a>
           ))}
           <span aria-hidden="true" className="h-3 w-px bg-white/15" />
+          <Link to="/" className="tap-target hover:text-[#f3ede2]">
+            V1
+          </Link>
           <Link to="/v2" className="tap-target hover:text-[#f3ede2]">
             V2
           </Link>
           <Link to="/v4" className="tap-target hover:text-[#f3ede2]">
             V4
           </Link>
-          <Link to="/" className="tap-target hover:text-[#f3ede2]">
-            Original
+          <Link to="/v5" className="tap-target hover:text-[#f3ede2]">
+            V5
           </Link>
           <a
             href={waReset}
@@ -100,6 +103,13 @@ export default function V3Nav() {
             </a>
           ))}
           <Link
+            to="/"
+            onClick={() => setOpen(false)}
+            className="font-editorial-serif border-b border-white/10 py-4 text-[32px] leading-none"
+          >
+            V1 — Original
+          </Link>
+          <Link
             to="/v2"
             onClick={() => setOpen(false)}
             className="font-editorial-serif border-b border-white/10 py-4 text-[32px] leading-none"
@@ -114,11 +124,11 @@ export default function V3Nav() {
             V4 — Metabolic Muse
           </Link>
           <Link
-            to="/"
+            to="/v5"
             onClick={() => setOpen(false)}
             className="font-editorial-serif border-b border-white/10 py-4 text-[32px] leading-none"
           >
-            Original site
+            V5
           </Link>
           <a
             href={waReset}

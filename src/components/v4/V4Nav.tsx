@@ -21,14 +21,18 @@ export default function V4Nav() {
           <a href="#ritual">The ritual</a>
           <a href="#stories">Stories</a>
           <a href="#saath-v4">Saath</a>
-          <Link to="/">Versions</Link>
+          <span className="h-3 w-px bg-[#6f594b]/20" aria-hidden="true" />
+          <Link to="/">V1</Link>
+          <Link to="/v2">V2</Link>
+          <Link to="/v3">V3</Link>
+          <Link to="/v5">V5</Link>
         </nav>
         <div className="flex items-center gap-2">
           <a className="rounded-full bg-[#171310] px-5 py-2.5 text-[10px] tracking-[0.16em] text-white uppercase" href={waReset} target="_blank" rel="noopener noreferrer">Start</a>
           <button type="button" onClick={() => setOpen((value) => !value)} aria-label="Toggle menu" aria-expanded={open} aria-controls="v4-mobile-menu" className="flex h-9 w-9 items-center justify-center rounded-full border border-[#6f594b]/20 text-lg md:hidden">{open ? "×" : "≡"}</button>
         </div>
       </div>
-      {open && <nav id="v4-mobile-menu" aria-label="V4 mobile navigation" className="mx-auto mt-2 flex max-w-[1500px] flex-col rounded-[24px] border border-[#6f594b]/15 bg-[#f4efe8] p-6 text-[24px] leading-none shadow-xl md:hidden">{[["#ritual","The ritual"],["#stories","Stories"],["#saath-v4","Saath"]].map(([href,label])=><a key={href} href={href} onClick={()=>setOpen(false)} className="v4-display border-b border-[#6f594b]/15 py-4">{label}</a>)}<Link to="/" onClick={()=>setOpen(false)} className="v4-display py-4">View all versions</Link></nav>}
+      {open && <nav id="v4-mobile-menu" aria-label="V4 mobile navigation" className="mx-auto mt-2 flex max-w-[1500px] flex-col rounded-[24px] border border-[#6f594b]/15 bg-[#f4efe8] p-6 text-[24px] leading-none shadow-xl md:hidden">{[["#ritual","The ritual"],["#stories","Stories"],["#saath-v4","Saath"]].map(([href,label])=><a key={href} href={href} onClick={()=>setOpen(false)} className="v4-display border-b border-[#6f594b]/15 py-4">{label}</a>)}<Link to="/" onClick={()=>setOpen(false)} className="v4-display py-4">V1 — Original</Link><Link to="/v2" onClick={()=>setOpen(false)} className="v4-display border-b border-[#6f594b]/15 py-4">V2</Link><Link to="/v3" onClick={()=>setOpen(false)} className="v4-display border-b border-[#6f594b]/15 py-4">V3</Link><Link to="/v5" onClick={()=>setOpen(false)} className="v4-display border-b border-[#6f594b]/15 py-4">V5</Link></nav>}
     </header>
   );
 }
